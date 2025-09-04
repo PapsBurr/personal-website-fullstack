@@ -1,4 +1,5 @@
 import RoundedImage from "./components/RoundedImage";
+import NasaApod from "./components/NasaApod";
 
 const skills = [
   { id: 1, text: "Programming"},
@@ -27,6 +28,7 @@ function ListItems(props) {
 }
 
 export default function Home() {
+
   return (
     <>
       <div className="container-comp bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 min-h-screen">
@@ -47,7 +49,10 @@ export default function Home() {
             </p>
             <hr></hr>
           </div>
-
+          <div className="fade-trigger">
+            <NasaApod />
+          </div>
+          
           {/* Qualifications Section */}
           <section className="fade-trigger">
             <h2>Qualifications</h2>

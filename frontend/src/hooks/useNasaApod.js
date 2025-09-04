@@ -55,11 +55,6 @@ const useNasaApod = () => {
     fetchNasaApod();
   }, []);
 
-  // Function to refetch data if needed
-  const refetch = () => {
-    fetchNasaApod();
-  };
-
   return { data, loading, error };
 };
 

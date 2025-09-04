@@ -27,15 +27,25 @@ const nasaApodSchema = {
   },
   url: {
     isURL: {
-      options: { protocols: ['http', 'https'], require_tld: true },
+      options: { 
+        protocols: ['http', 'https'], 
+        require_tld: true,
+        require_protocol: true,
+        host_whitelist: ['nasa.gov', 'api.nasa.gov', 'apod.nasa.gov']
+      },
       errorMessage: 'Invalid URL'
     }
   },
   hdurl: {
     optional: true,
     isURL: {
-      options: { protocols: ['http', 'https'], require_tld: true },
-      errorMessage: 'Invalid HDURL'
+      options: { 
+        protocols: ['http', 'https'], 
+        require_tld: true,
+        require_protocol: true,
+        host_whitelist: ['nasa.gov', 'api.nasa.gov', 'apod.nasa.gov']
+      },
+      errorMessage: 'Invalid URL'
     }
   },
   date: {

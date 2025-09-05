@@ -1,5 +1,6 @@
 import express from 'express';
 import { checkSchema, validationResult } from 'express-validator';
+import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
 
@@ -78,7 +79,7 @@ const validateData = async (data, schema) => {
   return data;
 };
 
-router.get('/apod', async (req, res) => {
+router.get('/apod', cacheMiddleware(3600), async (req, res) => {
   try {
     const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_API_KEY}`);
 

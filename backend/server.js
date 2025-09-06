@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
 
 dotenv.config();
@@ -75,4 +76,4 @@ function startServer() {
   });
 }
 
-export default app;
+export const handler = serverless(app);

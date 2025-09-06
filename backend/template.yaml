@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+# Global Settings for all Lambda functions
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs18.x
+    MemorySize: 512
+    Environment:
+      Variables:
+        NODE_ENV: production
+    LoggingConfig:
+      LogFormat: JSON
+
+# Input Parameters
+Parameters:
+  NasaApiKey:
+    Type: String
+    Description: NASA API Key for APOD service
+    NoEcho: true # Hides api key
+  
+  MongoDbUri:
+    Type: String
+    Description: MongoDB connection string
+    NoEcho: true
+  
+  FrontendUrl:
+    Type: String
+    Description: Frontend domain for CORS
+    Default: "*"
+  
+  Stage:
+    Type: String
+    Description: Deployment stage
+    Default: prod
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    ConstraintDescription: must be one of dev, staging, or prod.
+
+# AWS Resources to create
+Resources:
+  ExpressApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageConfig:
+        Command: [ "server.handler" ]
+
+    Environment:
+      Variables:
+        NASA_API_KEY: !Ref NasaApiKey
+        MONGODB_URI: !Ref MongoDbUri
+        FRONTEND_URL: !Ref FrontendUrl
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    Events:
+      ApiGateway:
+        Type: Api
+        Properties:
+          Path: /{proxy+}
+          Method: ANY
+          Cors:
+            AllowOrigin: !Ref FrontendUrl
+            AllowMethods: "'GET'" # Add other methods for newly added endpoints
+            AllowHeaders: "'Content-Type,Authorization'"
+
+    Policies:
+      - Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'
+
+  # Docker build config
+  MetaData:
+    DockerTag: nodejs18.x-v1
+    DockerContext: ./
+    Dockerfile: Dockerfile
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"

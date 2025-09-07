@@ -117,6 +117,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
+      Timeout: 30
       ImageConfig:
         Command: ["server.handler"]
 

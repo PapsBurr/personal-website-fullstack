@@ -50,7 +50,8 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 
 // MongoDB connection and server start
-if (process.env.MONGODB_URI) {
+if (process.env.MONGODB_URI && process.env.NODE_ENV !== 'production') {
+  // Only connect to MongoDB in non-production environments for now
   mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
       console.log('Connected to MongoDB');
@@ -61,7 +62,7 @@ if (process.env.MONGODB_URI) {
       startServer(); // Start without MongoDB for now
     });
 } else {
-  console.log('No MongoDB URI provided, starting without database');
+  console.log('No MongoDB URI provided / Backend started in production, starting without database');
   startServer();
 }
 

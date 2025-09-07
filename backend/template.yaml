@@ -1,89 +1,166 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-
-# Global Settings for all Lambda functions
-Globals:
-  Function:
-    Timeout: 10
-    Runtime: nodejs18.x
-    MemorySize: 512
-    Environment:
-      Variables:
-        NODE_ENV: production
-    LoggingConfig:
-      LogFormat: JSON
 
 # Input Parameters
 Parameters:
   NasaApiKey:
     Type: String
     Description: NASA API Key for APOD service
-    NoEcho: true # Hides api key
-  
-  MongoDbUri:
-    Type: String
-    Description: MongoDB connection string
     NoEcho: true
-  
-  FrontendUrl:
-    Type: String
-    Description: Frontend domain for CORS
-    Default: "*"
-  
-  Stage:
-    Type: String
-    Description: Deployment stage
-    Default: prod
-    AllowedValues:
-      - dev
-      - staging
-      - prod
-    ConstraintDescription: must be one of dev, staging, or prod.
 
-# AWS Resources to create
+  DomainName:
+    Type: String
+    Description: Domain name for the website
+    Default: nathanpons.com
+
+  CertificateArn:
+    Type: String
+    Description: ACM Certificate ARN for CloudFront custom domain
+    Default: arn:aws:acm:us-east-1:242201278004:certificate/9c91f042-e116-41be-9c24-95dc5876b0d8
+
 Resources:
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-frontend"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-oac"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${FrontendBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/*"
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+
+        Aliases:
+          - !Ref DomainName
+          - !Sub "www.${DomainName}"
+
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+
+        Origins:
+          - Id: frontend-origin
+            DomainName: !GetAtt FrontendBucket.RegionalDomainName
+            OriginAccessControlId: !Ref OriginAccessControl
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+
+          - Id: backend-origin
+            DomainName: !Sub "${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
+            OriginPath: "/Prod"
+            CustomOriginConfig:
+              HTTPPort: 443
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+
+        DefaultCacheBehavior:
+          TargetOriginId: frontend-origin
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+          Compress: true
+
+        CacheBehaviors:
+          - PathPattern: "/api/*"
+            TargetOriginId: backend-origin
+            ViewerProtocolPolicy: redirect-to-https
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
+            OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # Managed-AllViewer
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - POST
+              - PATCH
+              - DELETE
+
+        Enabled: true
+        DefaultRootObject: index.html
+
   ExpressApiFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       ImageConfig:
-        Command: [ "server.handler" ]
+        Command: ["server.handler"]
 
-    Environment:
-      Variables:
-        NASA_API_KEY: !Ref NasaApiKey
-        MONGODB_URI: !Ref MongoDbUri
-        FRONTEND_URL: !Ref FrontendUrl
-        AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+      Environment:
+        Variables:
+          NASA_API_KEY: !Ref NasaApiKey
+          NODE_ENV: production
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
-    Events:
-      ApiGateway:
-        Type: Api
-        Properties:
-          Path: /{proxy+}
-          Method: ANY
-          Cors:
-            AllowOrigin: !Ref FrontendUrl
-            AllowMethods: "'GET'" # Add other methods for newly added endpoints
-            AllowHeaders: "'Content-Type,Authorization'"
+      Events:
+        ApiGateway:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
 
-    Policies:
-      - Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Action:
-              - logs:CreateLogGroup
-              - logs:CreateLogStream
-              - logs:PutLogEvents
-            Resource: '*'
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
 
-  # Docker build config
-  MetaData:
-    DockerTag: nodejs18.x-v1
-    DockerContext: ./
-    Dockerfile: Dockerfile
+    Metadata:
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile
 
 Outputs:
-  ApiUrl:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+  WebsiteURL:
+    Description: Your website URL
+    Value: !Sub "https://${DomainName}"
+
+  FrontendBucketName:
+    Description: S3 bucket for frontend uploads
+    Value: !Ref FrontendBucket
+
+  CloudFrontDistributionDomain:
+    Description: CloudFront distribution domain
+    Value: !GetAtt CloudFrontDistribution.DomainName
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution ID
+    Value: !Ref CloudFrontDistribution

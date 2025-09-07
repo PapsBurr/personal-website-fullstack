@@ -37,17 +37,12 @@ app.get('/', (req, res) => {
   res.send(`Backend server running on port ${process.env.PORT || 5000}`);
 });
 
-// Routes will be added here later
-// import userRoutes from './src/routes/users.js';
-// app.use('/api/users', userRoutes);
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// 404 handler - Simplified to avoid Express 5.x issues
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });

@@ -51,7 +51,7 @@ Resources:
             Resource: !Sub "${FrontendBucket.Arn}/*"
             Condition:
               StringEquals:
-                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/*"
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution

@@ -1,4 +1,5 @@
 # personal-website-fullstack
 This is a fullstack version of my static resume-website repo  
 
-Still in construction.
+This website can be visited at: nathanpons.com
+

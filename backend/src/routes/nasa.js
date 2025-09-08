@@ -80,8 +80,14 @@ const validateData = async (data, schema) => {
 };
 
 router.get('/apod', cacheMiddleware(3600), async (req, res) => {
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
   try {
-    const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_API_KEY}`);
+
+    const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_API_KEY}`, { signal: controller.signal });
+    clearTimeout(timeoutId); // Clear timeout on success
 
     if (!response.ok) {
       throw new Error(`NASA API error: ${response.statusText}`);
@@ -93,8 +99,17 @@ router.get('/apod', cacheMiddleware(3600), async (req, res) => {
     res.json(data);
 
   } catch (error) {
-    console.error('Error fetching NASA APOD:', error);
-    res.status(500).json({ error: 'Failed to fetch NASA APOD' });
+    clearTimeout(timeoutId); // Clear timeout on error
+    if (error.name === 'AbortError') {
+      console.error('NASA APOD request timed out');
+      return res.status(504).json({ error: 'NASA APOD request timed out' });
+    } else if (error.code === 'ENOTFOUND' || error.code === 'EAI_AGAIN') {
+      console.error('Network error fetching NASA APOD:', error);
+      return res.status(503).json({ error: 'Network error fetching NASA APOD' });
+    } else {
+      console.error('Error fetching NASA APOD:', error);
+      res.status(500).json({ error: 'Failed to fetch NASA APOD' });
+    }
   }
 });
 

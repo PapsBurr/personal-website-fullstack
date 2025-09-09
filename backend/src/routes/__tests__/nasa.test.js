@@ -31,6 +31,13 @@ describe("NASA Routes", () => {
   afterEach(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
+
+    jest.clearAllTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+    jest.clearAllTimers();
   });
 
   describe("GET /apod - Success Cases", () => {
@@ -111,8 +118,8 @@ describe("NASA Routes", () => {
       const invalidResponse = {
         title: "", // Invalid - too short
         explanation: "Test explanation",
-        url: "not-a-valid-url", // Invalid URL
-        date: "invalid-date", // Invalid date
+        url: "not-a-valid-url",
+        date: "invalid-date",
         media_type: "video", // Invalid - should be 'image'
       };
 
@@ -127,6 +134,59 @@ describe("NASA Routes", () => {
 
       expect(response.body.error).toBe("Failed to fetch NASA APOD");
       expect(fetch).toHaveBeenCalled();
+    });
+
+    it("should handle non-ok response from NASA API", async () => {
+      fetch.mockResolvedValueOnce({
+        ok: false,
+        statusText: "Forbidden",
+      });
+
+      const response = await request(app)
+        .get("/api/nasa/apod?test=error2")
+        .expect(500);
+
+      expect(response.body.error).toBe("Failed to fetch NASA APOD");
+    });
+
+    it("should handle request timeouts", async () => {
+      const abortError = new Error("The operation was aborted.");
+      abortError.name = "AbortError";
+
+      fetch.mockImplementation(() => Promise.reject(abortError));
+
+      const response = await request(app)
+        .get("/api/nasa/apod?test=errortimeout2")
+        .expect(504);
+
+      expect(response.body.error).toBe("NASA APOD request timed out");
+      expect(fetch).toHaveBeenCalled();
+    });
+
+    it("should handle network errors (ENOTFOUND)", async () => {
+      const networkError = new Error("Network error");
+      networkError.code = "ENOTFOUND";
+
+      fetch.mockRejectedValueOnce(networkError);
+
+      const response = await request(app)
+        .get("/api/nasa/apod?test=enotfound")
+        .expect(503);
+
+      expect(response.body.error).toBe("Network error fetching NASA APOD");
+    });
+
+    it("should handle network errors (EAI_AGAIN)", async () => {
+      const networkError = new Error("DNS lookup failed");
+      networkError.code = "EAI_AGAIN";
+
+      fetch.mockRejectedValueOnce(networkError);
+
+      const response = await request(app)
+        .get("/api/nasa/apod?test=eai_again")
+        .expect(503);
+
+      expect(response.body.error).toBe("Network error fetching NASA APOD");
     });
   });
 });

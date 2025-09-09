@@ -1,0 +1,36 @@
+{
+  "name": "personal-website-fullstack",
+  "version": "1.0.0",
+  "description": "Full-stack personal website with React frontend and Express backend",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend:coverage": "cd backend && npm test -- --coverage",
+    "test:frontend:coverage": "cd frontend && npm test -- --coverage",
+    "test:watch": "npm run test:backend:watch",
+    "test:backend:watch": "cd backend && npm test -- --watch",
+    "test:frontend:watch": "cd frontend && npm test -- --watch",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

@@ -292,7 +292,6 @@ describe("NASA Routes", () => {
     });
   });
 
-  // You can also test rate limiting with different IPs
   describe("Rate Limiting - Different IPs", () => {
     it("should apply rate limits per IP address", async () => {
       fetch.mockResolvedValue({

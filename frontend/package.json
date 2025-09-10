@@ -28,5 +28,11 @@
     "jest-environment-jsdom": "^30.0.5",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2"
+  },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "15.3.3",
+    "@next/swc-linux-x64-musl": "15.3.3",
+    "@next/swc-darwin-x64": "15.3.3",
+    "@next/swc-darwin-arm64": "15.3.3"
   }
 }

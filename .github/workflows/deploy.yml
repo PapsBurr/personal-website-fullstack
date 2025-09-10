@@ -53,6 +53,8 @@ jobs:
 
       - name: Install backend dependencies
         run: npm ci
+        env:
+          NODE_ENV: development  # Override the production setting
 
       - name: Run backend tests
         run: npm test -- --coverage

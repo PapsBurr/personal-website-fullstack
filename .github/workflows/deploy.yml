@@ -52,7 +52,7 @@ jobs:
           cache-dependency-path: ./backend/package-lock.json
 
       - name: Install backend dependencies
-        run: npm ci
+        run: npm ci --include=dev
         env:
           NODE_ENV: development  # Override the production setting
 

@@ -12,8 +12,6 @@ dotenv.config();
 
 const app = express();
 
-// TEST COMMENT TO TRIGGER GITHUB ACTIONS 1
-
 // Middleware
 app.use(helmet());
 app.use(morgan('combined'));

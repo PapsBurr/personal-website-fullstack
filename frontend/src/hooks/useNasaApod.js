@@ -6,6 +6,12 @@ const useNasaApod = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const decodeHtmlEntities = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+  };
+
   const formatData = (rawData) => {
     if (!rawData) return null;
 
@@ -19,8 +25,8 @@ const useNasaApod = () => {
     };
 
     return {
-      title: rawData.title || 'Untitled',
-      explanation: rawData.explanation || 'No description available.',
+      title: decodeHtmlEntities(rawData.title || 'Untitled'),
+      explanation: decodeHtmlEntities(rawData.explanation || 'No description available.'),
       date: formatDate(rawData.date) || '',
       url: rawData.url || '',
       hdurl: rawData.hdurl || ''

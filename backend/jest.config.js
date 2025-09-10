@@ -3,7 +3,11 @@ export default {
   testEnvironment: 'node',
 
   // ES module support
-  transform: {},
+  transform: {
+    '^.+\\.js$': ['babel-jest', { 
+      presets: [['@babel/preset-env', { targets: { node: 'current' } }]] 
+    }]
+  },
   
   // File detection
   testMatch: [

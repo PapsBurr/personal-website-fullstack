@@ -147,7 +147,8 @@ export default function Home() {
               automatically deploys the website using GitHub Actions whenever 
               I commit and push to the repository. 
               Since it's release, I've swapped it from being deployed through GitHub Pages to instead
-              being hosted through AWS S3 + CloudFront. I've also added an Express backend to serve the NASA 
+              being hosted through AWS S3 + CloudFront after being turned into a docker image. 
+              I've also added an Express backend to serve the NASA 
               Astronomy Picture of the Day to the frontend through an API endpoint. The backend is also hosted 
               through AWS using Lambda and API Gateway.
             </p>

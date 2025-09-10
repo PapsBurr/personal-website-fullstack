@@ -143,12 +143,13 @@ export default function Home() {
           <section className="fade-trigger">
             <h2>This Site</h2>
             <p>
-              Built with JavaScript using React, HTML, and Tailwind CSS. It 
+              Built with JavaScript using Next.JS, Express, HTML, Tailwind CSS, and Jest. It 
               automatically deploys the website using GitHub Actions whenever 
               I commit and push to the repository. 
-              I'm currently trying to get this website connected to a backend 
-              and then deployed on the cloud using Docker, Kubernetes, Jenkins, 
-              and AWS.
+              Since it's release, I've swapped it from being deployed through GitHub Pages to instead
+              being hosted through AWS S3 + CloudFront. I've also added an Express backend to serve the NASA 
+              Astronomy Picture of the Day to the frontend through an API endpoint. The backend is also hosted 
+              through AWS using Lambda and API Gateway.
             </p>
             <hr></hr>
           </section>

@@ -53,6 +53,7 @@ const useNasaApod = () => {
       } catch (err) {
         console.error('Error fetching NASA APOD:', err);
         setError(err.message);
+        
       } finally {
         setLoading(false);
       }

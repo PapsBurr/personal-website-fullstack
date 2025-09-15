@@ -20,7 +20,7 @@ const NasaApod = () => {
   if (error) {
     return (
       <>
-        <div className="text-red-500">Error: {error}</div>
+        <div className="flex justify-center text-red-900 whitespace-pre-wrap">An error occurred while fetching the image.{"\n"}Please try again later.</div>
         <hr></hr>
       </>
     );

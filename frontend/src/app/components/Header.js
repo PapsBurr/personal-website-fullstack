@@ -78,6 +78,13 @@ export default function Header() {
             </div>
             <div className="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-900 active:from-gray-900 active:to-gray-800 text-white font-bold m-4 rounded-md select-none">
               <Link
+                href="/devops"
+                aria-label="DevOps Link - Mobile"
+                className="block p-4 px-16"
+                onClick={() => setIsMobileMenuOpen(false)}>DevOps</Link>
+            </div>
+            <div className="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-900 active:from-gray-900 active:to-gray-800 text-white font-bold m-4 rounded-md select-none">
+              <Link
                 href="/android"
                 aria-label="Android Link - Mobile"
                 className="block p-4 px-16"

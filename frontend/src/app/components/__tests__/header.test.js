@@ -86,6 +86,7 @@ describe('Mobile Header Component', () => {
     const hamburgerButton = screen.getByRole('button', { name: /Toggle hamburger menu/i });
     expect(screen.queryByRole('link', { name: /Home Link - Mobile/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Websites Link - Mobile/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /DevOps Link - Mobile/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Android Link - Mobile/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /GitHub Link - Mobile/i })).not.toBeInTheDocument();
 
@@ -95,6 +96,7 @@ describe('Mobile Header Component', () => {
 
     expect(screen.queryByRole('link', { name: /Home Link - Mobile/i })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Websites Link - Mobile/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /DevOps Link - Mobile/i })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Android Link - Mobile/i })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /GitHub Link - Mobile/i })).toBeInTheDocument();
   })

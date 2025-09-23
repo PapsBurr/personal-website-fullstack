@@ -12,7 +12,27 @@ const useNasaApod = () => {
     return textarea.value;
   };
 
-  const formatData = (rawData) => {
+  const checkIfValidImage = async (url) => {
+    return new Promise((resolve) => {
+      if (!url) {
+        resolve(false);
+        return;
+      }
+
+      const img = new Image();
+
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+
+      setTimeout(() => {
+        resolve(false);
+      }, 5000);
+
+      img.src = url;
+    });
+  }
+
+  const formatData = async (rawData) => {
     if (!rawData) return null;
 
     const formatDate = (dateString) => {
@@ -24,12 +44,22 @@ const useNasaApod = () => {
       return new Date(year, month - 1, day).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     };
 
+    const isHdurlValid = await checkIfValidImage(rawData.hdurl);
+    const isUrlValid = await checkIfValidImage(rawData.url);
+
+    let imageUrl = null;
+    if (isHdurlValid) {
+      imageUrl = rawData.hdurl;
+    } else if (isUrlValid) {
+      imageUrl = rawData.url;
+    }
+
     return {
       title: decodeHtmlEntities(rawData.title || 'Untitled'),
       explanation: decodeHtmlEntities(rawData.explanation || 'No description available.'),
       date: formatDate(rawData.date) || '',
-      url: rawData.url || '',
-      hdurl: rawData.hdurl || ''
+      url: isUrlValid ? rawData.url : null,
+      hdurl: isHdurlValid ? rawData.hdurl : null
     }
   }
 
@@ -47,7 +77,7 @@ const useNasaApod = () => {
         
         const rawResult = await response.json();
 
-        const formattedData = formatData(rawResult);
+        const formattedData = await formatData(rawResult);
         setData(formattedData);
 
       } catch (err) {

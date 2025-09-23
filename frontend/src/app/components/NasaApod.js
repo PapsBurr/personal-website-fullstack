@@ -35,32 +35,13 @@ const NasaApod = () => {
     );
   }
 
-  const title = data.title || data.text?.title || "Untitled";
+  const title = data.title || data.text?.title || "Untitled Image";
   const explanation = data.explanation || "No description available";
   const date = data.date || "";
-  const url = data.url || "";
-  const hdurl = data.hdurl || data.media?.hasHdVersion ? data.hdurl : null;
+  const url = data.url;
+  const hdurl = data.hdurl;
 
-  if (hdurl) {
-    return (
-      <>
-        <div>
-          <h3 className="text-8xl font-bold text-center mb-4 text-gray-800">
-            Nasa's Picture of the Day
-          </h3>
-          <h4 className="text-xl font-bold text-center mb-4 text-gray-800">
-            {title}
-          </h4>
-          <p className="text-center text-gray-600 mb-6">{date}</p>
-          <div className="flex gap-16 justify-center my-8">
-            <RoundedImage src={hdurl} alt={title} width={800} />
-          </div>
-          <p className="!text-base text-gray-600 mb-6">{explanation}</p>
-        </div>
-        <hr></hr>
-      </>
-    );
-  }
+  const imageUrl = hdurl || url || null;
 
   return (
     <>
@@ -73,7 +54,7 @@ const NasaApod = () => {
         </h4>
         <p className="text-center text-gray-600 mb-6">{date}</p>
         <div className="flex gap-16 justify-center my-8">
-          <RoundedImage src={url} alt={title} width={800} />
+          <RoundedImage src={imageUrl} alt={title} width={800} />
         </div>
         <p className="!text-base text-gray-600 mb-6">{explanation}</p>
       </div>

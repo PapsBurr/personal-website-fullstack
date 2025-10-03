@@ -164,6 +164,8 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+    env:
+      NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -196,7 +198,7 @@ jobs:
 
       - name: SAM Deploy
         run: |
-          sam deploy --no-confirm-changeset
+          sam deploy --no-confirm-changeset -parameter-overrides "NasaApiKey=${{ secrets.NASA_API_KEY }}"
 
   # Job 6: Notify Success
   notify-success:

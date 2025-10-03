@@ -53,6 +53,30 @@ Resources:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
 
+  WwwRedirectFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "${AWS::StackName}-www-redirect"
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var host = request.headers.host.value;
+
+          if (host === 'www.nathanpons.com') {
+            return {
+              statusCode: 301,
+              statusDescription: 'Moved Permanently',
+              headers: {
+                "location": { "value": "https://nathanpons.com" + request.uri }
+              }
+            };
+          }
+          return request;
+        }
+      FunctionConfig:
+        Comment: Redirect www to non-www
+        Runtime: cloudfront-js-1.0
+
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:

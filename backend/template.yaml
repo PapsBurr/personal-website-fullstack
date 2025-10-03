@@ -53,6 +53,7 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
+                AWS:SourceOac: !GetAtt OriginAccessControl.Id
 
   WwwRedirectFunction:
     Type: AWS::Serverless::Function

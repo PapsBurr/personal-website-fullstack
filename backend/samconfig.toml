@@ -3,8 +3,9 @@ version = 0.1
 [default.deploy.parameters]
 stack_name = "personal-website-backend"
 resolve_s3 = true
-s3_prefix = "personal-website-backend"
+s3_prefix = "personal-website-backend"zs
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+resolve_image_repos = true
 parameter_overrides = "DomainName=\"nathanpons.com\" CertificateArn=\"arn:aws:acm:us-east-1:242201278004:certificate/9c91f042-e116-41be-9c24-95dc5876b0d8\""

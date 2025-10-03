@@ -120,7 +120,7 @@ Resources:
           Compress: true
           FunctionAssociations:
             - EventType: viewer-request
-              FunctionARN: !GetAtt WwwRedirectFunction.FunctionMetadata.FunctionARN
+              FunctionARN: !Ref WwwRedirectFunction
 
         CacheBehaviors:
           - PathPattern: "/api/*"

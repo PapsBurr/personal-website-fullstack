@@ -3,6 +3,20 @@ name: Deploy Frontend and Backend
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deploy-frontend:
+        description: 'Deploy Frontend'
+        type: boolean
+        default: true
+      deploy-backend:
+        description: 'Deploy Backend'
+        type: boolean
+        default: true
+      force-deploy:
+        description: 'Force deploy (ignore change detection)'
+        type: boolean
+        default: false
 
 env:
   NODE_VERSION: "18"

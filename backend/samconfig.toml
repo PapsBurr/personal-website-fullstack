@@ -3,7 +3,7 @@ version = 0.1
 [default.deploy.parameters]
 stack_name = "personal-website-backend"
 resolve_s3 = true
-s3_prefix = "personal-website-backend"zs
+s3_prefix = "personal-website-backend"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

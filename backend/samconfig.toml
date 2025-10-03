@@ -4,8 +4,7 @@ version = 0.1
 stack_name = "personal-website-backend"
 resolve_s3 = true
 s3_prefix = "personal-website-backend"
-region = "us-east-2"
+region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "DomainName=\"nathanpons.com\" CertificateArn=\"arn:aws:acm:us-east-1:242201278004:certificate/9c91f042-e116-41be-9c24-95dc5876b0d8\""
-image_repositories = ["ExpressApiFunction=242201278004.dkr.ecr.us-east-2.amazonaws.com/personalwebsitebackend1c6b5e83/expressapifunction120374c7repo"]

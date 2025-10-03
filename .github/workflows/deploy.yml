@@ -6,7 +6,7 @@ on:
 
 env:
   NODE_VERSION: "18"
-  AWS_REGION: "us-east-2"
+  AWS_REGION: "us-east-1"
 
 jobs:
   # Job 1: Detect Changes

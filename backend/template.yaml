@@ -53,13 +53,13 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
-                AWS:SourceOac: !GetAtt OriginAccessControl.Id
+                # AWS:SourceOac: !GetAtt OriginAccessControl.Id
 
   WwwRedirectFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "${AWS::StackName}-www-redirect"
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Handler: index.handler
       InlineCode: !Sub |
         exports.handler = async (event) => {
@@ -197,7 +197,7 @@ Resources:
               Resource: "*"
 
     Metadata:
-      DockerTag: nodejs18.x-v1
+      DockerTag: nodejs20.x-v1
       DockerContext: ./
       Dockerfile: Dockerfile
 

@@ -113,15 +113,14 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-        #Aliases:
-        #  - !Ref DomainName
-        #  - !Sub "www.${DomainName}"
+        Aliases:
+          - !Ref DomainName
+          - !Sub "www.${DomainName}"
 
         ViewerCertificate:
-          CloudFrontDefaultCertificate: true
-        #  AcmCertificateArn: !Ref CertificateArn
-        #  SslSupportMethod: sni-only
-        #  MinimumProtocolVersion: TLSv1.2_2021
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
 
         Origins:
           - Id: frontend-origin

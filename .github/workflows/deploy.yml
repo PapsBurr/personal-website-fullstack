@@ -223,8 +223,8 @@ jobs:
       - name: Notify deployment status
         run: |
           if [ "${{ needs.deploy-frontend.result }}" == "success" ]; then
-            echo "✅ Frontend deployed successfully"
+            echo "Frontend deployed successfully"
           fi
           if [ "${{ needs.deploy-backend.result }}" == "success" ]; then
-            echo "✅ Backend deployed successfully"
+            echo "Backend deployed successfully"
           fi

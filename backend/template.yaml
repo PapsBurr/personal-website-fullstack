@@ -113,7 +113,7 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-        Aliases:
+        #Aliases:
         #  - !Ref DomainName
         #  - !Sub "www.${DomainName}"
 

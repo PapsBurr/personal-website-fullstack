@@ -53,9 +53,12 @@ const NasaApod = () => {
           {title}
         </h4>
         {isOctFirst && (
-          <p className="text-center text-yellow-400 mb-6">
-            Note: Due to NASA budget cuts, the most recent image available is from October 1, 2025.
-          </p>
+          <div className="flex justify-center mb-4">
+            <p className="text-center p-4 mb-4 text-sm rounded-lg bg-yellow-300" role="alert">
+              <img src="/info-icon.svg" alt="Info" className="inline w-4 h-4 mr-4" />
+              <span className="font-medium">Note: Due to NASA budget cuts, the most recent image available is from October 1st, 2025.</span>
+            </p>
+          </div>
         )}
         <p className="text-center text-gray-600 mb-6">{date}</p>
         <div className="flex gap-16 justify-center my-8">

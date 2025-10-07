@@ -42,7 +42,7 @@ const NasaApod = () => {
   const hdurl = data.hdurl;
 
   const imageUrl = hdurl || url || null;
-
+  const isOctFirst = (date === "Oct 1, 2025");
   return (
     <>
       <div>
@@ -52,6 +52,11 @@ const NasaApod = () => {
         <h4 className="text-xl font-bold text-center mb-4 text-gray-800">
           {title}
         </h4>
+        {isOctFirst && (
+          <p className="text-center text-yellow-400 mb-6">
+            Note: Due to NASA budget cuts, the most recent image available is from October 1, 2025.
+          </p>
+        )}
         <p className="text-center text-gray-600 mb-6">{date}</p>
         <div className="flex gap-16 justify-center my-8">
           <RoundedImage src={imageUrl} alt={title} width={800} />

@@ -19,7 +19,7 @@ export default {
   testTimeout: 10000, // 10 seconds timeout for async operations
 
   // Coverage
-  collectCoverage: true,
+  collectCoverage: false,
   collectCoverageFrom: [
     "src/**/*.js",
     "!src/**/*.test.js"
@@ -33,7 +33,13 @@ export default {
   ],
 
   // Output
-  verbose: true,
+  verbose: false,
+  silent: true,
+  reporters: [
+    ["default", {
+      summaryThreshold: 1
+    }],
+  ],
 
   // Mock clearing
   clearMocks: true,

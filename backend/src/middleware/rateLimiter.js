@@ -2,16 +2,24 @@ import rateLimiter from 'express-rate-limit';
 
 export const apiLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
+  max: 100, 
+  handler: (req, res, next) => {
+    const error = new Error();
+    error.name = 'RateLimitError';
+    next(error);
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 export const nasaLimiter = rateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 50, // Limit each IP to 50 requests per windowMs
-  message: 'Too many requests to NASA API from this IP, please try again later.',
+  max: 50, 
+  handler: (req, res, next) => {
+    const error = new Error();
+    error.name = 'RateLimitError';
+    next(error);
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });

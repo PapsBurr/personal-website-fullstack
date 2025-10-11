@@ -1,12 +1,12 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
 import { apiLimiter, nasaLimiter } from './src/middleware/rateLimiter.js';
+import { corsMiddleware } from './src/middleware/corsConfig.js';
+import { errorHandler } from './src/middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -17,26 +17,7 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(morgan('combined'));
-app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      'http://localhost:3000', // dev url
-      'https://nathanpons.com', // production url
-      'https://www.nathanpons.com' // production www url
-
-    ];
-
-    if (!origin) return callback(null, true); // Allow non-browser requests like Postman or curl
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+app.use(corsMiddleware);
 
 app.use('/api/', apiLimiter); // Apply rate limiting to all /api/ routes
 
@@ -60,10 +41,7 @@ app.get('/', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+app.use(errorHandler);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

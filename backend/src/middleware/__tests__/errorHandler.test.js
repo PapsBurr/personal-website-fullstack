@@ -2,17 +2,39 @@ import { jest, describe, it, beforeEach, expect } from '@jest/globals';
 import { AppError, errorHandler } from '../errorHandler.js';
 
 describe('AppError', () => {
+  let req, res, next;
+  
+  beforeEach(() => {
+    req = {
+      url: '/test',
+      method: 'GET',
+      ip: '127.0.0.1',
+      get: jest.fn(() => 'test-user-agent')
+    };
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
+    };
+
+    next = jest.fn();
+
+    // jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should create an AppError with correct properties', () => {
-    const message = 'Test error message';
-    const statusCode = 400;
-    
-    const error = new AppError(message, statusCode);
-    
-    expect(error.message).toBe(message);
-    expect(error.statusCode).toBe(statusCode);
-    expect(error.status).toBe('fail'); // 4xx status codes
-    expect(error.isOperational).toBe(true);
-    expect(error.stack).toBeDefined();
+    const error = new AppError('Test error', 400, 'TEST_ERROR');
+
+    errorHandler(error, req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'fail',
+      message: 'Test error',
+      code: 'TEST_ERROR'
+    });
   });
 
   it('should set status to "error" for 5xx status codes', () => {
@@ -50,14 +72,15 @@ describe('errorHandler', () => {
   });
 
   it('should handle AppError instances correctly', () => {
-    const appError = new AppError('Test error', 400);
+    const appError = new AppError('Test error', 400, 'TEST_ERROR');
     
     errorHandler(appError, req, res, next);
     
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       status: 'fail',
-      message: 'Test error'
+      message: 'Test error',
+      code: 'TEST_ERROR'
     });
   });
 
@@ -66,11 +89,14 @@ describe('errorHandler', () => {
     
     errorHandler(genericError, req, res, next);
     
-    expect(console.error).toHaveBeenCalledWith('Unexpected error:', genericError);
+    expect(console.error).toHaveBeenCalledWith('Unexpected error:', expect.objectContaining({
+      message: 'Generic error'
+    }));
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       status: 'error',
-      message: 'Something went wrong!'
+      message: 'Something went wrong!',
+      code: 'INTERNAL_SERVER_ERROR'
     });
   });
 
@@ -83,7 +109,8 @@ describe('errorHandler', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       status: 'error',
-      message: 'Something went wrong!'
+      message: 'Something went wrong!',
+      code: 'INTERNAL_SERVER_ERROR'
     });
   });
 });

@@ -72,6 +72,10 @@ jobs:
 
       - name: Run backend tests
         run: npm test -- --coverage
+        env:
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+          NODE_ENV: test
+          CI: true
 
   # Job 3: Test Frontend (runs if frontend changed)
   test-frontend:

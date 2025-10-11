@@ -4,6 +4,11 @@ import app from "../../../server.js";
 const request = supertest(app);
 
 describe("Nasa API Integration Tests", () => {
+  it("should debug server health", async () => {
+    const response = await request.get("/api/health");
+    console.log("Health Check Response:", response.status, response.body);
+    expect(response.status).toBe(200);
+  })
   describe("GET /api/nasa/apod", () => {
     it("should fetch data from NASA API", async () => {
       const response = await request

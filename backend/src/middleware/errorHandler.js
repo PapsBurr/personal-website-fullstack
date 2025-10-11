@@ -10,8 +10,22 @@ class AppError extends Error {
 }
 
 const errorHandler = (err, req, res, next) => {
-  let error = { ...err };
-  error.message = err.message;
+  console.error('Unexpected error:', err);
+
+  let error;
+
+  if (err instanceof AppError) {
+    error = { ...err };
+    error.message = err.message;
+  } else {
+    error = {
+      message: typeof err.message === 'string' ? err.message : 'Something went wrong!',
+      statusCode: 500,
+      status: 'error',
+      code: 'INTERNAL_SERVER_ERROR',
+      isOperational: false
+    }
+  }
 
   // Specific error handling
   if (err.message && err.message.includes('CORS')) {

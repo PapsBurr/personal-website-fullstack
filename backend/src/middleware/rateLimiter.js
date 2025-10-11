@@ -1,8 +1,10 @@
 import rateLimiter from 'express-rate-limit';
 
+const isTest = process.env.NODE_ENV === 'test';
+
 export const apiLimiter = rateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, 
+  windowMs: isTest ? 1000 : 15 * 60 * 1000, // 15 minutes
+  max: isTest ? 5 : 100, 
   handler: (req, res, next) => {
     const error = new Error();
     error.name = 'RateLimitError';
@@ -13,8 +15,8 @@ export const apiLimiter = rateLimiter({
 });
 
 export const nasaLimiter = rateLimiter({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 50, 
+  windowMs: isTest ? 1000 : 60 * 60 * 1000, // 1 hour
+  max: isTest ? 5 : 50, 
   handler: (req, res, next) => {
     const error = new Error();
     error.name = 'RateLimitError';

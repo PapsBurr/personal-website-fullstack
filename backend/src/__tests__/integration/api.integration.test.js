@@ -45,7 +45,7 @@ describe("Nasa API Integration Tests", () => {
     });
     describe("Rate Limiting Integration", () => {
       it("should apply rate limiting", async () => {
-        const promises = Array(15)
+        const promises = Array(115)
           .fill()
           .map(() => {
             return request.get("/api/nasa/apod");

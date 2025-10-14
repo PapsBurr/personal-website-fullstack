@@ -1,13 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
-Globals:
-  Api:
-    BinaryMediaTypes:
-      - image/jpeg
-      - image/png
-      - image/gif
-
 # Input Parameters
 Parameters:
   NasaApiKey:
@@ -181,6 +174,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
+      BinaryMediaTypes:
+        - image/jpeg
+        - image/png
+        - image/gif
       Timeout: 30
       ImageConfig:
         Command: ["server.handler"]

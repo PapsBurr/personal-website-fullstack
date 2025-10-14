@@ -45,7 +45,9 @@ describe("Nasa API Integration Tests", () => {
           .set("Origin", "http://malicious-site.com")
           .expect(403);
 
-        expect(response.text).toContain("Cross-Origin request blocked");
+        expect(response.body).toHaveProperty("status", "fail");
+        expect(response.body).toHaveProperty("message", "Origin http://malicious-site.com not allowed by CORS policy");
+        expect(response.body).toHaveProperty("code", "CORS_ORIGIN_NOT_ALLOWED");
       });
     });
     describe("Rate Limiting Integration", () => {
@@ -67,7 +69,7 @@ describe("Nasa API Integration Tests", () => {
         expect(rateLimitedResponses.length).toBeGreaterThan(0);
         expect(rateLimitedResponses[0].body).toHaveProperty(
           "message",
-          "Too many requests from this IP. Please try again later."
+          "Too many NASA API requests from this IP. Please try again in an hour."
         );
       });
     });

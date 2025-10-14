@@ -184,6 +184,7 @@ jobs:
         working-directory: ./backend
     env:
       NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+      BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
 
     steps:
       - name: Checkout code

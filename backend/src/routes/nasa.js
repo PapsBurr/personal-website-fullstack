@@ -3,7 +3,7 @@ import { checkSchema, validationResult } from 'express-validator';
 import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
-const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+const baseUrl = process.env.BASE_URL || 'https://nathanpons.com';
 
 const nasaApodSchema = {
   title: {

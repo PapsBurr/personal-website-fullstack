@@ -19,12 +19,17 @@ app.use(helmet());
 app.use(morgan('combined'));
 app.use(corsMiddleware);
 
-app.use('/api/', apiLimiter); // Apply rate limiting to all /api/ routes
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/static', express.static('public'));
 app.use('/api/nasa', nasaLimiter, nasaRoutes); // Apply specific rate limiting to NASA routes
+app.use('/api/', apiLimiter); // Apply rate limiting to all /api/ routes
 
 // Health check route
 app.get('/api/health', (req, res) => {

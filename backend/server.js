@@ -34,6 +34,20 @@ app.get('/api/static/:filename', (req, res) => {
   const basePath = process.env.AWS_LAMBDA_FUNCTION_NAME ? '/var/task' : process.cwd();
   const filePath = path.join(basePath, 'public', filename);
 
+  // Temporary logging to debug file serving issues
+  console.log('Lambda Function Name:', process.env.AWS_LAMBDA_FUNCTION_NAME);
+  console.log('Serving file from path:', filePath);
+  console.log('Base Path:', basePath);
+  console.log('Does file exist?', fs.existsSync(filePath));
+
+  try {
+    const publicDir = path.join(basePath, 'public');
+    const files = fs.readdirSync(publicDir);
+    console.log('Files in public directory:', files);
+  } catch (err) {
+    console.error('Error reading public directory:', err);
+  }
+
   if (fs.existsSync(filePath)) {
     const ext = path.extname(filePath).toLowerCase();
     const mimeType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';

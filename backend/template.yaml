@@ -8,6 +8,11 @@ Parameters:
     Description: NASA API Key for APOD service
     NoEcho: true
 
+  BaseUrl:
+    Type: String
+    Description: Base URL for the backend API
+    Default: https://nathanpons.com
+
   DomainName:
     Type: String
     Description: Domain name for the website
@@ -176,6 +181,7 @@ Resources:
       Environment:
         Variables:
           NASA_API_KEY: !Ref NasaApiKey
+          BASE_URL: !Ref BaseUrl
           NODE_ENV: production
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 

@@ -217,7 +217,9 @@ jobs:
 
       - name: SAM Deploy
         run: |
-          sam deploy --no-confirm-changeset --parameter-overrides "NasaApiKey=${{ secrets.NASA_API_KEY }}"
+          sam deploy --no-confirm-changeset --parameter-overrides \
+          "NasaApiKey=${{ secrets.NASA_API_KEY }}" \
+          "BaseUrl=${{ secrets.NEXT_PUBLIC_BASE_URL }}"
 
   # Job 6: Notify Success
   notify-success:

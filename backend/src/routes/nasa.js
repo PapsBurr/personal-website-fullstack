@@ -3,6 +3,7 @@ import { checkSchema, validationResult } from 'express-validator';
 import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
+const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
 
 const nasaApodSchema = {
   title: {
@@ -91,7 +92,7 @@ router.get('/apod', cacheMiddleware(3600), async (req, res) => {
     media_type: "image",
     service_version: "v1",
     title: "NGC 6960: The Witch's Broom Nebula",
-    url: `${req.protocol}://${req.get('host')}/static/WitchBroom_Meyers_1080.jpg`,
+    url: `${baseUrl}/static/WitchBroom_Meyers_1080.jpg`,
     hdurl: ""
   };
 

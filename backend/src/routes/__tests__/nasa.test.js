@@ -101,7 +101,7 @@ describe("NASA Routes", () => {
       expect(response.body.error).toBe("Failed to fetch NASA APOD");
     });
 
-    it("should handle request timeouts", async () => {
+    it("should handle request timeouts and return fallback response", async () => {
       const abortError = new Error("The operation was aborted.");
       abortError.name = "AbortError";
 
@@ -109,9 +109,9 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=errortimeout")
-        .expect(504);
+        .expect(200);
 
-      expect(response.body.error).toBe("NASA APOD request timed out");
+      expect(response.body.title).toBe("NGC 6960: The Witch's Broom Nebula");
       expect(fetch).toHaveBeenCalled();
     });
 
@@ -148,20 +148,6 @@ describe("NASA Routes", () => {
         .expect(500);
 
       expect(response.body.error).toBe("Failed to fetch NASA APOD");
-    });
-
-    it("should handle request timeouts", async () => {
-      const abortError = new Error("The operation was aborted.");
-      abortError.name = "AbortError";
-
-      fetch.mockImplementation(() => Promise.reject(abortError));
-
-      const response = await request(app)
-        .get("/api/nasa/apod?test=errortimeout2")
-        .expect(504);
-
-      expect(response.body.error).toBe("NASA APOD request timed out");
-      expect(fetch).toHaveBeenCalled();
     });
 
     it("should handle network errors (ENOTFOUND)", async () => {

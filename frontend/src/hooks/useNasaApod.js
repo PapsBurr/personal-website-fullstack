@@ -52,7 +52,11 @@ const useNasaApod = () => {
       imageUrl = rawData.hdurl;
     } else if (isUrlValid) {
       imageUrl = rawData.url;
+    } else {
+      imageUrl = '/WitchBroom_Meyers_1080.jpg'
     }
+    // TEMPORARY FALLBACK
+    imageUrl = '/WitchBroom_Meyers_1080.jpg';
 
     return {
       title: decodeHtmlEntities(rawData.title || 'Untitled'),

@@ -1,9 +1,12 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { checkSchema, validationResult } from 'express-validator';
 import { cacheMiddleware } from '../middleware/cache.js';
 
+dotenv.config();
+
 const router = express.Router();
-const baseUrl = process.env.BASE_URL || 'https://nathanpons.com';
+const baseUrl = process.env.BASE_URL;
 
 const nasaApodSchema = {
   title: {
@@ -92,7 +95,7 @@ router.get('/apod', cacheMiddleware(3600), async (req, res) => {
     media_type: "image",
     service_version: "v1",
     title: "NGC 6960: The Witch's Broom Nebula",
-    url: `${baseUrl}/static/WitchBroom_Meyers_1080.jpg`,
+    url: `${baseUrl}/api/static/WitchBroom_Meyers_1080.jpg`,
     hdurl: ""
   };
 

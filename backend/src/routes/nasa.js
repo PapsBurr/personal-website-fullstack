@@ -82,7 +82,18 @@ const validateData = async (data, schema) => {
 router.get('/apod', cacheMiddleware(3600), async (req, res) => {
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+  const fallbackExplanation = "NASA's Astronomy Picture of the Day is currently unavailable. This is a fallback image. |";
+  const fallbackResponse = {
+    date: new Date('01 October 2025').toISOString(),
+    explanation: `${fallbackExplanation} Ten thousand years ago, before the dawn of recorded human history, a new light would suddenly have appeared in the night sky and faded after a few weeks. Today we know this light was from a supernova, or exploding star, and record the expanding debris cloud as the Veil Nebula, a supernova remnant. This sharp telescopic view is centered on a western segment of the Veil Nebula cataloged as NGC 6960 but less formally known as the Witch's Broom Nebula. Blasted out in the cataclysmic explosion, an interstellar shock wave plows through space sweeping up and exciting interstellar material. Imaged with narrow band filters, the glowing filaments are like long ripples in a sheet seen almost edge on, remarkably well separated into atomic hydrogen (red) and oxygen (blue-green) gas. The complete supernova remnant lies about 1400 light-years away towards the constellation Cygnus. This Witch's Broom actually spans about 35 light-years. The bright star in the frame is 52 Cygni, visible with the unaided eye from a dark location but unrelated to the ancient supernova remnant.`,
+    media_type: "image",
+    service_version: "v1",
+    title: "NGC 6960: The Witch's Broom Nebula",
+    url: `${req.protocol}://${req.get('host')}/static/WitchBroom_Meyers_1080.jpg`,
+    hdurl: ""
+  };
 
   try {
 
@@ -102,7 +113,9 @@ router.get('/apod', cacheMiddleware(3600), async (req, res) => {
     clearTimeout(timeoutId); // Clear timeout on error
     if (error.name === 'AbortError') {
       console.error('NASA APOD request timed out');
-      return res.status(504).json({ error: 'NASA APOD request timed out' });
+      // return res.status(504).json({ error: 'NASA APOD request timed out' });
+      // Return fallback JSON object on timeout due to lack of nasa api support
+      return res.status(200).json(fallbackResponse);
     } else if (error.code === 'ENOTFOUND' || error.code === 'EAI_AGAIN') {
       console.error('Network error fetching NASA APOD:', error);
       return res.status(503).json({ error: 'Network error fetching NASA APOD' });

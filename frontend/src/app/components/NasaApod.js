@@ -62,7 +62,8 @@ const NasaApod = () => {
         )}
         <p className="text-center text-gray-600 mb-6">{date}</p>
         <div className="flex gap-16 justify-center my-8">
-          <RoundedImage src={imageUrl} alt={title} width={800} />
+          {/* TEMPORARY FALLBACK */}
+          <RoundedImage src='/WitchBroom_Meyers_1080.jpg' alt={title} width={800} />
         </div>
         <p className="!text-base text-gray-600 mb-6">{explanation}</p>
       </div>

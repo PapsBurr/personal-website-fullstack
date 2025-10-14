@@ -28,14 +28,6 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Specific error handling
-  if (err.message && err.message.includes('CORS')) {
-    error = handleCORSOriginError(err);
-  }
-
-  if (err.name === 'RateLimitError') {
-    error = handleRateLimitError(err);
-  }
-
   if (err.name === 'SyntaxError' && err.message.includes('JSON')) {
     error = handleJSONSyntaxError(err);
   }
@@ -43,12 +35,6 @@ const errorHandler = (err, req, res, next) => {
   // Send error response
   sendErrorResponse(error, res);
 };
-
-const handleCORSOriginError = () => 
-  new AppError('Cross-Origin request blocked by CORS policy. Please request from an authorized domain', 403, 'CORS_ERROR');
-
-const handleRateLimitError = () => 
-  new AppError('Too many requests from this IP. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');
 
 const handleJSONSyntaxError = () => 
   new AppError('Invalid JSON syntax in request body.', 400, 'INVALID_JSON_SYNTAX');

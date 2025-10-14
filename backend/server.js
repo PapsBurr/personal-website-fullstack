@@ -4,6 +4,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
+import path from 'path';
+import fs from 'fs';
 import { apiLimiter, nasaLimiter } from './src/middleware/rateLimiter.js';
 import { corsMiddleware } from './src/middleware/corsConfig.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
@@ -26,6 +28,25 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/static/:filename', (req, res) => {
+  const { filename } = req.params;
+  const basePath = process.env.AWS_LAMBDA_FUNCTION_NAME ? '/var/task' : process.cwd();
+  const filePath = path.join(basePath, 'public', filename);
+
+  if (fs.existsSync(filePath)) {
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
+
+    res.setHeader('Content-Type', mimeType);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+
+    const fileBuffer = fs.readFileSync(filePath);
+    res.send(fileBuffer);
+  } else {
+    res.status(404).json({ error: 'File not found' });
+  }
+});
 
 app.use('/static', express.static('public'));
 app.use('/api/nasa', nasaLimiter, nasaRoutes); // Apply specific rate limiting to NASA routes

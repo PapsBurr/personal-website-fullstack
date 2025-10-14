@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/static/:filename', (req, res) => {
+app.get('/api/static/:filename', (req, res) => {
   const { filename } = req.params;
   const basePath = process.env.AWS_LAMBDA_FUNCTION_NAME ? '/var/task' : process.cwd();
   const filePath = path.join(basePath, 'public', filename);

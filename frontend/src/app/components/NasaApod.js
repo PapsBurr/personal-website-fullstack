@@ -52,20 +52,20 @@ const NasaApod = () => {
         <h4 className="text-xl font-bold text-center mb-4 text-gray-800">
           {title}
         </h4>
+        <p className="text-center text-gray-600 mb-6">{date}</p>
+        <div className="flex gap-16 justify-center my-8">
+          {/* TEMPORARY FALLBACK SET TO BASE IMAGE WHILE DEBUGGING*/}
+          <RoundedImage src='/WitchBroom_Meyers_1080.jpg' alt={title} width={800} />
+        </div>
+        <p className="!text-base text-gray-600 mb-6">{explanation}</p>
         {isOctFirst && (
           <div className="flex justify-center mb-4">
-            <p className="text-center p-4 mb-4 text-sm rounded-lg bg-yellow-300" role="alert">
+            <p className="text-center p-4 mb-4 text-sm rounded-lg border border-yellow-500 bg-yellow-200" role="alert">
               <img src="/info-icon.svg" alt="Info" className="inline w-4 h-4 mr-4" />
               <span className="font-medium">Note: Due to NASA budget cuts, the most recent image available is from October 1st, 2025.</span>
             </p>
           </div>
         )}
-        <p className="text-center text-gray-600 mb-6">{date}</p>
-        <div className="flex gap-16 justify-center my-8">
-          {/* TEMPORARY FALLBACK */}
-          <RoundedImage src='/WitchBroom_Meyers_1080.jpg' alt={title} width={800} />
-        </div>
-        <p className="!text-base text-gray-600 mb-6">{explanation}</p>
       </div>
       <hr></hr>
     </>

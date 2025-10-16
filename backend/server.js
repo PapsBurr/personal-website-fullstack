@@ -101,5 +101,5 @@ function startServer() {
 
 export default app;
 export const handler = serverless(app, {
-  binary: ['image/jpeg']
+  binary: ['image/jpeg', 'image/jpg']
 });

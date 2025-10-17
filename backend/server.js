@@ -4,8 +4,9 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
-import path from 'path';
-import fs from 'fs';
+import stream from 'stream';
+import util from 'util';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { apiLimiter, nasaLimiter } from './src/middleware/rateLimiter.js';
 import { corsMiddleware } from './src/middleware/corsConfig.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
@@ -15,6 +16,9 @@ dotenv.config();
 const app = express();
 
 // test github actions 15
+
+const s3 = new S3Client({ region: "us-east-1" });
+const STATIC_BUCKET_NAME = "personal-website-static-files";
 
 // Middleware
 app.use(helmet());
@@ -29,35 +33,22 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/api/static/:filename', (req, res) => {
-  const { filename } = req.params;
-  const basePath = process.env.AWS_LAMBDA_FUNCTION_NAME ? '/var/task' : process.cwd();
-  const filePath = path.join(basePath, 'public', filename);
-
-  // Temporary logging to debug file serving issues
-  console.log('Lambda Function Name:', process.env.AWS_LAMBDA_FUNCTION_NAME);
-  console.log('Serving file from path:', filePath);
-  console.log('Base Path:', basePath);
-  console.log('Does file exist?', fs.existsSync(filePath));
-
+app.get('/api/static/:filename', async (req, res) => {
+  const { fileName } = req.params;
   try {
-    const publicDir = path.join(basePath, 'public');
-    const files = fs.readdirSync(publicDir);
-    console.log('Files in public directory:', files);
-  } catch (err) {
-    console.error('Error reading public directory:', err);
-  }
+    const command = new GetObjectCommand({
+      Bucket: STATIC_BUCKET_NAME,
+      Key: fileName,
+    });
+    const s3Response = await s3.send(command);
 
-  if (fs.existsSync(filePath)) {
-    const ext = path.extname(filePath).toLowerCase();
-    const mimeType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
-
-    res.setHeader('Content-Type', mimeType);
+    res.setHeader('Content-Type', s3Response.ContentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    const fileBuffer = fs.readFileSync(filePath);
-    res.send(fileBuffer);
-  } else {
+    const pipeline = util.promisify(stream.pipeline);
+    await pipeline(s3Response.Body, res);
+  } catch (err) {
+    console.error('Error fetching file from S3:', err);
     res.status(404).json({ error: 'File not found' });
   }
 });

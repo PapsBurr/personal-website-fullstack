@@ -41,6 +41,28 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
 
+  StaticFilesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "personal-website-static-files"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  StaticFilesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StaticFilesBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt LambdaEdgeRole.Arn
+            Action: s3:GetObject
+            Resource: !Sub "${StaticFilesBucket.Arn}/*"
+
   OriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
     Properties:
@@ -208,6 +230,10 @@ Resources:
                 - logs:CreateLogStream
                 - logs:PutLogEvents
               Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !Sub "${StaticFilesBucket.Arn}/*"
 
     Metadata:
       DockerTag: nodejs20.x-v1

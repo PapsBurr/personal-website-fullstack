@@ -18,7 +18,7 @@ const app = express();
 // test github actions 15
 
 const s3 = new S3Client({ region: "us-east-1" });
-const STATIC_BUCKET_NAME = "personal-website-static-files";
+const STATIC_BUCKET_NAME = "personal-website-backend-v2-static-files-us-east-1";
 
 // Middleware
 app.use(helmet());
@@ -34,11 +34,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/static/:filename', async (req, res) => {
-  const { fileName } = req.params;
+  const { filename } = req.params;
   try {
     const command = new GetObjectCommand({
       Bucket: STATIC_BUCKET_NAME,
-      Key: fileName,
+      Key: filename,
     });
     const s3Response = await s3.send(command);
 

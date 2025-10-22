@@ -44,7 +44,7 @@ Resources:
   StaticFilesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "personal-website-static-files"
+      BucketName: !Sub "${AWS::StackName}-static-files-${AWS::Region}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true

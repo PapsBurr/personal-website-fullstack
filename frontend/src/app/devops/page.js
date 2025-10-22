@@ -194,14 +194,14 @@ export default function Page() {
           {/* Kubernetes Section */}
           <section className="fade-trigger">
             <h2>Kubernetes</h2>
-            <p>I will add my exprience with AWS here soon.</p>
+            <p>I will add my experience with Kubernetes here soon.</p>
             <hr></hr>
           </section>
 
           {/* AWS Section */}
           <section className="fade-trigger">
             <h2>AWS</h2>
-            <p>I will add my exprience with AWS here soon.</p>
+            <p>I will add my experience with AWS here soon.</p>
             <hr></hr>
           </section>
         </main>

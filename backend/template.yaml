@@ -62,6 +62,14 @@ Resources:
               AWS: !GetAtt LambdaEdgeRole.Arn
             Action: s3:GetObject
             Resource: !Sub "${StaticFilesBucket.Arn}/*"
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${StaticFilesBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
 
   OriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl

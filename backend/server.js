@@ -6,6 +6,7 @@ import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
 import stream from 'stream';
 import util from 'util';
+import getStream from 'get-stream';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { apiLimiter, nasaLimiter } from './src/middleware/rateLimiter.js';
 import { corsMiddleware } from './src/middleware/corsConfig.js';
@@ -42,11 +43,16 @@ app.get('/api/static/:filename', async (req, res) => {
     });
     const s3Response = await s3.send(command);
 
+    const buffer = await getStream.buffer(s3Response.Body);
+
     res.setHeader('Content-Type', s3Response.ContentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    const pipeline = util.promisify(stream.pipeline);
-    await pipeline(s3Response.Body, res);
+    // Pipeline method to use if buffer doesn't work
+    // const pipeline = util.promisify(stream.pipeline);
+    // await pipeline(s3Response.Body, res);
+
+    res.end(buffer);
   } catch (err) {
     console.error('Error fetching file from S3:', err);
     res.status(404).json({ error: 'File not found' });

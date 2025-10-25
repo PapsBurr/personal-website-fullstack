@@ -43,6 +43,7 @@ app.get('/api/static/:filename', async (req, res) => {
     });
     const s3Response = await s3.send(command);
 
+    // Use buffer to handle binary data since Lambda may have issues with streaming
     const buffer = await getStream.buffer(s3Response.Body);
 
     res.setHeader('Content-Type', s3Response.ContentType);
@@ -51,6 +52,10 @@ app.get('/api/static/:filename', async (req, res) => {
     // Pipeline method to use if buffer doesn't work
     // const pipeline = util.promisify(stream.pipeline);
     // await pipeline(s3Response.Body, res);
+
+    console.log(`Served file ${filename} from S3`);
+    console.log('Content-Type:', s3Response.ContentType);
+    console.log('Buffer:', buffer);
 
     res.end(buffer);
   } catch (err) {

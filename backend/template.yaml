@@ -8,7 +8,7 @@ Globals:
       - image/png
       - image/gif
 
-# Input Parameters Here
+# Input Parameters
 Parameters:
   NasaApiKey:
     Type: String

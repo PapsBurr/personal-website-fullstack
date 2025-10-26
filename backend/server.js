@@ -4,9 +4,6 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import nasaRoutes from './src/routes/nasa.js';
-import stream from 'stream';
-import util from 'util';
-import getStream from 'get-stream';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { apiLimiter, nasaLimiter } from './src/middleware/rateLimiter.js';
 import { corsMiddleware } from './src/middleware/corsConfig.js';
@@ -42,22 +39,26 @@ app.get('/api/static/:filename', async (req, res) => {
       Key: filename,
     });
     const s3Response = await s3.send(command);
+    
+    console.log(`Served file ${filename} from S3`);
+    console.log('Content-Type:', s3Response.ContentType);
 
     // Use buffer to handle binary data since Lambda may have issues with streaming
-    const buffer = await getStream.buffer(s3Response.Body);
+    const chunks = [];
+    for await (const chunk of s3Response.Body) {
+      chunks.push(chunk);
+    }
+
+    const buffer = Buffer.concat(chunks);
+    console.log('Buffer length:', buffer.length);
+
+    const base64Data = buffer.toString('base64');
+    console.log('Base64 length:', base64Data.length);
 
     res.setHeader('Content-Type', s3Response.ContentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    // Pipeline method to use if buffer doesn't work
-    // const pipeline = util.promisify(stream.pipeline);
-    // await pipeline(s3Response.Body, res);
-
-    console.log(`Served file ${filename} from S3`);
-    console.log('Content-Type:', s3Response.ContentType);
-    console.log('Buffer:', buffer);
-
-    res.end(buffer);
+    res.send(base64Data);
   } catch (err) {
     console.error('Error fetching file from S3:', err);
     res.status(404).json({ error: 'File not found' });

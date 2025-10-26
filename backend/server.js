@@ -52,13 +52,11 @@ app.get('/api/static/:filename', async (req, res) => {
     const buffer = Buffer.concat(chunks);
     console.log('Buffer length:', buffer.length);
 
-    const base64Data = buffer.toString('base64');
-    console.log('Base64 length:', base64Data.length);
-
     res.setHeader('Content-Type', s3Response.ContentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    res.send(base64Data);
+    res.send(buffer);
+    
   } catch (err) {
     console.error('Error fetching file from S3:', err);
     res.status(404).json({ error: 'File not found' });

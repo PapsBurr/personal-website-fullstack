@@ -13,10 +13,6 @@ on:
         description: 'Deploy Backend'
         type: boolean
         default: true
-      force-deploy:
-        description: 'Force deploy (ignore change detection)'
-        type: boolean
-        default: false
 
 env:
   NODE_VERSION: "20"
@@ -48,7 +44,9 @@ jobs:
   # Job 2: Test Backend (runs if backend changed)
   test-backend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.backend-changed == 'true'
+    if: |
+      needs.detect-changes.outputs.backend-changed == 'true' ||
+      github.event.inputs.deploy-backend == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -80,7 +78,9 @@ jobs:
   # Job 3: Test Frontend (runs if frontend changed)
   test-frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend-changed == 'true'
+    if: |
+      needs.detect-changes.outputs.frontend-changed == 'true' ||
+      github.event.inputs.deploy-frontend == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -117,9 +117,9 @@ jobs:
   deploy-frontend:
     needs: [detect-changes, test-frontend]
     if: |
-      always() && 
-      needs.detect-changes.outputs.frontend-changed == 'true' && 
-      (needs.test-frontend.result == 'success' || needs.test-frontend.result == 'skipped') &&
+      (needs.detect-changes.outputs.frontend-changed == 'true' ||
+      github.event.inputs.deploy-frontend == 'true') &&
+      needs.test-frontend.result == 'success' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
@@ -174,9 +174,9 @@ jobs:
   deploy-backend:
     needs: [detect-changes, test-backend]
     if: |
-      always() && 
-      needs.detect-changes.outputs.backend-changed == 'true' && 
-      (needs.test-backend.result == 'success' || needs.test-backend.result == 'skipped') &&
+      (needs.detect-changes.outputs.backend-changed == 'true' ||
+      github.event.inputs.deploy-backend == 'true') && 
+      needs.test-backend.result == 'success' &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
@@ -217,7 +217,11 @@ jobs:
 
       - name: SAM Deploy
         run: |
-          sam deploy --stack-name personal-website-backend-v2 --no-confirm-changeset --parameter-overrides \
+          sam deploy \
+          --stack-name personal-website-backend-v2 \
+          --no-confirm-changeset \
+          --no-fail-on-empty-changeset \
+          --parameter-overrides \
           "NasaApiKey=${{ secrets.NASA_API_KEY }}" \
           "BaseUrl=${{ secrets.NEXT_PUBLIC_BASE_URL }}"
 

@@ -4,11 +4,16 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Api:
     BinaryMediaTypes:
+      - image/*
       - image/jpeg
       - image/png
       - image/gif
+      - image/webp
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
 
-# Input Parameters :)
+# Input Parameters
 Parameters:
   NasaApiKey:
     Type: String
@@ -221,6 +226,7 @@ Resources:
           BASE_URL: !Ref BaseUrl
           NODE_ENV: production
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+          STATIC_BUCKET_NAME: !Ref StaticFilesBucket
 
       Events:
         ApiGateway:
@@ -228,6 +234,7 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
+            RestApiId: !Ref ServerlessRestApi
 
       Policies:
         - Version: "2012-10-17"

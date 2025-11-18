@@ -115,7 +115,7 @@ describe("NASA Routes", () => {
       expect(fetch).toHaveBeenCalled();
     });
 
-    it("should handle validation errors from NASA API", async () => {
+    it("should handle validation errors from NASA API and send a fallback response", async () => {
       const invalidResponse = {
         title: "", // Invalid - too short
         explanation: "Test explanation",
@@ -131,9 +131,9 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=validation")
-        .expect(500);
+        .expect(200);
 
-      expect(response.body.error).toBe("Failed to fetch NASA APOD");
+      expect(response.body.explanation).toContain("fallback");
       expect(fetch).toHaveBeenCalled();
     });
 

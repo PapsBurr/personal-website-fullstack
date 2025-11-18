@@ -8,6 +8,9 @@ const NasaApod = () => {
   if (loading) {
     return (
       <>
+        <h3 className="text-8xl font-bold text-center mb-4 text-gray-800">
+          Nasa's Picture of the Day
+        </h3>
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
           <span className="ml-4 text-gray-600">Loading...</span>
@@ -42,7 +45,7 @@ const NasaApod = () => {
   const hdurl = data.hdurl;
 
   const imageUrl = hdurl || url || null;
-  const isOctFirst = (date === "Oct 1, 2025");
+  const isFallback = (date === "Oct 1, 2025");
   return (
     <>
       <div>
@@ -58,11 +61,11 @@ const NasaApod = () => {
           <RoundedImage src={imageUrl} alt={title} width={800} />
         </div>
         <p className="!text-base text-gray-600 mb-6">{explanation}</p>
-        {isOctFirst && (
+        {isFallback && (
           <div className="flex justify-center mb-4">
             <p className="text-center p-4 mb-4 text-sm rounded-lg border border-yellow-500 bg-yellow-200 text-yellow-700" role="alert">
               <img src="/info-icon.svg" alt="Info" className="inline w-4 h-4 mr-4" />
-              <span className="font-medium">Note: Due to NASA budget cuts, the most recent image available is from October 1st, 2025.</span>
+              <span className="font-medium">Note: NASA's Astronomy Picture of the Day is currently unavailable. {"\n"}This is a fallback image.</span>
             </p>
           </div>
         )}

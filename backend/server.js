@@ -16,7 +16,7 @@ const app = express();
 // test github actions 16
 
 const s3 = new S3Client({ region: "us-east-1" });
-const STATIC_BUCKET_NAME = "personal-website-backend-v2-static-files-us-east-1";
+const STATIC_BUCKET_NAME = process.env.STATIC_BUCKET_NAME || "personal-website-backend-v2-static-files-us-east-1";
 
 // Middleware
 app.use(helmet());
@@ -54,6 +54,11 @@ app.get('/api/static/:filename', async (req, res) => {
 
     res.setHeader('Content-Type', s3Response.ContentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
+    res.setHeader('Content-Length', buffer.length);
+
+    if (process.env.AWS_EXECUTION_ENV) {
+      return res.end(buffer, 'binary');
+    }
 
     res.send(buffer);
     
@@ -102,5 +107,16 @@ function startServer() {
 
 export default app;
 export const handler = serverless(app, {
-  binary: ['image/jpeg', 'image/png', 'image/gif']
+  binary: ['image/*', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/octet-stream'],
+  request(request, event, context) {
+    request.context = context;
+    request.event = event;
+  },
+  response(response, event, context) {
+    // Check content-type (lowercase) and mark as base64 encoded for binary content
+    const contentType = response.headers['content-type'] || response.headers['Content-Type'] || '';
+    if (contentType.startsWith('image/') || contentType === 'application/octet-stream') {
+      response.isBase64Encoded = true;
+    }
+  }
 });

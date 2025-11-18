@@ -109,10 +109,15 @@ router.get('/apod', cacheMiddleware(3600), async (req, res) => {
     }
 
     const rawData = await response.json();
-    const data = await validateData(rawData, nasaApodSchema);
+    try {
+      const data = await validateData(rawData, nasaApodSchema);
 
-    res.json(data);
-
+      res.json(data);
+    }
+    catch (validationError) {
+      console.error('Validation error for NASA APOD data:', validationError);
+      res.status(200).json(fallbackResponse);
+    }
   } catch (error) {
     clearTimeout(timeoutId); // Clear timeout on error
     if (error.name === 'AbortError') {

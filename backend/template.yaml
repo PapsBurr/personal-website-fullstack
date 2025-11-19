@@ -144,21 +144,14 @@ Resources:
           return request;
         };
       Role: !GetAtt LambdaEdgeRole.Arn
-      # AutoPublishAlias: live
+      AutoPublishAlias: live
       Timeout: 5
-
-  WwwRedirectFunctionVersion:
-    Type: AWS::Lambda::Version
-    Properties:
-      FunctionName: !Ref WwwRedirectFunction
-      Description: !Sub "Version for Lambda@Edge - ${AWS::StackName}"
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     DependsOn: 
       - LambdaEdgeRole
       - WwwRedirectFunction
-      - WwwRedirectFunctionVersion
     Properties:
       DistributionConfig:
         CustomErrorResponses:
@@ -201,7 +194,7 @@ Resources:
           Compress: true
           LambdaFunctionAssociations:
             - EventType: viewer-request
-              LambdaFunctionARN: !Ref WwwRedirectFunctionVersion
+              LambdaFunctionARN: !Ref WwwRedirectFunction.Version
 
         CacheBehaviors:
           - PathPattern: "/api/*"

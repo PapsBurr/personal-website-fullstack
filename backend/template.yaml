@@ -102,6 +102,21 @@ Resources:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
                 # AWS:SourceOac: !GetAtt OriginAccessControl.Id
 
+  LambdaEdgeRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: 
+              - lambda.amazonaws.com
+              - edgelambda.amazonaws.com
+          Action: sts:AssumeRole
+    ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
   WwwRedirectFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -131,25 +146,12 @@ Resources:
       Role: !GetAtt LambdaEdgeRole.Arn
       AutoPublishAlias: live
       Timeout: 5
-  
-  LambdaEdgeRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: 
-                - lambda.amazonaws.com
-                - edgelambda.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
-    DependsOn: LambdaEdgeRole
+    DependsOn: 
+      - LambdaEdgeRole
+      - WwwRedirectFunction
     Properties:
       DistributionConfig:
         CustomErrorResponses:
@@ -160,15 +162,15 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-        Aliases:
-          - !Ref DomainName
-          - !Sub "www.${DomainName}"
+        # Aliases:
+        #   - !Ref DomainName
+        #   - !Sub "www.${DomainName}"
 
         ViewerCertificate:
-          AcmCertificateArn: !Ref CertificateArn
-          SslSupportMethod: sni-only
-          MinimumProtocolVersion: TLSv1.2_2021
-          # CloudFrontDefaultCertificate: true
+          # AcmCertificateArn: !Ref CertificateArn
+          # SslSupportMethod: sni-only
+          # MinimumProtocolVersion: TLSv1.2_2021
+          CloudFrontDefaultCertificate: true
 
         Origins:
           - Id: frontend-origin
@@ -190,9 +192,9 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
           Compress: true
-          LambdaFunctionAssociations:
-            - EventType: viewer-request
-              LambdaFunctionARN: !Ref WwwRedirectFunction.Version
+          # LambdaFunctionAssociations:
+          #   - EventType: viewer-request
+          #     LambdaFunctionARN: !Ref WwwRedirectFunction.Version
 
         CacheBehaviors:
           - PathPattern: "/api/*"

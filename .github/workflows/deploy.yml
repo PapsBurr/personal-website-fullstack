@@ -1,10 +1,4 @@
-name: |
-  github.event_name == 'workflow_dispatch' && 
-  (github.event.inputs.deploy-frontend == 'true' && github.event.inputs.deploy-backend == 'true' && 'Deploy Frontend and Backend' ||
-  github.event.inputs.deploy-frontend == 'true' && 'Deploy Frontend' ||
-  github.event.inputs.deploy-backend == 'true' && 'Deploy Backend' ||
-  'Deploy Workflow') ||
-  'Deploy Frontend and Backend'
+name: Deploy Frontend and Backend
 
 on:
   push:

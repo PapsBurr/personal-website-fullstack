@@ -113,9 +113,14 @@ export const handler = serverless(app, {
     request.event = event;
   },
   response(response, event, context) {
-    // Check content-type (lowercase) and mark as base64 encoded for binary content
-    const contentType = response.headers['content-type'] || response.headers['Content-Type'] || '';
-    if (contentType.startsWith('image/') || contentType === 'application/octet-stream') {
+    if (!response || !response.headers) {
+      return;
+    }
+    
+    const headers = response.headers;
+    const contentType = headers['content-type'] || headers['Content-Type'] || '';
+    
+    if (contentType && (contentType.startsWith('image/') || contentType === 'application/octet-stream')) {
       response.isBase64Encoded = true;
     }
   }

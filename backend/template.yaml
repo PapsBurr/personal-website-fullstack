@@ -162,15 +162,15 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-        # Aliases:
-        #   - !Ref DomainName
-        #   - !Sub "www.${DomainName}"
+        Aliases:
+          - !Ref DomainName
+          - !Sub "www.${DomainName}"
 
         ViewerCertificate:
-          # AcmCertificateArn: !Ref CertificateArn
-          # SslSupportMethod: sni-only
-          # MinimumProtocolVersion: TLSv1.2_2021
-          CloudFrontDefaultCertificate: true
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+          # CloudFrontDefaultCertificate: true
 
         Origins:
           - Id: frontend-origin
@@ -192,9 +192,9 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
           Compress: true
-          # LambdaFunctionAssociations:
-          #   - EventType: viewer-request
-          #     LambdaFunctionARN: !Ref WwwRedirectFunction.Version
+          LambdaFunctionAssociations:
+            - EventType: viewer-request
+              LambdaFunctionARN: !Ref WwwRedirectFunction.Version
 
         CacheBehaviors:
           - PathPattern: "/api/*"

@@ -194,7 +194,7 @@ Resources:
           Compress: true
           LambdaFunctionAssociations:
             - EventType: viewer-request
-              LambdaFunctionARN: !Ref WwwRedirectFunction.Version
+              LambdaFunctionARN: !GetAtt WwwRedirectFunction.Arn
 
         CacheBehaviors:
           - PathPattern: "/api/*"

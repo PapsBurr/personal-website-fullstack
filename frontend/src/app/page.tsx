@@ -25,7 +25,7 @@ const pgrmLanguages = [
 
 // change this comment to cause github actions to run : 10
 
-function ListItems(props) {
+function ListItems(props: {text: string}) {
   return <li>{props.text}</li>
 }
 

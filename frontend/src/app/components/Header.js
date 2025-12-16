@@ -9,7 +9,7 @@ export default function Header() {
     <header className="p-5 pb-2 bg-gradient-to-b from-gray-700 to-gray-800">
       <div className="flex justify-between items-center">
         <h1 className="font-sans font-extrabold tracking-normal my-8 mb-16 text-6xl text-white mx-4" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(255,255,255,0.3)'}}>
-          Nathan's Clubhouse
+          Nathan's Dev Portfolio
         </h1>
 
         <button

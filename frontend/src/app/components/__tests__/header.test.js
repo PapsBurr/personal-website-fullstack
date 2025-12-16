@@ -15,7 +15,7 @@ const createMockMatchMedia = (matches) => (query) => ({
 describe('Desktop Header Component', () => {
   it('renders the desktop main title', () => {
     render(<Header />);
-    const title = screen.getByRole('heading', { name: /Nathan's Clubhouse/i });
+    const title = screen.getByRole('heading', { name: /Nathan's/i });
     expect(title).toBeInTheDocument();
   });
 

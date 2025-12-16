@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Nathan's Clubhouse",
-  description: "A static website showcasing my projects and qualifications.",
+  title: "Nathan's Dev Portfolio",
+  description: "A cloud-deployed fullstack website showcasing my projects and qualifications.",
 };
 
 export default function RootLayout({

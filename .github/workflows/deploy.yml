@@ -122,9 +122,6 @@ jobs:
       github.event.inputs.deploy-frontend == 'true') &&
       (needs.test-frontend.result == 'success' ||
       needs.test-frontend.result == 'skipped') &&
-      (needs.deploy-backend.result == 'success' ||
-      needs.deploy-backend.result == 'skipped' ||
-      github.event.inputs.deploy-backend != 'true') &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:

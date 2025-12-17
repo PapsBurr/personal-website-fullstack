@@ -1,18 +1,19 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { NasaApodData, UseNasaApodResult } from '../types/nasa';
 
-const useNasaApod = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const useNasaApod = (): UseNasaApodResult => {
+  const [data, setData] = useState<NasaApodData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const decodeHtmlEntities = (text) => {
+  const decodeHtmlEntities = (text: string): string => {
     const textarea = document.createElement('textarea');
     textarea.innerHTML = text;
     return textarea.value;
   };
 
-  const checkIfValidImage = async (url) => {
+  const checkIfValidImage = async (url?: string | null): Promise<boolean> => {
     return new Promise((resolve) => {
       if (!url) {
         resolve(false);
@@ -32,22 +33,22 @@ const useNasaApod = () => {
     });
   }
 
-  const formatData = async (rawData) => {
+  const formatData = async (rawData: NasaApodData): Promise<NasaApodData | null> => {
     if (!rawData) return null;
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string): string => {
       if (!dateString) return '';
 
       // Extract only the date part (YYYY-MM-DD) if time is included, removes timezone shift to local time
       const dateOnly = dateString.split('T')[0];
       const [year, month, day] = dateOnly.split('-');
-      return new Date(year, month - 1, day).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     };
 
     const isHdurlValid = await checkIfValidImage(rawData.hdurl);
     const isUrlValid = await checkIfValidImage(rawData.url);
 
-    let imageUrl = null;
+    let imageUrl: string | undefined = undefined;
     if (isHdurlValid) {
       imageUrl = rawData.hdurl;
     } else if (isUrlValid) {
@@ -60,8 +61,8 @@ const useNasaApod = () => {
       title: decodeHtmlEntities(rawData.title || 'Untitled'),
       explanation: decodeHtmlEntities(rawData.explanation || 'No description available.'),
       date: formatDate(rawData.date) || '',
-      url: isUrlValid ? rawData.url : null,
-      hdurl: isHdurlValid ? rawData.hdurl : null
+      url: isUrlValid ? rawData.url ?? undefined : undefined,
+      hdurl: isHdurlValid ? rawData.hdurl ?? undefined : undefined
     }
   }
 
@@ -79,10 +80,10 @@ const useNasaApod = () => {
         
         const rawResult = await response.json();
 
-        const formattedData = await formatData(rawResult);
+        const formattedData = await formatData(rawResult as NasaApodData);
         setData(formattedData);
 
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching NASA APOD:', err);
         setError(err.message);
         

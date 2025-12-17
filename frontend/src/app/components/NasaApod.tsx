@@ -1,9 +1,10 @@
 "use client";
 import RoundedImage from "./RoundedImage";
 import useNasaApod from "../../hooks/useNasaApod";
+import { UseNasaApodResult } from "../../types/nasa";
 
-const NasaApod = () => {
-  const { data, loading, error } = useNasaApod();
+const NasaApod: React.FC = () => {
+  const { data, loading, error }: UseNasaApodResult = useNasaApod();
 
   if (loading) {
     return (
@@ -38,7 +39,7 @@ const NasaApod = () => {
     );
   }
 
-  const title = data.title || data.text?.title || "Untitled Image";
+  const title = data.title || "Untitled Image";
   const explanation = data.explanation || "No description available";
   const date = data.date || "";
   const url = data.url;

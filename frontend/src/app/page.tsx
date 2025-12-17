@@ -1,31 +1,36 @@
 import RoundedImage from "./components/RoundedImage";
 import NasaApod from "./components/NasaApod";
 
-const skills = [
-  { id: 1, text: "Programming"},
-  { id: 2, text: "Science"},
-  { id: 3, text: "Learning"},
-  { id: 4, text: "Art"},
-  { id: 5, text: "Aerospace"},
-  { id: 6, text: "Puzzles/Problem Solving"},
-  { id: 7, text: "Strategy"}
+interface SkillItem {
+  key: number;
+  text: string;
+}
+
+const skills: SkillItem[] = [
+  { key: 1, text: "Programming"},
+  { key: 2, text: "Science"},
+  { key: 3, text: "Learning"},
+  { key: 4, text: "Art"},
+  { key: 5, text: "Aerospace"},
+  { key: 6, text: "Puzzles/Problem Solving"},
+  { key: 7, text: "Strategy"}
 ]
 
-const pgrmLanguages = [
-  { id: 1, text: "Java"},
-  { id: 2, text: "Python"},
-  { id: 3, text: "JavaScript"},
-  { id: 4, text: "TypeScript"},
-  { id: 5, text: "MySQL"},
-  { id: 6, text: "PostgeSQL"},
-  { id: 7, text: "HTML"},
-  { id: 8, text: "CSS"},
-  { id: 9, text: "UML"},
+const pgrmLanguages: SkillItem[] = [
+  { key: 1, text: "Java"},
+  { key: 2, text: "Python"},
+  { key: 3, text: "JavaScript"},
+  { key: 4, text: "TypeScript"},
+  { key: 5, text: "MySQL"},
+  { key: 6, text: "PostgeSQL"},
+  { key: 7, text: "HTML"},
+  { key: 8, text: "CSS"},
+  { key: 9, text: "UML"},
 ]
 
 // change this comment to cause github actions to run : 12
 
-function ListItems(props: {text: string}) {
+function ListItems(props: SkillItem) {
   return <li>{props.text}</li>
 }
 
@@ -85,7 +90,7 @@ export default function Home() {
               <h3>Skills / Hobbies / Interests</h3>
               <ul className="list-disc m-8 text-xl" data-testid="skills-list">
                 {skills.map((item) => (
-                  <ListItems key={item.id} text={item.text} />
+                  <ListItems key={item.key} text={item.text} />
                 ))}
               </ul>
             </div>
@@ -93,7 +98,7 @@ export default function Home() {
               <h3>Programming Languages</h3>
               <ul className="list-disc m-8 text-xl" data-testid="programming-languages-list">
                 {pgrmLanguages.map((item) => (
-                  <ListItems key={item.id} text={item.text} />
+                  <ListItems key={item.key} text={item.text} />
                 ))}
               </ul>
             </div>

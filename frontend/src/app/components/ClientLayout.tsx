@@ -1,8 +1,8 @@
 'use client';
-import Header from '../components/Header';
+import Header from './Header';
 import { useFadeInOnScroll } from '../../hooks/useFadeInOnScroll';
 
-export default function ClientLayout({ children }) {
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const fadeInRef = useFadeInOnScroll();
 
   return (

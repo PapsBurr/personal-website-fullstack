@@ -1,21 +1,27 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import RoundedImage from "./RoundedImage";
 import "./LightsOut.css";
 
-const LightsOut = () => {
-  const [board, setBoard] = useState(null);
-  const [show, setShow] = useState(false);
-  const [gridSize, setBoardSize] = useState(3);
-  const [tempGridSize, setTempGridSize] = useState(3);
+interface Cell {
+  on: boolean;
+}
 
-  function createBoard() {
+type Grid = boolean[][];
+
+const LightsOut = () => {
+  const [board, setBoard] = useState<Grid | null>(null);
+  const [show, setShow] = useState<boolean>(false);
+  const [gridSize, setBoardSize] = useState<number>(3);
+  const [tempGridSize, setTempGridSize] = useState<number>(3);
+
+  function createBoard(): Grid {
     return Array.from({ length: gridSize }, () =>
       Array.from({ length: gridSize }, () => Math.random() < 0.5)
     );
   }
 
-  function toggleCell(board, row, col) {
+  function toggleCell(board: Grid, row: number, col: number): Grid {
     const newBoard = board.map((r) => r.slice());
     newBoard[row][col] = !newBoard[row][col];
     if (row > 0) newBoard[row - 1][col] = !newBoard[row - 1][col];
@@ -41,12 +47,24 @@ const LightsOut = () => {
 
   const isWin = board.every((row) => row.every((cell) => !cell));
 
-  const handleCellClick = (row, col) => {
-    setBoard((prevBoard) => toggleCell(prevBoard, row, col));
+  const handleCellClick = (row: number, col: number) => {
+    setBoard((prevBoard) => {
+      if (!prevBoard) return prevBoard;
+      return toggleCell(prevBoard, row, col);
+    });
   };
 
   const handleReset = () => {
     setBoard(createBoard());
+  };
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempGridSize(parseInt(e.target.value, 10));
+  };
+
+  const handleSliderRelease = (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    setBoardSize(parseInt(target.value, 10));
   };
 
   return (
@@ -104,8 +122,9 @@ const LightsOut = () => {
                 min="3"
                 max="9"
                 value={tempGridSize}
-                onChange={(e) => setTempGridSize(parseInt(e.target.value))} // Updates display only
-                onMouseUp={(e) => setBoardSize(parseInt(e.target.value))} // Updates actual grid
+                onChange={handleSliderChange}
+                onMouseUp={handleSliderRelease}
+                onTouchEnd={handleSliderRelease}
                 className="slider"
               />
               <div className="flex justify-between w-32 text-xs text-gray-500">
@@ -118,7 +137,6 @@ const LightsOut = () => {
             /* <h3 className="mt-4 text-[var(--square-color-on)] text-lg font-bold">Congratulations! You won!</h3> */
             <div className="mt-4">
               <RoundedImage
-                className="mt-4"
                 src="/congratulations.gif"
                 alt="Congratulations!"
                 width={300}

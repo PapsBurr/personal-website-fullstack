@@ -2,10 +2,16 @@
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
-export function useFadeInOnScroll(options = {}) {
-  const containerRef = useRef(null);
+interface UseFadeInOnScrollOptions {
+  threshold?: number;
+  className?: string;
+}
+
+export function useFadeInOnScroll(options: UseFadeInOnScrollOptions = {}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const pathname = usePathname();
-  const { threshold = 0.1, className = 'animate-fade-in-below' } = options;
+  const { threshold = 0.05, className = 'animate-fade-in-below' } = options;
   
   useEffect(() => {
     document.body.classList.add('js');
@@ -25,21 +31,22 @@ export function useFadeInOnScroll(options = {}) {
         },
         { threshold }
       );
+      observerRef.current = observer;
 
       const sections = container.querySelectorAll('.fade-trigger');
       sections.forEach((section) => {
         observer.observe(section);
       });
 
-      containerRef.current._observer = observer;
+      (containerRef.current as any)._observer = observer;
     }, 100);
 
     return () => {
       clearTimeout(timeoutId);
-      if (containerRef.current?._observer) {
-        containerRef.current._observer.disconnect();
-        delete containerRef.current._observer;
-      }
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+    }
       document.body.classList.remove('js');
     };
   }, [pathname, threshold, className]);

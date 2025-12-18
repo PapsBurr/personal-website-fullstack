@@ -3,13 +3,6 @@ import Image from "next/image";
 
 // TODO: the height variable doesn't work and the current setup causes warnings in the console log
 
-interface RoundedImageProps {
-  src: string;
-  alt: string;
-  width: number;
-  height?: number;
-}
-
 const RoundedImage = ({ src, alt, width, height=500 }: RoundedImageProps) => {
   return (
     <Image 

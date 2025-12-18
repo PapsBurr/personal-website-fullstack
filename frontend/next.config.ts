@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   output: "export",
   distDir: "out",
   images: {
@@ -10,5 +10,4 @@ const nextConfig = {
   trailingSlash: true,
 };
 
-// export default nextConfig;
 module.exports = nextConfig;

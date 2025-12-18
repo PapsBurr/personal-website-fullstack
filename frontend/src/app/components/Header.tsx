@@ -58,9 +58,9 @@ export default function Header() {
           </svg>
         </button>
       </div>
-      
+
       {/* Desktop Nav - Separate row */}
-      <nav className="hidden md:block">
+      <nav className="hidden md:block" data-testid="desktop-nav">
         <div className="container mx-auto px-4">
           <ul className="flex justify-center space-x-1 lg:space-x-2 py-2">
             {navLinks.map((link) => {
@@ -102,7 +102,10 @@ export default function Header() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <nav className="md:hidden bg-gray-900 border-t border-gray-700">
+        <nav
+          className="md:hidden bg-gray-900 border-t border-gray-700"
+          data-testid="mobile-nav"
+        >
           <ul className="flex flex-col py-2">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link.href, link.external);

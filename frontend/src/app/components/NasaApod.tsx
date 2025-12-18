@@ -45,7 +45,7 @@ const NasaApod: React.FC = () => {
   const url = data.url;
   const hdurl = data.hdurl;
 
-  const imageUrl = hdurl || url || null;
+  const imageUrl = hdurl || url || "";
   const isFallback = (date === "Oct 1, 2025");
   return (
     <>

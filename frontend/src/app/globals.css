@@ -61,6 +61,11 @@ hr {
   margin: 64px 0px;
 }
 
+.canvas-container {
+  width: 100vw;
+  height: 100vh;
+}
+
 .fade-trigger {
   opacity: 1;
   transform: translateX(0);

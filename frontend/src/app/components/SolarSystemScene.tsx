@@ -20,7 +20,7 @@ import {
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 
-enum RotationDirection {
+const enum RotationDirection {
   CLOCKWISE = -1,
   COUNTERCLOCKWISE = 1,
 }
@@ -208,6 +208,34 @@ function SolarSystemObjects() {
   const sunRef = useRef<THREE.Mesh>(null);
   const earthRef = useRef<THREE.Mesh>(null);
 
+  const DISTANCE_SCALE = 0.0000001; // Scale down distances (1 AU = 149,597,870 km)
+  const TIME_SCALE = 0.1; // Speed up time significantly
+
+  // Real data: orbital radius in km, orbital period in Earth days, radius in km
+  const planets = {
+    mercury: { distance: 57909050, period: 87.97, radius: 2439.7 },
+    venus: { distance: 108208000, period: 224.7, radius: 6051.8 },
+    earth: { distance: 149598023, period: 365.26, radius: 6371 },
+    moon: { distance: 384400, period: 27.3, radius: 1737.1 },
+    mars: { distance: 227939366, period: 687, radius: 3389.5 },
+    jupiter: { distance: 778479000, period: 4331, radius: 69911 },
+    saturn: { distance: 1432000000, period: 10747, radius: 58232 },
+    uranus: { distance: 2867000000, period: 30589, radius: 25362 },
+    neptune: { distance: 4515000000, period: 59800, radius: 24622 },
+  };
+
+  const calculateOrbitSpeed = (periodInDays: number) => {
+    return ((2 * Math.PI) / periodInDays) * TIME_SCALE;
+  };
+
+  const scaleDistance = (distanceInKm: number) => {
+    return distanceInKm * DISTANCE_SCALE;
+  };
+
+  const scalePlanetRadius = (radiusInKm: number) => {
+    return radiusInKm * DISTANCE_SCALE * 100;
+  };
+
   return (
     <>
       <AnimatedPlanet
@@ -215,33 +243,82 @@ function SolarSystemObjects() {
         id="sun"
         orbitalRadius={0}
         orbitSpeed={0}
-        planetRadius={1}
+        planetRadius={1} // Sun scaled for visibility
         texturePath="/2k_sun.jpg"
+      />
+      <AnimatedPlanet
+        id="mercury"
+        parentRef={sunRef}
+        orbitalRadius={scaleDistance(planets.mercury.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.mercury.period)}
+        planetRadius={scalePlanetRadius(planets.mercury.radius)}
+        texturePath="/2k_mercury.jpg"
+      />
+      <AnimatedPlanet
+        id="venus"
+        parentRef={sunRef}
+        rotationDirection={RotationDirection.CLOCKWISE}
+        orbitalRadius={scaleDistance(planets.venus.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.venus.period)}
+        planetRadius={scalePlanetRadius(planets.venus.radius)}
+        texturePath="/2k_venus_atmosphere.jpg"
       />
       <AnimatedPlanet
         ref={earthRef}
         id="earth"
         parentRef={sunRef}
-        orbitalRadius={12}
-        orbitSpeed={0.005}
-        planetRadius={0.5}
+        orbitalRadius={scaleDistance(planets.earth.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.earth.period)}
+        planetRadius={scalePlanetRadius(planets.earth.radius)}
         texturePath="/2k_earth_daymap.jpg"
       />
       <AnimatedPlanet
         id="moon"
         parentRef={earthRef}
-        orbitalRadius={2}
-        orbitSpeed={0.02}
-        planetRadius={0.2}
+        orbitalRadius={scaleDistance(planets.moon.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.moon.period)}
+        planetRadius={scalePlanetRadius(planets.moon.radius)}
         color="gray"
       />
       <AnimatedPlanet
         id="mars"
         parentRef={sunRef}
-        orbitalRadius={18}
-        orbitSpeed={0.004}
-        planetRadius={0.3}
+        orbitalRadius={scaleDistance(planets.mars.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.mars.period)}
+        planetRadius={scalePlanetRadius(planets.mars.radius)}
         texturePath="/2k_mars.jpg"
+      />
+      <AnimatedPlanet
+        id="jupiter"
+        parentRef={sunRef}
+        orbitalRadius={scaleDistance(planets.jupiter.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.jupiter.period)}
+        planetRadius={scalePlanetRadius(planets.jupiter.radius)}
+        texturePath="/2k_jupiter.jpg"
+      />
+      <AnimatedPlanet
+        id="saturn"
+        parentRef={sunRef}
+        orbitalRadius={scaleDistance(planets.saturn.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.saturn.period)}
+        planetRadius={scalePlanetRadius(planets.saturn.radius)}
+        texturePath="/2k_saturn.jpg"
+      />
+      <AnimatedPlanet
+        id="uranus"
+        parentRef={sunRef}
+        orbitalRadius={scaleDistance(planets.uranus.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.uranus.period)}
+        planetRadius={scalePlanetRadius(planets.uranus.radius)}
+        texturePath="/2k_uranus.jpg"
+      />
+      <AnimatedPlanet
+        id="neptune"
+        parentRef={sunRef}
+        orbitalRadius={scaleDistance(planets.neptune.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.neptune.period)}
+        planetRadius={scalePlanetRadius(planets.neptune.radius)}
+        texturePath="/2k_neptune.jpg"
       />
     </>
   );

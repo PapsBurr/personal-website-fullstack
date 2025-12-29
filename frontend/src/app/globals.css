@@ -63,7 +63,7 @@ hr {
 
 .canvas-container {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 170px); /* subtract header height */
 }
 
 .fade-trigger {

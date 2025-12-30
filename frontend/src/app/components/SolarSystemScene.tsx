@@ -16,6 +16,7 @@ import {
   createContext,
   useContext,
   forwardRef,
+  useEffect,
 } from "react";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
@@ -33,9 +34,27 @@ interface PlanetProps {
   rotationSpeed?: number;
   rotationDirection?: RotationDirection;
   planetRadius?: number;
+  isStar?: boolean;
   color?: string;
   texturePath?: string;
 }
+
+const SYSTEM_SCALE = 0.000001;
+const TIME_SCALE = 0.1;
+
+// Real data: orbital radius in km, orbital period in Earth days, radius in km
+const planets = {
+  sun: { distance: 0, period: 0, radius: 696340 },
+  mercury: { distance: 57909050, period: 87.97, radius: 2439.7 },
+  venus: { distance: 108208000, period: 224.7, radius: 6051.8 },
+  earth: { distance: 149598023, period: 365.26, radius: 6371 },
+  moon: { distance: 384400, period: 27.3, radius: 1737.1 },
+  mars: { distance: 227939366, period: 687, radius: 3389.5 },
+  jupiter: { distance: 778479000, period: 4331, radius: 69911 },
+  saturn: { distance: 1432000000, period: 10747, radius: 58232 },
+  uranus: { distance: 2867000000, period: 30589, radius: 25362 },
+  neptune: { distance: 4515000000, period: 59800, radius: 24622 },
+};
 
 const FollowContext = createContext<{
   followedPlanetId: React.RefObject<string | null>;
@@ -91,6 +110,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       rotationDirection = RotationDirection.COUNTERCLOCKWISE,
       rotationSpeed = 0.01 * rotationDirection,
       planetRadius = 0.5,
+      isStar = false,
       color = "blue",
       texturePath,
     },
@@ -104,6 +124,16 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
 
     // Only load texture if path is provided
     const texture = texturePath ? useTexture(texturePath) : null;
+
+    // Optimize texture on load
+    useEffect(() => {
+      if (texture) {
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = false;
+        texture.anisotropy = 1; // Reduce anisotropic filtering
+      }
+    }, [texture]);
 
     useFrame(() => {
       const x = orbitalRadius * Math.cos(angleRef.current);
@@ -172,6 +202,9 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       }
     };
 
+    // Reduce geometry complexity
+    const segments = isStar ? 32 : 16;
+
     return (
       <>
         <Sphere
@@ -183,14 +216,21 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
               ref.current = node;
             }
           }}
-          args={[planetRadius, 32, 32]}
+          args={[planetRadius, segments, segments]}
           position={[orbitalRadius, 0, 0]}
           onClick={handleClick}
         >
-          <meshStandardMaterial
-            color={texture ? undefined : color}
-            map={texture}
-          />
+          {isStar ? (
+            <meshBasicMaterial map={texture} />
+          ) : (
+            <meshStandardMaterial
+              color={texture ? undefined : color}
+              map={texture}
+            />
+          )}
+          {isStar && (
+            <pointLight intensity={60} castShadow={false} decay={0.8} />
+          )}
         </Sphere>
         <OrbitCircle
           radius={orbitalRadius}
@@ -208,32 +248,17 @@ function SolarSystemObjects() {
   const sunRef = useRef<THREE.Mesh>(null);
   const earthRef = useRef<THREE.Mesh>(null);
 
-  const DISTANCE_SCALE = 0.0000001; // Scale down distances (1 AU = 149,597,870 km)
-  const TIME_SCALE = 0.1; // Speed up time significantly
-
-  // Real data: orbital radius in km, orbital period in Earth days, radius in km
-  const planets = {
-    mercury: { distance: 57909050, period: 87.97, radius: 2439.7 },
-    venus: { distance: 108208000, period: 224.7, radius: 6051.8 },
-    earth: { distance: 149598023, period: 365.26, radius: 6371 },
-    moon: { distance: 384400, period: 27.3, radius: 1737.1 },
-    mars: { distance: 227939366, period: 687, radius: 3389.5 },
-    jupiter: { distance: 778479000, period: 4331, radius: 69911 },
-    saturn: { distance: 1432000000, period: 10747, radius: 58232 },
-    uranus: { distance: 2867000000, period: 30589, radius: 25362 },
-    neptune: { distance: 4515000000, period: 59800, radius: 24622 },
-  };
-
   const calculateOrbitSpeed = (periodInDays: number) => {
+    if (periodInDays <= 0) return 0;
     return ((2 * Math.PI) / periodInDays) * TIME_SCALE;
   };
 
   const scaleDistance = (distanceInKm: number) => {
-    return distanceInKm * DISTANCE_SCALE;
+    return distanceInKm * SYSTEM_SCALE;
   };
 
   const scalePlanetRadius = (radiusInKm: number) => {
-    return radiusInKm * DISTANCE_SCALE * 100;
+    return radiusInKm * SYSTEM_SCALE * 50;
   };
 
   return (
@@ -241,9 +266,10 @@ function SolarSystemObjects() {
       <AnimatedPlanet
         ref={sunRef}
         id="sun"
-        orbitalRadius={0}
-        orbitSpeed={0}
-        planetRadius={1} // Sun scaled for visibility
+        orbitalRadius={scaleDistance(planets.sun.distance)}
+        orbitSpeed={calculateOrbitSpeed(planets.sun.period)}
+        planetRadius={scalePlanetRadius(planets.sun.radius)}
+        isStar={true}
         texturePath="/2k_sun.jpg"
       />
       <AnimatedPlanet
@@ -275,10 +301,11 @@ function SolarSystemObjects() {
       <AnimatedPlanet
         id="moon"
         parentRef={earthRef}
-        orbitalRadius={scaleDistance(planets.moon.distance)}
+        rotationDirection={RotationDirection.CLOCKWISE}
+        orbitalRadius={scaleDistance(planets.moon.distance) * 5}
         orbitSpeed={calculateOrbitSpeed(planets.moon.period)}
         planetRadius={scalePlanetRadius(planets.moon.radius)}
-        color="gray"
+        texturePath="/2k_moon.jpg"
       />
       <AnimatedPlanet
         id="mars"
@@ -332,6 +359,12 @@ export default function SolarSystemScene() {
       <Canvas
         style={{ background: "black" }}
         camera={{ position: [0, 10, 24], fov: 90 }}
+        gl={{
+          antialias: false,
+          powerPreference: "high-performance",
+          alpha: false,
+        }}
+        dpr={[1, 1.5]} // Limit pixel ratio
       >
         <Suspense fallback={null}>
           <FollowContext.Provider value={{ followedPlanetId }}>
@@ -339,8 +372,6 @@ export default function SolarSystemScene() {
               <GizmoViewcube />
             </GizmoHelper>
             <OrbitControls enableRotate makeDefault />
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 10]} />
             <SolarSystemObjects />
           </FollowContext.Provider>
         </Suspense>

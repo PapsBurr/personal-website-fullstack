@@ -40,7 +40,7 @@ interface PlanetProps {
 }
 
 const SYSTEM_SCALE = 0.000001;
-const TIME_SCALE = 0.1;
+const TIME_SCALE = 0.01;
 
 // Real data: orbital radius in km, orbital period in Earth days, radius in km
 const planets = {

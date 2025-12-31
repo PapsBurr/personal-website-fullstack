@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/websites", label: "Websites" },
   { href: "/devops", label: "DevOps" },
   { href: "/android", label: "Android" },
+  { href: "/projects", label: "Projects" },
   { href: "https://github.com/PapsBurr", label: "GitHub", external: true },
 ];
 

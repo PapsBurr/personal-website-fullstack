@@ -229,7 +229,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
             />
           )}
           {isStar && (
-            <pointLight intensity={60} castShadow={false} decay={0.8} />
+            <pointLight intensity={200} castShadow={false} decay={0.9} />
           )}
         </Sphere>
         <OrbitCircle
@@ -372,6 +372,7 @@ export default function SolarSystemScene() {
               <GizmoViewcube />
             </GizmoHelper>
             <OrbitControls enableRotate makeDefault />
+            <ambientLight intensity={0.1} />
             <SolarSystemObjects />
           </FollowContext.Provider>
         </Suspense>

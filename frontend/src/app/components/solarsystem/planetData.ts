@@ -9,6 +9,7 @@ export const planetData: Record<string, PlanetData> = {
     rotationPeriodHrs: 609.12,
     rotationDirection: RotationDirection.COUNTERCLOCKWISE,
     radiusKm: 696340,
+    isStar: true,
   },
   mercury: {
     name: "Mercury",

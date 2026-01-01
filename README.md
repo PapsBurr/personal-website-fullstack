@@ -21,7 +21,7 @@ This full-stack application serves as a personal portfolio website featuring:
 
 - **Framework:** Next.js 15.3.3 (React 19)
 - **Styling:** Tailwind CSS 4
-- **Language:** JavaScript (ES6+)
+- **Language:** TypeScript (ES6+)
 - **Testing:** Jest, React Testing Library
 - **Build Tool:** Next.js built-in bundler
 

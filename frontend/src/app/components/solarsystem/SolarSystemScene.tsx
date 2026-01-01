@@ -23,7 +23,7 @@ import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { PlanetProps } from "./interfaces";
 import { planetData } from "./planetData";
-import { ControlBar } from "./controls";
+import ControlBar from "./controlBar";
 import "./controlBar.css";
 
 const SYSTEM_SCALE = 0.000001;

@@ -14,7 +14,7 @@ interface ControlBarProps {
   onPauseToggle: (paused: boolean) => void;
 }
 
-export function ControlBar({
+export default function ControlBar({
   timeScale,
   onTimeScaleChange,
   selectedPlanet,

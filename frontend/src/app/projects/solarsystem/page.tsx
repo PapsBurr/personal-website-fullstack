@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 // Disable SSR for the 3D component
 const SolarSystemScene = dynamic(
-  () => import("@/app/components/SolarSystemScene"),
+  () => import("@/app/components/solarsystem/SolarSystemScene"),
   {
     ssr: false,
   }

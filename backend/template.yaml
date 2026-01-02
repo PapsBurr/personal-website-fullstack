@@ -110,7 +110,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: 
+              Service:
                 - lambda.amazonaws.com
                 - edgelambda.amazonaws.com
             Action: sts:AssumeRole
@@ -121,7 +121,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "${AWS::StackName}-www-redirect"
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Handler: index.handler
       InlineCode: !Sub |
         exports.handler = async (event) => {
@@ -149,7 +149,7 @@ Resources:
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
-    DependsOn: 
+    DependsOn:
       - LambdaEdgeRole
       - WwwRedirectFunction
     Properties:
@@ -252,7 +252,7 @@ Resources:
               Resource: !Sub "${StaticFilesBucket.Arn}/*"
 
     Metadata:
-      DockerTag: nodejs20.x-v1
+      DockerTag: nodejs24.x-v1
       DockerContext: ./
       Dockerfile: Dockerfile
 

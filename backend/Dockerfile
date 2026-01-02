@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/nodejs:20 AS base
+FROM public.ecr.aws/lambda/nodejs:24 AS base
 
 COPY package*.json ${LAMBDA_TASK_ROOT}/
 

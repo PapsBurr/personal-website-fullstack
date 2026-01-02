@@ -27,7 +27,7 @@ This full-stack application serves as a personal portfolio website featuring:
 
 ### Backend
 
-- **Runtime:** Node.js 20
+- **Runtime:** Node.js 24
 - **Framework:** Express.js 5
 - **Serverless:** AWS Lambda (via serverless-http)
 - **Language:** JavaScript (ES6+ Modules)

@@ -9,6 +9,7 @@ export interface PlanetProps {
   id: string;
   parentRef?: React.RefObject<THREE.Mesh | null>;
   planetData: PlanetData;
+  parentPlanetData?: PlanetData;
   color?: string;
   texturePath?: string;
 }

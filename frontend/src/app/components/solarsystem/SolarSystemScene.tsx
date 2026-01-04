@@ -91,7 +91,17 @@ function OrbitCircle({
 }
 
 const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
-  ({ id, parentRef, planetData, color = "blue", texturePath }, ref) => {
+  (
+    {
+      id,
+      parentRef,
+      planetData,
+      parentPlanetData = null,
+      color = "blue",
+      texturePath,
+    },
+    ref
+  ) => {
     const planetRef = useRef<THREE.Mesh>(null);
     const angleRef = useRef(0);
     const previousTarget = useRef(new THREE.Vector3());
@@ -110,6 +120,13 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
     };
 
     const scaleDistance = (distanceInKm: number) => {
+      if (parentPlanetData) {
+        return (
+          distanceInKm * SYSTEM_SCALE +
+          scalePlanetRadius(parentPlanetData.radiusKm) +
+          scalePlanetRadius(planetData.radiusKm)
+        );
+      }
       return distanceInKm * SYSTEM_SCALE;
     };
 
@@ -160,26 +177,28 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
           scaledPlanetRotation *
           ROTATION_SPEED_FACTOR *
           planetData.rotationDirection;
+      }
+    });
 
-        // Only follow if this planet is the followed one
-        if (followedPlanetId.current === id && controls) {
-          const orbitControls = controls as OrbitControlsImpl;
+    useFrame(() => {
+      // Only follow if this planet is the followed one
+      if (followedPlanetId.current === id && controls && planetRef.current) {
+        const orbitControls = controls as OrbitControlsImpl;
 
-          // Calculate how much the planet moved
-          const delta = new THREE.Vector3().subVectors(
-            planetRef.current.position,
-            previousTarget.current
-          );
+        // Calculate how much the planet moved
+        const delta = new THREE.Vector3().subVectors(
+          planetRef.current.position,
+          previousTarget.current
+        );
 
-          // Move both camera and target by the same delta
-          camera.position.add(delta);
-          orbitControls.target.copy(planetRef.current.position);
+        // Move both camera and target by the same delta
+        camera.position.add(delta);
+        orbitControls.target.copy(planetRef.current.position);
 
-          // Store current position for next frame
-          previousTarget.current.copy(planetRef.current.position);
+        // Store current position for next frame
+        previousTarget.current.copy(planetRef.current.position);
 
-          orbitControls.update();
-        }
+        orbitControls.update();
       }
     });
 
@@ -236,7 +255,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
             />
           )}
           {planetData.isStar && (
-            <pointLight intensity={200} castShadow={false} decay={0.9} />
+            <pointLight intensity={600} castShadow={false} decay={0.9} />
           )}
         </Sphere>
         <OrbitCircle
@@ -267,12 +286,14 @@ function SolarSystemObjects() {
         id="mercury"
         parentRef={sunRef}
         planetData={planetData.mercury}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_mercury.jpg"
       />
       <AnimatedPlanet
         id="venus"
         parentRef={sunRef}
         planetData={planetData.venus}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_venus_atmosphere.jpg"
       />
       <AnimatedPlanet
@@ -280,42 +301,49 @@ function SolarSystemObjects() {
         id="earth"
         parentRef={sunRef}
         planetData={planetData.earth}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_earth_daymap.jpg"
       />
       <AnimatedPlanet
         id="moon"
         parentRef={earthRef}
         planetData={planetData.earth.satellites!.moon}
+        parentPlanetData={planetData.earth}
         texturePath="/2k_moon.jpg"
       />
       <AnimatedPlanet
         id="mars"
         parentRef={sunRef}
         planetData={planetData.mars}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_mars.jpg"
       />
       <AnimatedPlanet
         id="jupiter"
         parentRef={sunRef}
         planetData={planetData.jupiter}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_jupiter.jpg"
       />
       <AnimatedPlanet
         id="saturn"
         parentRef={sunRef}
         planetData={planetData.saturn}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_saturn.jpg"
       />
       <AnimatedPlanet
         id="uranus"
         parentRef={sunRef}
         planetData={planetData.uranus}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_uranus.jpg"
       />
       <AnimatedPlanet
         id="neptune"
         parentRef={sunRef}
         planetData={planetData.neptune}
+        parentPlanetData={planetData.sun}
         texturePath="/2k_neptune.jpg"
       />
     </>
@@ -328,8 +356,6 @@ export default function SolarSystemScene() {
   const [isPaused, setIsPaused] = useState(false);
   const [showOrbits, setShowOrbits] = useState(true);
   const [selectedPlanetId, setSelectedPlanetId] = useState<string | null>(null);
-
-  /* const followedPlanetId = useRef<string | null>(null); */
 
   const handlePlanetSelect = (planetId: string | null) => {
     setSelectedPlanetId(planetId);

@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
 import { useRef, useMemo, useContext } from "react";
 import * as THREE from "three";
-import { SimulationContext } from "./SolarSystemScene";
+import { SimulationContext } from "./solarSystemScene";
 
 function OrbitCircle({
   radius = 5,

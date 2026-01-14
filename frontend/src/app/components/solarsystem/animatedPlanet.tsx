@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { PlanetProps } from "./interfaces";
-import { SimulationContext } from "./SolarSystemScene";
+import { SimulationContext } from "./solarSystemScene";
 import { SCALING_CONSTANTS } from "./scalingUtils";
 import OrbitCircle from "./orbitCircle";
 

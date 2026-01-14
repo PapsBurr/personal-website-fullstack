@@ -5,7 +5,7 @@ export const enum RotationDirection {
   COUNTERCLOCKWISE = 1,
 }
 
-export interface PlanetProps {
+export type PlanetProps = {
   id: string;
   parentRef?: React.RefObject<THREE.Mesh | null>;
   planetData: PlanetData;
@@ -14,13 +14,13 @@ export interface PlanetProps {
   texturePath?: string;
 }
 
-export interface PlanetData {
+export type PlanetData = {
   name: string;
-  distanceKm: number; // in km
-  orbitalPeriodHrs: number; // in hours
-  rotationPeriodHrs: number; // in hours
+  distanceKm: number;
+  orbitalPeriodHrs: number;
+  rotationPeriodHrs: number;
   rotationDirection: RotationDirection;
-  radiusKm: number; // in km
+  radiusKm: number;
   isStar?: boolean;
   satellites?: Record<string, PlanetData>;
 }

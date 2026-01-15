@@ -4,7 +4,8 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, GizmoHelper, GizmoViewcube } from "@react-three/drei";
 import { useRef, Suspense, createContext, useState } from "react";
 import * as THREE from "three";
-import { planetData } from "./planetData";
+import { PlanetProps } from "./interfaces";
+import { planetsConfig } from "./planetConfig";
 import ControlBar from "./controlBar";
 import AnimatedPlanet from "./animatedPlanet";
 import "./controlBar.css";
@@ -26,83 +27,119 @@ export const SimulationContext = createContext<{
 AnimatedPlanet.displayName = "AnimatedPlanet";
 
 function SolarSystemObjects() {
-  const sunRef = useRef<THREE.Mesh>(null);
-  const earthRef = useRef<THREE.Mesh>(null);
+  const planetRefs = useRef<Map<string, React.RefObject<THREE.Mesh | null>>>(
+    new Map()
+  );
+
+  planetsConfig.forEach((config) => {
+    if (config.hasSatellites && !planetRefs.current.has(config.id)) {
+      planetRefs.current.set(config.id, { current: null });
+    }
+  });
 
   return (
     <>
-      <AnimatedPlanet
-        ref={sunRef}
-        id="sun"
-        planetData={planetData.sun}
-        texturePath="/2k_sun.jpg"
-      />
-      <AnimatedPlanet
-        id="mercury"
-        parentRef={sunRef}
-        planetData={planetData.mercury}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_mercury.jpg"
-      />
-      <AnimatedPlanet
-        id="venus"
-        parentRef={sunRef}
-        planetData={planetData.venus}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_venus_atmosphere.jpg"
-      />
-      <AnimatedPlanet
-        ref={earthRef}
-        id="earth"
-        parentRef={sunRef}
-        planetData={planetData.earth}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_earth_daymap.jpg"
-      />
-      <AnimatedPlanet
-        id="moon"
-        parentRef={earthRef}
-        planetData={planetData.earth.satellites!.moon}
-        parentPlanetData={planetData.earth}
-        texturePath="/2k_moon.jpg"
-      />
-      <AnimatedPlanet
-        id="mars"
-        parentRef={sunRef}
-        planetData={planetData.mars}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_mars.jpg"
-      />
-      <AnimatedPlanet
-        id="jupiter"
-        parentRef={sunRef}
-        planetData={planetData.jupiter}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_jupiter.jpg"
-      />
-      <AnimatedPlanet
-        id="saturn"
-        parentRef={sunRef}
-        planetData={planetData.saturn}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_saturn.jpg"
-      />
-      <AnimatedPlanet
-        id="uranus"
-        parentRef={sunRef}
-        planetData={planetData.uranus}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_uranus.jpg"
-      />
-      <AnimatedPlanet
-        id="neptune"
-        parentRef={sunRef}
-        planetData={planetData.neptune}
-        parentPlanetData={planetData.sun}
-        texturePath="/2k_neptune.jpg"
-      />
+      {planetsConfig.map((config) => {
+        const ref = config.hasSatellites
+          ? planetRefs.current.get(config.id)
+          : undefined;
+        const parentRef = config.parentId
+          ? planetRefs.current.get(config.parentId)
+          : undefined;
+
+        const planetProps: PlanetProps = {
+          id: config.id,
+          planetData: config.planetData,
+          parentPlanetData: config.parentPlanetData,
+          texturePath: config.texturePath,
+          color: config.color,
+          parentRef: parentRef,
+        };
+
+        return <AnimatedPlanet key={config.id} ref={ref} {...planetProps} />;
+      })}
     </>
   );
+
+  // OLD CODE USING INDIVIDUAL REFS
+  // -------------------------------------------
+  // const sunRef = useRef<THREE.Mesh>(null);
+  // const earthRef = useRef<THREE.Mesh>(null);
+
+  // return (
+  //   <>
+  //     <AnimatedPlanet
+  //       ref={sunRef}
+  //       id="sun"
+  //       planetData={planetData.sun}
+  //       texturePath="/2k_sun.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="mercury"
+  //       parentRef={sunRef}
+  //       planetData={planetData.mercury}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_mercury.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="venus"
+  //       parentRef={sunRef}
+  //       planetData={planetData.venus}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_venus_atmosphere.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       ref={earthRef}
+  //       id="earth"
+  //       parentRef={sunRef}
+  //       planetData={planetData.earth}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_earth_daymap.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="moon"
+  //       parentRef={earthRef}
+  //       planetData={planetData.earth.satellites!.moon}
+  //       parentPlanetData={planetData.earth}
+  //       texturePath="/2k_moon.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="mars"
+  //       parentRef={sunRef}
+  //       planetData={planetData.mars}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_mars.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="jupiter"
+  //       parentRef={sunRef}
+  //       planetData={planetData.jupiter}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_jupiter.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="saturn"
+  //       parentRef={sunRef}
+  //       planetData={planetData.saturn}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_saturn.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="uranus"
+  //       parentRef={sunRef}
+  //       planetData={planetData.uranus}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_uranus.jpg"
+  //     />
+  //     <AnimatedPlanet
+  //       id="neptune"
+  //       parentRef={sunRef}
+  //       planetData={planetData.neptune}
+  //       parentPlanetData={planetData.sun}
+  //       texturePath="/2k_neptune.jpg"
+  //     />
+  //   </>
+  // );
 }
 
 export default function SolarSystemScene() {
@@ -132,7 +169,7 @@ export default function SolarSystemScene() {
       <div className="canvas-container">
         <Canvas
           style={{ background: "black" }}
-          camera={{ position: [0, 64, 64], fov: 90, near: 0.01, far: 10000 }}
+          camera={{ position: [-196, 64, 64], fov: 90, near: 0.01, far: 10000 }}
           gl={{
             antialias: true,
             powerPreference: "high-performance",

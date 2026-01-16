@@ -54,6 +54,7 @@ function SolarSystemObjects() {
           texturePath: config.texturePath,
           color: config.color,
           parentRef: parentRef,
+          ringData: config.ringData,
         };
 
         return <AnimatedPlanet key={config.id} ref={ref} {...planetProps} />;
@@ -186,7 +187,7 @@ export default function SolarSystemScene() {
                 <GizmoViewcube />
               </GizmoHelper>
               <OrbitControls enableRotate makeDefault zoomSpeed={5} />
-              <ambientLight intensity={0.05} />
+              <ambientLight intensity={0.2} />
               <SolarSystemObjects />
               {/* </FollowContext.Provider> */}
             </SimulationContext.Provider>

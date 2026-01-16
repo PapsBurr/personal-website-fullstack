@@ -7,6 +7,7 @@ import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { PlanetProps } from "./interfaces";
 import { SimulationContext } from "./solarSystemScene";
 import { SCALING_CONSTANTS } from "./scalingUtils";
+import PlanetRing from "./planetRing";
 import OrbitCircle from "./orbitCircle";
 
 const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
@@ -18,6 +19,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       parentPlanetData = null,
       color = "blue",
       texturePath,
+      ringData,
     },
     ref
   ) => {
@@ -156,31 +158,35 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
 
     return (
       <>
-        <Sphere
+        <group
           ref={(node) => {
-            planetRef.current = node;
+            planetRef.current = node as any;
             if (typeof ref === "function") {
-              ref(node);
+              ref(node as any);
             } else if (ref) {
-              ref.current = node;
+              ref.current = node as any;
             }
           }}
-          args={[scaledPlanetRadius, segments, segments]}
-          position={[scaledPlanetRadius, 0, 0]}
-          onClick={handleClick}
+          position={[scaledDistance, 0, 0]}
         >
-          {planetData.isStar ? (
-            <meshBasicMaterial map={texture} />
-          ) : (
-            <meshStandardMaterial
-              color={texture ? undefined : color}
-              map={texture}
-            />
-          )}
-          {planetData.isStar && (
-            <pointLight intensity={600} castShadow={false} decay={0.9} />
-          )}
-        </Sphere>
+          <Sphere
+            args={[scaledPlanetRadius, segments, segments]}
+            onClick={handleClick}
+          >
+            {planetData.isStar ? (
+              <meshBasicMaterial map={texture} />
+            ) : (
+              <meshStandardMaterial
+                color={texture ? undefined : color}
+                map={texture}
+              />
+            )}
+            {planetData.isStar && (
+              <pointLight intensity={600} castShadow={false} decay={0.9} />
+            )}
+          </Sphere>
+          {ringData && <PlanetRing ringData={ringData} />}
+        </group>
         <OrbitCircle
           radius={scaledDistance}
           segments={64}

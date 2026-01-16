@@ -62,6 +62,7 @@ export const planetsConfig: PlanetConfigItem[] = [
     planetData: planetData.saturn,
     parentPlanetData: planetData.sun,
     texturePath: "/2k_saturn.jpg",
+    ringData: planetData.saturn.ring,
   },
   {
     id: "uranus",

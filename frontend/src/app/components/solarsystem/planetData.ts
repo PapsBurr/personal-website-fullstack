@@ -68,6 +68,11 @@ export const planetData: Record<string, PlanetData> = {
     rotationPeriodHrs: 10.56,
     rotationDirection: RotationDirection.COUNTERCLOCKWISE,
     radiusKm: 58232,
+    ring: {
+      innerRadiusKm: 74600,
+      outerRadiusKm: 136780,
+      texturePath: "/2k_saturn_ring_alpha.png",
+    }
   },
   uranus: {
     name: "Uranus",

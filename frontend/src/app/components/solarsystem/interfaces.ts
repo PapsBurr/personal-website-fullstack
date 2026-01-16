@@ -5,6 +5,13 @@ export const enum RotationDirection {
   COUNTERCLOCKWISE = 1,
 }
 
+export type RingData = {
+  innerRadiusKm: number;
+  outerRadiusKm: number;
+  texturePath?: string;
+  color?: string;
+}
+
 export type PlanetProps = {
   id: string;
   parentRef?: React.RefObject<THREE.Mesh | null>;
@@ -12,6 +19,7 @@ export type PlanetProps = {
   parentPlanetData?: PlanetData;
   color?: string;
   texturePath?: string;
+  ringData?: RingData;
 }
 
 export type PlanetData = {
@@ -23,4 +31,5 @@ export type PlanetData = {
   radiusKm: number;
   isStar?: boolean;
   satellites?: Record<string, PlanetData>;
+  ring?: RingData;
 }

@@ -7,59 +7,59 @@ interface SkillItem {
 }
 
 const skills: SkillItem[] = [
-  { key: 1, text: "Programming"},
-  { key: 2, text: "Science"},
-  { key: 3, text: "Learning"},
-  { key: 4, text: "Art"},
-  { key: 5, text: "Aerospace"},
-  { key: 6, text: "Puzzles/Problem Solving"},
-  { key: 7, text: "Strategy"}
-]
+  { key: 1, text: "Programming" },
+  { key: 2, text: "Science" },
+  { key: 3, text: "Learning" },
+  { key: 4, text: "Art" },
+  { key: 5, text: "Aerospace" },
+  { key: 6, text: "Puzzles/Problem Solving" },
+  { key: 7, text: "Strategy" },
+];
 
 const pgrmLanguages: SkillItem[] = [
-  { key: 1, text: "Java"},
-  { key: 2, text: "Python"},
-  { key: 3, text: "JavaScript"},
-  { key: 4, text: "TypeScript"},
-  { key: 5, text: "MySQL"},
-  { key: 6, text: "PostgeSQL"},
-  { key: 7, text: "HTML"},
-  { key: 8, text: "CSS"},
-  { key: 9, text: "UML"},
-]
+  { key: 1, text: "Java" },
+  { key: 2, text: "Python" },
+  { key: 3, text: "JavaScript" },
+  { key: 4, text: "TypeScript" },
+  { key: 5, text: "MySQL" },
+  { key: 6, text: "PostgeSQL" },
+  { key: 7, text: "HTML" },
+  { key: 8, text: "CSS" },
+  { key: 9, text: "UML" },
+];
 
-// change this comment to cause github actions to run : 12
+// change this comment to cause github actions to run : 13
 
 function ListItems(props: SkillItem) {
-  return <li>{props.text}</li>
+  return <li>{props.text}</li>;
 }
 
 export default function Home() {
-
   return (
     <>
       <div className="container-comp bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 min-h-screen">
         <div></div>
         <main className="flex-auto flex-col justify-between py-24 px-4 md:px-12 lg:px-24 bg-gray-100 text-black">
-          
           {/* Intro Section */}
           <div className="fade-trigger">
-            <h1 className="text-center">Nathan Pons <span className="block">Software Engineer</span></h1>
+            <h1 className="text-center">
+              Nathan Pons <span className="block">Software Engineer</span>
+            </h1>
             <hr></hr>
             <h2>About Me</h2>
             <p>
               Hi! My name is Nathan Pons and this is a website I made as a
               summary of my qualifications and projects I've made throughout the
-              years and throughout my Software Engineering degree. On this website
-              I go over some of those projects and talk about their features and the 
-              tools I used to create them. I hope you enjoy. 
+              years and throughout my Software Engineering degree. On this
+              website I go over some of those projects and talk about their
+              features and the tools I used to create them. I hope you enjoy.
             </p>
             <hr></hr>
           </div>
           <div className="fade-trigger">
             <NasaApod />
           </div>
-          
+
           {/* Qualifications Section */}
           <section className="fade-trigger">
             <h2>Qualifications</h2>
@@ -80,13 +80,15 @@ export default function Home() {
             <div className="fade-trigger">
               <h3>Certifications</h3>
               <ul className="list-disc m-8 text-xl">
-                <li data-testid="cert-item">AWS Certified Cloud Practitioner</li>
+                <li data-testid="cert-item">
+                  AWS Certified Cloud Practitioner
+                </li>
                 <li data-testid="cert-item">CompTIA Project +</li>
                 <li data-testid="cert-item">Axelos ITIL Foundations</li>
                 <li data-testid="cert-item">Coursera Google IT Support</li>
               </ul>
             </div>
-            <div className="fade-trigger">  
+            <div className="fade-trigger">
               <h3>Skills / Hobbies / Interests</h3>
               <ul className="list-disc m-8 text-xl" data-testid="skills-list">
                 {skills.map((item) => (
@@ -96,7 +98,10 @@ export default function Home() {
             </div>
             <div className="fade-trigger">
               <h3>Programming Languages</h3>
-              <ul className="list-disc m-8 text-xl" data-testid="programming-languages-list">
+              <ul
+                className="list-disc m-8 text-xl"
+                data-testid="programming-languages-list"
+              >
                 {pgrmLanguages.map((item) => (
                   <ListItems key={item.key} text={item.text} />
                 ))}
@@ -118,12 +123,8 @@ export default function Home() {
               developer, being able to provide that thing for them where they
               want it.
             </p>
-            <p>
-              It's also something I enjoy, here are some of my favorites:
-            </p>
-            <h3 className="text-center">
-              Griffin, Digital, ~2021
-            </h3>
+            <p>It's also something I enjoy, here are some of my favorites:</p>
+            <h3 className="text-center">Griffin, Digital, ~2021</h3>
             <div className="flex gap-16 justify-center my-8">
               <RoundedImage
                 src="/digital-griffin.jpg"
@@ -132,9 +133,7 @@ export default function Home() {
                 height={500}
               />
             </div>
-            <h3 className="text-center">
-              Flower with Dew, Oil paint, ~2020
-            </h3>
+            <h3 className="text-center">Flower with Dew, Oil paint, ~2020</h3>
             <div className="flex gap-16 justify-center my-8">
               <RoundedImage
                 src="/painting-flower.jpg"
@@ -144,21 +143,23 @@ export default function Home() {
               />
             </div>
             <hr></hr>
-          </section> 
+          </section>
 
           {/* This Site Section */}
           <section className="fade-trigger">
             <h2>This Site</h2>
             <p>
-              Built with JavaScript using Next.JS, Express, HTML, Tailwind CSS, and Jest. It 
-              automatically deploys the website using GitHub Actions whenever 
-              I commit and push to the repository. 
-              Since it's release, I've swapped it from being deployed through GitHub Pages to instead
-              being hosted through AWS S3 + CloudFront after being turned into a docker image. 
-              I've also added an Express backend to serve the NASA 
-              Astronomy Picture of the Day to the frontend through an API endpoint. The backend is also hosted 
-              through AWS using Lambda and API Gateway. Eventually, I'd like to host it through Kubernetes as 
-              well but I'm worried about the costs associated with using AWS EKS.
+              Built with JavaScript using Next.JS, Express, HTML, Tailwind CSS,
+              and Jest. It automatically deploys the website using GitHub
+              Actions whenever I commit and push to the repository. Since it's
+              release, I've swapped it from being deployed through GitHub Pages
+              to instead being hosted through AWS S3 + CloudFront after being
+              turned into a docker image. I've also added an Express backend to
+              serve the NASA Astronomy Picture of the Day to the frontend
+              through an API endpoint. The backend is also hosted through AWS
+              using Lambda and API Gateway. Eventually, I'd like to host it
+              through Kubernetes as well but I'm worried about the costs
+              associated with using AWS EKS.
             </p>
             <hr></hr>
           </section>

@@ -41,6 +41,7 @@ test.jpg
 
 # vs code
 .vscode/
+copilot-instructions.md
 
 # typescript
 *.tsbuildinfo

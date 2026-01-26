@@ -87,7 +87,7 @@ Resources:
 
   FrontendBucketPolicy:
     Type: AWS::S3::BucketPolicy
-    DependsOn: CloudFrontDistribution
+    # DependsOn: CloudFrontDistribution
     Properties:
       Bucket: !Ref FrontendBucket
       PolicyDocument:

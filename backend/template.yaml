@@ -33,7 +33,6 @@ Parameters:
   CertificateArn:
     Type: String
     Description: ACM Certificate ARN for CloudFront custom domain
-    Default: ""
 
 Resources:
   FrontendBucket:
@@ -87,7 +86,7 @@ Resources:
 
   FrontendBucketPolicy:
     Type: AWS::S3::BucketPolicy
-    # DependsOn: CloudFrontDistribution
+    DependsOn: CloudFrontDistribution
     Properties:
       Bucket: !Ref FrontendBucket
       PolicyDocument:
@@ -170,7 +169,7 @@ Resources:
           AcmCertificateArn: !Ref CertificateArn
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1.2_2021
-          CloudFrontDefaultCertificate: true
+          # CloudFrontDefaultCertificate: true
 
         Origins:
           - Id: frontend-origin

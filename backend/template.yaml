@@ -33,13 +33,13 @@ Parameters:
   CertificateArn:
     Type: String
     Description: ACM Certificate ARN for CloudFront custom domain
-    Default: arn:aws:acm:us-east-1:242201278004:certificate/9c91f042-e116-41be-9c24-95dc5876b0d8
+    Default: ""
 
 Resources:
   FrontendBucket:
     Type: AWS::S3::Bucket
     Properties:
-      # BucketName: !Sub "${AWS::StackName}-frontend-${AWS::Region}"
+      BucketName: !Sub "${AWS::StackName}-frontend-${AWS::Region}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -49,7 +49,7 @@ Resources:
   StaticFilesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      # BucketName: !Sub "${AWS::StackName}-static-files-${AWS::Region}"
+      BucketName: !Sub "${AWS::StackName}-static-files-${AWS::Region}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -170,7 +170,7 @@ Resources:
           AcmCertificateArn: !Ref CertificateArn
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1.2_2021
-          # CloudFrontDefaultCertificate: true
+          CloudFrontDefaultCertificate: true
 
         Origins:
           - Id: frontend-origin

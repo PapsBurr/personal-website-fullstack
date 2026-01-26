@@ -115,13 +115,15 @@ jobs:
 
   # Job 4: Deploy Frontend to S3
   deploy-frontend:
-    needs: [detect-changes, test-frontend]
+    needs: [detect-changes, test-frontend, deploy-backend]
     # TODO: Fix manual deploy conditions
     if: |
       (needs.detect-changes.outputs.frontend-changed == 'true' ||
       github.event.inputs.deploy-frontend == 'true') &&
       (needs.test-frontend.result == 'success' ||
       needs.test-frontend.result == 'skipped') &&
+      (needs.deploy-backend.result == 'success' ||
+      needs.deploy-backend.result == 'skipped') &&
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:

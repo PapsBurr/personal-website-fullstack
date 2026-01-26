@@ -66,7 +66,7 @@ jobs:
       - name: Install backend dependencies
         run: npm ci --include=dev
         env:
-          NODE_ENV: development # Override the production setting
+          NODE_ENV: development
 
       - name: Run backend tests
         run: npm test -- --coverage
@@ -113,10 +113,89 @@ jobs:
       - name: Run frontend tests
         run: npm test -- --coverage --watchAll=false
 
-  # Job 4: Deploy Frontend to S3
+  # Job 4: Deploy Backend with SAM
+  deploy-backend:
+    needs: [detect-changes, test-backend]
+    if: |
+      (needs.detect-changes.outputs.backend-changed == 'true' ||
+      github.event.inputs.deploy-backend == 'true') && 
+      (needs.test-backend.result == 'success' ||
+      needs.test-backend.result == 'skipped') &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-bucket: ${{ steps.get-outputs.outputs.frontend-bucket }}
+      cloudfront-id: ${{ steps.get-outputs.outputs.cloudfront-id }}
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: ./backend/package-lock.json
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: SAM Build
+        run: sam build
+
+      - name: SAM Deploy
+        run: |
+          sam deploy \
+            --stack-name personal-website-backend-v2 \
+            --region ${{ env.AWS_REGION }} \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_IAM \
+            --resolve-s3 \
+            --resolve-image-repos \
+            --parameter-overrides \
+              NasaApiKey="${{ secrets.NASA_API_KEY }}" \
+              BaseUrl="${{ secrets.NEXT_PUBLIC_BASE_URL }}" \
+              DomainName="${{ secrets.DOMAIN_NAME }}" \
+              CertificateArn="${{ secrets.CERTIFICATE_ARN }}"
+
+      - name: Get Stack Outputs
+        id: get-outputs
+        run: |
+          FRONTEND_BUCKET=$(aws cloudformation describe-stacks \
+            --stack-name personal-website-backend-v2 \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' \
+            --output text)
+
+          CLOUDFRONT_ID=$(aws cloudformation describe-stacks \
+            --stack-name personal-website-backend-v2 \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionId`].OutputValue' \
+            --output text)
+
+          echo "frontend-bucket=$FRONTEND_BUCKET" >> $GITHUB_OUTPUT
+          echo "cloudfront-id=$CLOUDFRONT_ID" >> $GITHUB_OUTPUT
+
+  # Job 5: Deploy Frontend to S3
   deploy-frontend:
     needs: [detect-changes, test-frontend, deploy-backend]
-    # TODO: Fix manual deploy conditions
     if: |
       (needs.detect-changes.outputs.frontend-changed == 'true' ||
       github.event.inputs.deploy-frontend == 'true') &&
@@ -166,69 +245,27 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync ./out s3://${{ secrets.S3_BUCKET_NAME }} --delete
-          # If using CloudFront, invalidate cache
-          if [ ! -z "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" ]; then
-            aws cloudfront create-invalidation \
-              --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-              --paths "/*"
+          BUCKET_NAME="${{ needs.deploy-backend.outputs.frontend-bucket }}"
+          if [ -z "$BUCKET_NAME" ]; then
+            BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
           fi
 
-  # Job 5: Deploy Backend with SAM
-  deploy-backend:
-    needs: [detect-changes, test-backend]
-    if: |
-      (needs.detect-changes.outputs.backend-changed == 'true' ||
-      github.event.inputs.deploy-backend == 'true') && 
-      (needs.test-backend.result == 'success' ||
-      needs.test-backend.result == 'skipped') &&
-      github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    env:
-      NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
-      BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          echo "Deploying to bucket: $BUCKET_NAME"
+          aws s3 sync ./out s3://$BUCKET_NAME --delete --cache-control "public, max-age=31536000, immutable"
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: ./backend/package-lock.json
-
-      - name: Setup SAM CLI
-        uses: aws-actions/setup-sam@v2
-        with:
-          use-installer: true
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Install backend dependencies
-        run: npm ci
-
-      - name: SAM Build
-        run: sam build
-
-      - name: SAM Deploy
+      - name: Invalidate CloudFront Cache
         run: |
-          sam deploy \
-          --stack-name personal-website-backend-v2 \
-          --no-confirm-changeset \
-          --no-fail-on-empty-changeset \
-          --parameter-overrides \
-          "NasaApiKey=${{ secrets.NASA_API_KEY }}" \
-          "BaseUrl=${{ secrets.NEXT_PUBLIC_BASE_URL }}"
+          CLOUDFRONT_ID="${{ needs.deploy-backend.outputs.cloudfront-id }}"
+          if [ -z "$CLOUDFRONT_ID" ]; then
+            CLOUDFRONT_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          fi
+
+          if [ ! -z "$CLOUDFRONT_ID" ]; then
+            echo "Invalidating CloudFront distribution: $CLOUDFRONT_ID"
+            aws cloudfront create-invalidation \
+              --distribution-id $CLOUDFRONT_ID \
+              --paths "/*"
+          fi
 
   # Job 6: Notify Success
   notify-success:

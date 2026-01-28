@@ -28,7 +28,7 @@ const pgrmLanguages: SkillItem[] = [
   { key: 9, text: "UML" },
 ];
 
-// change this comment to cause github actions to run : 17
+// change this comment to cause github actions to run : 18
 
 function ListItems(props: SkillItem) {
   return <li>{props.text}</li>;

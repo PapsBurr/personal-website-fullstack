@@ -157,9 +157,8 @@ export default function Home() {
               turned into a docker image. I've also added an Express backend to
               serve the NASA Astronomy Picture of the Day to the frontend
               through an API endpoint. The backend is also hosted through AWS
-              using Lambda and API Gateway. Eventually, I'd like to host it
-              through Kubernetes as well but I'm worried about the costs
-              associated with using AWS EKS.
+              using Lambda and API Gateway. I'd like to host this site using
+              Kubernetes as well but I won't due to extreme cloud costs.
             </p>
             <hr></hr>
           </section>

@@ -195,7 +195,7 @@ jobs:
 
   # Job 5: Deploy Frontend to S3
   deploy-frontend:
-    needs: [detect-changes, test-frontend, deploy-backend]
+    needs: [detect-changes, test-frontend]
     if: |
       (needs.detect-changes.outputs.frontend-changed == 'true' ||
       github.event.inputs.deploy-frontend == 'true') &&

@@ -148,17 +148,26 @@ export default function Home() {
           {/* This Site Section */}
           <section className="fade-trigger">
             <h2>This Site</h2>
+            <h3>Tech Stack</h3>
             <p>
-              Built with JavaScript using Next.JS, Express, HTML, Tailwind CSS,
-              and Jest. It automatically deploys the website using GitHub
-              Actions whenever I commit and push to the repository. Since it's
-              release, I've swapped it from being deployed through GitHub Pages
-              to instead being hosted through AWS S3 + CloudFront after being
-              turned into a docker image. I've also added an Express backend to
-              serve the NASA Astronomy Picture of the Day to the frontend
-              through an API endpoint. The backend is also hosted through AWS
-              using Lambda and API Gateway. I'd like to host this site using
-              Kubernetes as well but I won't due to extreme cloud costs.
+              Built with TypeScript using Next.JS, Express, HTML, Tailwind CSS,
+              and Jest for testing. Hosted through AWS S3/Cloudfront and AWS
+              Lambda.
+            </p>
+            <h3>Project Deployment and History</h3>
+            <p>
+              This project is set up for automatic deployment using GitHub
+              Actions, so every time I commit and push changes to the
+              repository, the code is tested and then deployed to the AWS cloud.
+              <br />
+              <br />
+              Originally, the site was hosted on GitHub Pages, but I later
+              migrated it to AWS S3 with CloudFront for better scalability and
+              performance. I also added a containerized Express backend that
+              fetches the NASA Astronomy Picture of the Day and provides it to
+              the frontend via REST APIs. The backend is hosted through AWS
+              Lambda and accessed with API Gateway. I'd like to host this site
+              using Kubernetes as well but I won't due to extreme cloud costs.
             </p>
             <hr></hr>
           </section>

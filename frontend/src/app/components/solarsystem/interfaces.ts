@@ -32,4 +32,5 @@ export type PlanetData = {
   isStar?: boolean;
   satellites?: Record<string, PlanetData>;
   ring?: RingData;
+  tidalLockRotationOffset?: number;
 }

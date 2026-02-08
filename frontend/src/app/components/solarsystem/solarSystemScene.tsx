@@ -28,7 +28,7 @@ AnimatedPlanet.displayName = "AnimatedPlanet";
 
 function SolarSystemObjects() {
   const planetRefs = useRef<Map<string, React.RefObject<THREE.Mesh | null>>>(
-    new Map()
+    new Map(),
   );
 
   planetsConfig.forEach((config) => {
@@ -61,86 +61,6 @@ function SolarSystemObjects() {
       })}
     </>
   );
-
-  // OLD CODE USING INDIVIDUAL REFS
-  // -------------------------------------------
-  // const sunRef = useRef<THREE.Mesh>(null);
-  // const earthRef = useRef<THREE.Mesh>(null);
-
-  // return (
-  //   <>
-  //     <AnimatedPlanet
-  //       ref={sunRef}
-  //       id="sun"
-  //       planetData={planetData.sun}
-  //       texturePath="/2k_sun.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="mercury"
-  //       parentRef={sunRef}
-  //       planetData={planetData.mercury}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_mercury.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="venus"
-  //       parentRef={sunRef}
-  //       planetData={planetData.venus}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_venus_atmosphere.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       ref={earthRef}
-  //       id="earth"
-  //       parentRef={sunRef}
-  //       planetData={planetData.earth}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_earth_daymap.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="moon"
-  //       parentRef={earthRef}
-  //       planetData={planetData.earth.satellites!.moon}
-  //       parentPlanetData={planetData.earth}
-  //       texturePath="/2k_moon.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="mars"
-  //       parentRef={sunRef}
-  //       planetData={planetData.mars}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_mars.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="jupiter"
-  //       parentRef={sunRef}
-  //       planetData={planetData.jupiter}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_jupiter.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="saturn"
-  //       parentRef={sunRef}
-  //       planetData={planetData.saturn}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_saturn.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="uranus"
-  //       parentRef={sunRef}
-  //       planetData={planetData.uranus}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_uranus.jpg"
-  //     />
-  //     <AnimatedPlanet
-  //       id="neptune"
-  //       parentRef={sunRef}
-  //       planetData={planetData.neptune}
-  //       parentPlanetData={planetData.sun}
-  //       texturePath="/2k_neptune.jpg"
-  //     />
-  //   </>
-  // );
 }
 
 export default function SolarSystemScene() {

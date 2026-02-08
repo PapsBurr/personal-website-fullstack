@@ -103,8 +103,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
         // and apply rotation so the correct face is shown towards its parent body
         if (planetData.tidalLockRotationOffset && planetRef?.current) {
           planetRef.current.lookAt(parentPosition);
-          planetRef.current.rotation.y +=
-            planetData.tidalLockRotationOffset || 0;
+          planetRef.current.rotateY(planetData.tidalLockRotationOffset);
         } else {
           planetRef.current.rotation.y +=
             scaledPlanetRotation *

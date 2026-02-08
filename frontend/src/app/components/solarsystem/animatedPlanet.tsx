@@ -21,7 +21,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       texturePath,
       ringData,
     },
-    ref
+    ref,
   ) => {
     const planetRef = useRef<THREE.Mesh>(null);
     const angleRef = useRef(0);
@@ -69,7 +69,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
     const scaledDistance = scaleDistance(planetData.distanceKm);
     const scaledPlanetRadius = scalePlanetRadius(planetData.radiusKm);
     const scaledPlanetRotation = scalePlanetRotation(
-      planetData.rotationPeriodHrs
+      planetData.rotationPeriodHrs,
     );
 
     // Optimize texture on load
@@ -98,10 +98,19 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
         planetRef.current.position.x = parentPosition.x + x;
         planetRef.current.position.y = parentPosition.y;
         planetRef.current.position.z = parentPosition.z + z;
-        planetRef.current.rotation.y +=
-          scaledPlanetRotation *
-          SCALING_CONSTANTS.ROTATION_SPEED_FACTOR *
-          planetData.rotationDirection;
+
+        // Check if orbital body is tidally locked to its parent
+        // and apply rotation so the correct face is shown towards its parent body
+        if (planetData.tidalLockRotationOffset && planetRef?.current) {
+          planetRef.current.lookAt(parentPosition);
+          planetRef.current.rotation.y +=
+            planetData.tidalLockRotationOffset || 0;
+        } else {
+          planetRef.current.rotation.y +=
+            scaledPlanetRotation *
+            SCALING_CONSTANTS.ROTATION_SPEED_FACTOR *
+            planetData.rotationDirection;
+        }
       }
     });
 
@@ -113,7 +122,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
         // Calculate how much the planet moved
         const delta = new THREE.Vector3().subVectors(
           planetRef.current.position,
-          previousTarget.current
+          previousTarget.current,
         );
 
         // Move both camera and target by the same delta
@@ -194,7 +203,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
         />
       </>
     );
-  }
+  },
 );
 
 export default AnimatedPlanet;

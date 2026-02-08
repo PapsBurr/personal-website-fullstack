@@ -42,6 +42,7 @@ export const planetData: Record<string, PlanetData> = {
         rotationPeriodHrs: 655.2,
         rotationDirection: RotationDirection.COUNTERCLOCKWISE,
         radiusKm: 1737.1,
+        tidalLockRotationOffset: Math.PI, // Moon is tidally locked to Earth, so it always shows the same face
       },
     },
   },

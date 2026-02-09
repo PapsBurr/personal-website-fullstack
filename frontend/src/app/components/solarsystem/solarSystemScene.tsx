@@ -14,11 +14,13 @@ const BASE_TIME_SCALE = 0.05;
 
 export const SimulationContext = createContext<{
   followedPlanetId: React.RefObject<string | null>;
+  selectedPlanetId: string | null;
   timeScale: number;
   isPaused: boolean;
   showOrbits: boolean;
 }>({
   followedPlanetId: { current: null } as React.RefObject<string | null>,
+  selectedPlanetId: null,
   timeScale: BASE_TIME_SCALE,
   isPaused: false,
   showOrbits: true,
@@ -101,7 +103,13 @@ export default function SolarSystemScene() {
           <Suspense fallback={null}>
             {/* <FollowContext.Provider value={{ followedPlanetId }}> */}
             <SimulationContext.Provider
-              value={{ followedPlanetId, timeScale, isPaused, showOrbits }}
+              value={{
+                followedPlanetId,
+                selectedPlanetId,
+                timeScale,
+                isPaused,
+                showOrbits,
+              }}
             >
               <GizmoHelper alignment="top-left" margin={[80, 80]}>
                 <GizmoViewcube />

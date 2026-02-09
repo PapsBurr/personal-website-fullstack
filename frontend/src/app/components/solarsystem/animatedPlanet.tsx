@@ -27,7 +27,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
     const angleRef = useRef(0);
     const previousTarget = useRef(new THREE.Vector3());
     const { camera, controls } = useThree();
-    const { followedPlanetId, timeScale, isPaused } =
+    const { followedPlanetId, selectedPlanetId, timeScale, isPaused } =
       useContext(SimulationContext);
 
     const segments = 32;
@@ -135,32 +135,37 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       }
     });
 
+    const focusPlanet = () => {
+      if (!planetRef.current || !controls) return;
+
+      const orbitControls = controls as OrbitControlsImpl;
+      followedPlanetId.current = id;
+
+      orbitControls.target.copy(planetRef.current.position);
+      const direction = new THREE.Vector3()
+        .subVectors(camera.position, planetRef.current.position)
+        .normalize();
+
+      const distance = 5 * scaledPlanetRadius;
+      camera.position
+        .copy(planetRef.current.position)
+        .add(direction.multiplyScalar(distance));
+
+      previousTarget.current.copy(planetRef.current.position);
+      orbitControls.update();
+    };
+
+    useEffect(() => {
+      if (selectedPlanetId === id) {
+        focusPlanet();
+      }
+    }, [selectedPlanetId, id]);
+
     const handleClick = () => {
-      if (planetRef.current && controls) {
-        const orbitControls = controls as OrbitControlsImpl;
-
-        if (followedPlanetId.current !== id) {
-          // Start following this planet
-          followedPlanetId.current = id;
-
-          // Set initial camera position at fixed distance
-          orbitControls.target.copy(planetRef.current.position);
-          const direction = new THREE.Vector3();
-          direction
-            .subVectors(camera.position, planetRef.current.position)
-            .normalize();
-          const distance = 5 * scaledPlanetRadius;
-          camera.position
-            .copy(planetRef.current.position)
-            .add(direction.multiplyScalar(distance));
-
-          // Store initial planet position
-          previousTarget.current.copy(planetRef.current.position);
-          orbitControls.update();
-        } else {
-          // Stop following
-          followedPlanetId.current = null;
-        }
+      if (followedPlanetId.current !== id) {
+        focusPlanet();
+      } else {
+        followedPlanetId.current = null;
       }
     };
 

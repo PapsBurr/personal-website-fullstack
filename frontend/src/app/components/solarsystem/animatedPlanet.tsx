@@ -27,8 +27,13 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
     const angleRef = useRef(0);
     const previousTarget = useRef(new THREE.Vector3());
     const { camera, controls } = useThree();
-    const { followedPlanetId, selectedPlanetId, timeScale, isPaused } =
-      useContext(SimulationContext);
+    const {
+      followedPlanetId,
+      selectedPlanetId,
+      setSelectedPlanetId,
+      timeScale,
+      isPaused,
+    } = useContext(SimulationContext);
 
     const segments = 32;
 
@@ -164,8 +169,10 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
     const handleClick = () => {
       if (followedPlanetId.current !== id) {
         focusPlanet();
+        setSelectedPlanetId(id);
       } else {
         followedPlanetId.current = null;
+        setSelectedPlanetId(null);
       }
     };
 

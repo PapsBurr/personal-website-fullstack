@@ -15,12 +15,14 @@ const BASE_TIME_SCALE = 0.05;
 export const SimulationContext = createContext<{
   followedPlanetId: React.RefObject<string | null>;
   selectedPlanetId: string | null;
+  setSelectedPlanetId: (id: string | null) => void;
   timeScale: number;
   isPaused: boolean;
   showOrbits: boolean;
 }>({
   followedPlanetId: { current: null } as React.RefObject<string | null>,
   selectedPlanetId: null,
+  setSelectedPlanetId: () => {},
   timeScale: BASE_TIME_SCALE,
   isPaused: false,
   showOrbits: true,
@@ -106,6 +108,7 @@ export default function SolarSystemScene() {
               value={{
                 followedPlanetId,
                 selectedPlanetId,
+                setSelectedPlanetId,
                 timeScale,
                 isPaused,
                 showOrbits,

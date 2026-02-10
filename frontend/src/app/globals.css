@@ -80,18 +80,22 @@ hr {
 .js .fade-trigger.animate-fade-in-below {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+}
+
+.container-main {
+  grid-area: main;
 }
 
 @media only screen and (max-width: 1200px) {
   .container-comp {
     display: grid;
     grid-template-columns: 0% 100% 0%;
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      "header header header"
-      "main";
-  }    
+    grid-template-rows: auto;
+    grid-template-areas: ". main .";
+  }
 }
 @media only screen and (min-width: 1200px) {
   .container-comp {
@@ -101,7 +105,7 @@ hr {
     grid-template-areas:
       "header header header"
       ". main .";
-  }    
+  }
 }
 @media only screen and (min-width: 2400px) {
   .container-comp {
@@ -111,7 +115,7 @@ hr {
     grid-template-areas:
       "header header header"
       ". main .";
-  }    
+  }
 }
 
 /* Animations Below */
@@ -126,4 +130,3 @@ hr {
     transform: translateX(0);
   }
 }
-

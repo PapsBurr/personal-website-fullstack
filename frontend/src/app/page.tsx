@@ -12,7 +12,7 @@ const skills: SkillItem[] = [
   { key: 3, text: "Learning" },
   { key: 4, text: "Art" },
   { key: 5, text: "Aerospace" },
-  { key: 6, text: "Puzzles/Problem Solving" },
+  { key: 6, text: "Problem Solving" },
   { key: 7, text: "Strategy" },
 ];
 
@@ -28,8 +28,6 @@ const pgrmLanguages: SkillItem[] = [
   { key: 9, text: "UML" },
 ];
 
-// change this comment to cause github actions to run : 22
-
 function ListItems(props: SkillItem) {
   return <li>{props.text}</li>;
 }
@@ -37,139 +35,164 @@ function ListItems(props: SkillItem) {
 export default function Home() {
   return (
     <>
-      <div className="container-comp bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 min-h-screen">
-        <div></div>
-        <main className="flex-auto flex-col justify-between py-24 px-4 md:px-12 lg:px-24 bg-gray-100 text-black">
-          {/* Intro Section */}
-          <div className="fade-trigger">
-            <h1 className="text-center">
-              Nathan Pons <span className="block">Software Engineer</span>
-            </h1>
-            <hr></hr>
-            <h2>About Me</h2>
-            <p>
-              Hi! My name is Nathan Pons and this is a website I made as a
-              summary of my qualifications and projects I've made throughout the
-              years and throughout my Software Engineering degree. On this
-              website I go over some of those projects and talk about their
-              features and the tools I used to create them. I hope you enjoy.
-            </p>
-            <hr></hr>
-          </div>
-          <div className="fade-trigger">
-            <NasaApod />
-          </div>
+      <div className="container-comp min-h-screen bg-gradient-to-b from-black via-slate-950 to-black text-white">
+        <main className="container-main">
+          {/* Hero */}
+          <section className="fade-trigger px-6 py-20 md:px-16 lg:px-24">
+            <div className="max-w-4xl">
+              <p className="text-sm uppercase tracking-[0.3em] text-fuchsia-300">
+                Creative Engineer
+              </p>
+              <h1 className="mt-4 text-5xl md:text-7xl font-extrabold leading-tight">
+                Nathan Pons
+                <span className="block text-fuchsia-400">
+                  Software Engineer
+                </span>
+              </h1>
+              <p className="mt-6 text-lg text-slate-300">
+                I build bold, human‑centered software and visual experiences —
+                blending art, aerospace curiosity, and full‑stack engineering.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <button className="rounded-full bg-fuchsia-500 px-6 py-3 font-semibold text-black hover:bg-fuchsia-400">
+                  View Projects
+                </button>
+                <button className="rounded-full border border-fuchsia-500 px-6 py-3 font-semibold text-fuchsia-300 hover:bg-fuchsia-900/40">
+                  Contact
+                </button>
+              </div>
+            </div>
+          </section>
 
-          {/* Qualifications Section */}
-          <section className="fade-trigger">
-            <h2>Qualifications</h2>
-            <div className="fade-trigger">
-              <h3>Western Governors University</h3>
-              <div className="grid grid-cols-2">
-                <p className="underline">B.S. Software Engineering</p>
-                <p className="justify-end text-right">May, 2025</p>
+          {/* About */}
+          <section className="fade-trigger px-6 md:px-16 lg:px-24">
+            <div className="max-w-3xl border-t border-fuchsia-900/40 pt-12">
+              <h2 className="text-3xl font-bold text-fuchsia-300">About</h2>
+              <p className="mt-4 text-slate-300">
+                I’m a software engineer focused on clean systems and expressive
+                interfaces. This site is a curated snapshot of my work, skills,
+                and creative process.
+              </p>
+            </div>
+          </section>
+
+          {/* Spotlight Project */}
+          <section className="fade-trigger px-6 py-16 md:px-16 lg:px-24">
+            <div className="max-w-5xl rounded-2xl border border-fuchsia-900/40 bg-slate-950/60 p-6 md:p-10">
+              <div className="flex items-center justify-between">
+                <h2 className="text-3xl font-bold text-fuchsia-300">
+                  NASA APOD Spotlight
+                </h2>
+                <span className="text-xs uppercase tracking-widest text-slate-400">
+                  Live
+                </span>
+              </div>
+              <div className="mt-6">
+                <NasaApod />
               </div>
             </div>
-            <div className="fade-trigger">
-              <h3>Utah State Board of Education</h3>
-              <div className="grid grid-cols-2">
-                <p className="underline">GED - High school diploma</p>
-                <p className="justify-end text-right">Dec, 2022</p>
-              </div>
+          </section>
+
+          {/* Capabilities */}
+          <section className="fade-trigger px-6 md:px-16 lg:px-24">
+            <h2 className="text-3xl font-bold text-fuchsia-300">
+              Capabilities
+            </h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {skills.map((item) => (
+                <div
+                  key={item.key}
+                  className="rounded-xl border border-fuchsia-900/40 bg-slate-950/60 p-4 text-slate-200"
+                >
+                  {item.text}
+                </div>
+              ))}
             </div>
-            <div className="fade-trigger">
-              <h3>Certifications</h3>
-              <ul className="list-disc m-8 text-xl">
-                <li data-testid="cert-item">
-                  AWS Certified Cloud Practitioner
+          </section>
+
+          {/* Languages */}
+          <section className="fade-trigger px-6 py-16 md:px-16 lg:px-24">
+            <h2 className="text-3xl font-bold text-fuchsia-300">
+              Programming Languages
+            </h2>
+            <ul className="mt-6 grid gap-3 md:grid-cols-3 text-slate-300">
+              {pgrmLanguages.map((item) => (
+                <li
+                  key={item.key}
+                  className="rounded-lg border border-fuchsia-900/40 bg-slate-950/60 p-3"
+                >
+                  {item.text}
                 </li>
-                <li data-testid="cert-item">CompTIA Project +</li>
-                <li data-testid="cert-item">Axelos ITIL Foundations</li>
-                <li data-testid="cert-item">Coursera Google IT Support</li>
-              </ul>
-            </div>
-            <div className="fade-trigger">
-              <h3>Skills / Hobbies / Interests</h3>
-              <ul className="list-disc m-8 text-xl" data-testid="skills-list">
-                {skills.map((item) => (
-                  <ListItems key={item.key} text={item.text} />
-                ))}
-              </ul>
-            </div>
-            <div className="fade-trigger">
-              <h3>Programming Languages</h3>
-              <ul
-                className="list-disc m-8 text-xl"
-                data-testid="programming-languages-list"
-              >
-                {pgrmLanguages.map((item) => (
-                  <ListItems key={item.key} text={item.text} />
-                ))}
-              </ul>
-            </div>
-            <hr></hr>
+              ))}
+            </ul>
           </section>
 
-          {/* Art Section */}
-          <section className="fade-trigger">
-            <h2>Art</h2>
-            <p>
-              Art is something I've spent a lot of time doing and I feel it is
-              deeply related to programming. Programming is all about creating a
-              good experience for a user and meeting their needs, and art is one
-              of the mediums to accomplish that. It especially shines through
-              GUIs and guiding a user through an application. Understanding
-              where a user is likely to search for something and, as a
-              developer, being able to provide that thing for them where they
-              want it.
+          {/* Art Gallery */}
+          <section className="fade-trigger px-6 md:px-16 lg:px-24">
+            <h2 className="text-3xl font-bold text-fuchsia-300">Art</h2>
+            <p className="mt-4 text-slate-300">
+              Visual craft informs how I design interfaces — composition,
+              rhythm, and focus all matter.
             </p>
-            <p>It's also something I enjoy, here are some of my favorites:</p>
-            <h3 className="text-center">Griffin, Digital, ~2021</h3>
-            <div className="flex gap-16 justify-center my-8">
-              <RoundedImage
-                src="/digital-griffin.jpg"
-                alt="An image of a digital painting of a portrait of a blue griffin."
-                width={500}
-                height={500}
-              />
+            <div className="mt-8 grid gap-8 md:grid-cols-2">
+              <div className="rounded-2xl border border-fuchsia-900/40 bg-slate-950/60 p-4">
+                <h3 className="text-center text-slate-200">
+                  Griffin, Digital, ~2021
+                </h3>
+                <div className="mt-4 flex justify-center">
+                  <RoundedImage
+                    src="/digital-griffin.jpg"
+                    alt="An image of a digital painting of a portrait of a blue griffin."
+                    width={500}
+                    height={500}
+                  />
+                </div>
+              </div>
+              <div className="rounded-2xl border border-fuchsia-900/40 bg-slate-950/60 p-4">
+                <h3 className="text-center text-slate-200">
+                  Flower with Dew, Oil paint, ~2020
+                </h3>
+                <div className="mt-4 flex justify-center">
+                  <RoundedImage
+                    src="/painting-flower.jpg"
+                    alt="An image of an oil painting of a orange flower with a few drops of dew on the petals."
+                    width={500}
+                    height={500}
+                  />
+                </div>
+              </div>
             </div>
-            <h3 className="text-center">Flower with Dew, Oil paint, ~2020</h3>
-            <div className="flex gap-16 justify-center my-8">
-              <RoundedImage
-                src="/painting-flower.jpg"
-                alt="An image of an oil painting of a orange flower with a few drops of dew on the petals."
-                width={500}
-                height={500}
-              />
-            </div>
-            <hr></hr>
           </section>
 
-          {/* This Site Section */}
-          <section className="fade-trigger">
-            <h2>This Site</h2>
-            <h3>Tech Stack</h3>
-            <p>
-              Built with TypeScript using Next.JS, Express, HTML, Tailwind CSS,
-              and Jest for testing. Hosted through AWS S3/Cloudfront and AWS
-              Lambda.
-            </p>
-            <h3>Project Deployment and History</h3>
-            <p>
-              This project is set up for automatic deployment using GitHub
-              Actions, so every time I commit and push changes to the
-              repository, the code is tested and then deployed to the AWS cloud.
-              <br />
-              <br />
-              Originally, the site was hosted on GitHub Pages, but I later
-              migrated it to AWS S3 with CloudFront for better scalability and
-              performance. I also added a containerized Express backend that
-              fetches the NASA Astronomy Picture of the Day and provides it to
-              the frontend via REST APIs. The backend is hosted through AWS
-              Lambda and accessed with API Gateway. I'd like to host this site
-              using Kubernetes as well but I won't due to extreme cloud costs.
-            </p>
-            <hr></hr>
+          {/* Credentials */}
+          <section className="fade-trigger px-6 py-16 md:px-16 lg:px-24">
+            <h2 className="text-3xl font-bold text-fuchsia-300">Credentials</h2>
+            <div className="mt-6 grid gap-6 md:grid-cols-2">
+              <div className="rounded-xl border border-fuchsia-900/40 bg-slate-950/60 p-5">
+                <h3 className="font-semibold text-slate-200">
+                  Western Governors University
+                </h3>
+                <p className="text-slate-400">B.S. Software Engineering</p>
+                <p className="text-slate-500">May, 2025</p>
+              </div>
+              <div className="rounded-xl border border-fuchsia-900/40 bg-slate-950/60 p-5">
+                <h3 className="font-semibold text-slate-200">Certifications</h3>
+                <ul className="mt-2 list-disc pl-6 text-slate-300">
+                  <li>AWS Certified Cloud Practitioner</li>
+                  <li>CompTIA Project +</li>
+                  <li>Axelos ITIL Foundations</li>
+                  <li>Coursera Google IT Support</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <section className="fade-trigger px-6 pb-20 md:px-16 lg:px-24">
+            <div className="border-t border-fuchsia-900/40 pt-8 text-slate-400">
+              <p>Let’s build something bold.</p>
+              <p className="mt-2 text-sm">nathan@example.com</p>
+            </div>
           </section>
         </main>
       </div>

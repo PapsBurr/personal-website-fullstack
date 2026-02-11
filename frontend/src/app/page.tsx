@@ -1,5 +1,6 @@
 import RoundedImage from "./components/RoundedImage";
 import NasaApod from "./components/NasaApod";
+import Link from "next/link";
 
 interface SkillItem {
   key: number;
@@ -50,12 +51,12 @@ export default function Home() {
                 Blending art, aerospace, curiosity, and full‑stack engineering.
               </p>
               <div className="m-8 flex flex-wrap gap-4">
-                <button className="rounded-full bg-amber-500 px-6 py-3 font-semibold text-black hover:bg-amber-400">
+                <Link
+                  href="/projects"
+                  className="rounded-full bg-amber-500 px-6 py-3 font-semibold text-black hover:bg-amber-400"
+                >
                   View Projects
-                </button>
-                <button className="rounded-full border border-amber-500 px-6 py-3 font-semibold text-amber-200/90 hover:bg-amber-900/40">
-                  Contact
-                </button>
+                </Link>
               </div>
             </div>
           </section>

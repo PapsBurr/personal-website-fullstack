@@ -67,17 +67,15 @@ const NasaApod: React.FC = () => {
   return (
     <>
       <div>
-        <h3 className="text-8xl font-bold text-center mb-4 text-gray-800">
+        <h3 className="text-8xl font-bold text-center mb-4">
           Nasa's Picture of the Day
         </h3>
-        <h4 className="text-xl font-bold text-center mb-4 text-gray-800">
-          {title}
-        </h4>
-        <p className="text-center text-gray-600 mb-6">{date}</p>
+        <h4 className="text-xl font-bold text-center mb-4">{title}</h4>
+        <p className="text-center text-slate-100/80 mb-6">{date}</p>
         <div className="flex gap-16 justify-center my-8">
           <RoundedImage src={imageUrl} alt={title} width={800} />
         </div>
-        <p className="!text-base text-gray-600 mb-6">{explanation}</p>
+        <p className="!text-base text-slate-100/80 mb-6">{explanation}</p>
         {isFallback && (
           <div className="flex justify-center mb-4">
             <p
@@ -97,7 +95,6 @@ const NasaApod: React.FC = () => {
           </div>
         )}
       </div>
-      <hr></hr>
     </>
   );
 };

@@ -4,9 +4,8 @@ export default function ProjectsPage() {
   const navLinks = [{ href: "/projects/solarsystem", label: "Solar System" }];
 
   return (
-    <div className="container-comp bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 min-h-screen">
-      <div></div>
-      <main className="flex-auto flex-col justify-between py-24 px-4 md:px-12 lg:px-24 bg-gray-100 text-black">
+    <div className="page-shell">
+      <main className="page-main">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-center text-4xl font-bold mb-16">Projects</h1>
           <div className="pt-12">

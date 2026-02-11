@@ -3,9 +3,8 @@ import RoundedImage from "../components/RoundedImage";
 export default function Page() {
   return (
     <>
-      <div className="container-comp bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 min-h-screen">
-        <div></div>
-        <main className="flex-auto flex-col justify-between py-24 px-4 md:px-12 lg:px-24 bg-gray-100 text-black">
+      <div className="page-shell">
+        <main className="page-main">
           {/* Opening Section */}
           <section className="fade-trigger">
             <h1>DevOps</h1>
@@ -13,7 +12,6 @@ export default function Page() {
               These are some of the projects I've worked on to learn about
               DevOps and it's best practices.
             </p>
-            <hr></hr>
           </section>
 
           {/* Github Actions Section */}
@@ -101,7 +99,6 @@ export default function Page() {
                 width={600}
               />
             </div>
-            <hr />
           </section>
 
           {/* Docker Section */}
@@ -188,7 +185,6 @@ export default function Page() {
               There is much more to be said about this project and I will save
               that for the Kubernetes section below.
             </p>
-            <hr></hr>
           </section>
 
           {/* Kubernetes Section */}
@@ -202,7 +198,6 @@ export default function Page() {
           <section className="fade-trigger">
             <h2>AWS</h2>
             <p>I will add my experience with AWS here soon.</p>
-            <hr></hr>
           </section>
         </main>
       </div>

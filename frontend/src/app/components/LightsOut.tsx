@@ -17,7 +17,7 @@ const LightsOut = () => {
 
   function createBoard(): Grid {
     return Array.from({ length: gridSize }, () =>
-      Array.from({ length: gridSize }, () => Math.random() < 0.5)
+      Array.from({ length: gridSize }, () => Math.random() < 0.5),
     );
   }
 
@@ -62,7 +62,9 @@ const LightsOut = () => {
     setTempGridSize(parseInt(e.target.value, 10));
   };
 
-  const handleSliderRelease = (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+  const handleSliderRelease = (
+    e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>,
+  ) => {
     const target = e.target as HTMLInputElement;
     setBoardSize(parseInt(target.value, 10));
   };
@@ -71,7 +73,7 @@ const LightsOut = () => {
     <div className="flex flex-col items-center mt-8">
       <button
         onClick={() => setShow((s) => !s)}
-        className="mt-6 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded shadow font-semibold transition-colors duration-200"
+        className="rounded-full border border-amber-500 px-6 py-3 font-semibold text-amber-200/90 hover:bg-amber-900/40 font-semibold transition-colors duration-200"
       >
         {show ? "Hide Game" : "Show Game"}
       </button>
@@ -108,7 +110,7 @@ const LightsOut = () => {
           <div className="flex flex-row flex-wrap items-center gap-16 justify-center mt-6">
             <button
               onClick={handleReset}
-              className="px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded shadow font-semibold transition-colors duration-200"
+              className="rounded-full border border-amber-500 px-6 py-3 font-semibold text-amber-200/90 hover:bg-amber-900/40 font-semibold transition-colors duration-200"
             >
               New Game
             </button>

@@ -31,12 +31,14 @@ h1 {
 }
 
 h2 {
+  @apply text-3xl font-semibold text-amber-200/90;
   font-size: 32px;
   font-weight: bold;
   margin: 16px;
 }
 
 h3 {
+  @apply font-semibold text-slate-200;
   font-size: 24px;
   font-weight: bold;
   margin: 16px;
@@ -49,10 +51,11 @@ h4 {
 }
 
 main {
-  box-shadow: 2px 0px 5px darkgray;
+  box-shadow: 0px 3px 4px oklch(76.9% 0.188 70.08);
 }
 
 p {
+  @apply mt-4;
   margin: 32px;
   font-size: 20px;
 }
@@ -61,9 +64,17 @@ hr {
   margin: 64px 0px;
 }
 
+section {
+  @apply py-8;
+}
+
 .canvas-container {
   width: 100vw;
   height: calc(100vh - 168px);
+}
+
+.card {
+  @apply rounded-xl border border-slate-700/60 bg-slate-900/60 p-5;
 }
 
 .fade-trigger {
@@ -85,20 +96,30 @@ hr {
     transform 0.8s ease-out;
 }
 
-.container-main {
+.list-card {
+  @apply rounded-xl border border-fuchsia-900/40 bg-slate-950/60 p-4 text-slate-200;
+}
+
+.page-shell {
+  @apply min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100;
+}
+
+.page-main {
+  @apply min-h-screen bg-slate-950/90 px-6 py-24 md:px-16 lg:px-24;
   grid-area: main;
 }
 
 @media only screen and (max-width: 1200px) {
-  .container-comp {
+  .page-shell {
     display: grid;
     grid-template-columns: 0% 100% 0%;
     grid-template-rows: auto;
     grid-template-areas: ". main .";
   }
 }
+
 @media only screen and (min-width: 1200px) {
-  .container-comp {
+  .page-shell {
     display: grid;
     grid-template-columns: 10% 80% 10%;
     grid-template-rows: auto auto auto;
@@ -107,8 +128,9 @@ hr {
       ". main .";
   }
 }
+
 @media only screen and (min-width: 2400px) {
-  .container-comp {
+  .page-shell {
     display: grid;
     grid-template-columns: 20% 60% 20%;
     grid-template-rows: auto auto auto;

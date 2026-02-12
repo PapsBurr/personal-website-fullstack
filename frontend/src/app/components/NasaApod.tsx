@@ -13,19 +13,19 @@ const NasaApod: React.FC = () => {
           Nasa's Picture of the Day
         </h3>
         {/* Skeleton for subtitle */}
-        <div className="h-6 bg-gray-300 animate-pulse rounded mb-4 mx-auto w-1/2"></div>
+        <div className="h-6 bg-slate-700 animate-pulse rounded mb-4 mx-auto w-1/2"></div>
         {/* Skeleton for date */}
-        <div className="h-4 bg-gray-300 animate-pulse rounded m-6 mx-auto w-1/4"></div>
+        <div className="h-4 bg-slate-700 animate-pulse rounded m-6 mx-auto w-1/4"></div>
         {/* Skeleton for image */}
         <div className="flex justify-center my-8">
-          <div className="w-800 h-100 bg-gray-300 animate-pulse rounded-[20px] shadow-md/40"></div>
+          <div className="w-800 h-100 bg-slate-700 animate-pulse rounded-[20px] shadow-md/40"></div>
         </div>
         {/* Skeleton for explanation (multiple lines) */}
         <div className="space-y-2 mb-6">
-          <div className="h-4 bg-gray-300 animate-pulse rounded w-full"></div>
-          <div className="h-4 bg-gray-300 animate-pulse rounded w-5/6"></div>
-          <div className="h-4 bg-gray-300 animate-pulse rounded w-4/5"></div>
-          <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+          <div className="h-4 bg-slate-700 animate-pulse rounded w-full"></div>
+          <div className="h-4 bg-slate-700 animate-pulse rounded w-5/6"></div>
+          <div className="h-4 bg-slate-700 animate-pulse rounded w-4/5"></div>
+          <div className="h-4 bg-slate-700 animate-pulse rounded w-3/4"></div>
         </div>
         <hr />
       </>

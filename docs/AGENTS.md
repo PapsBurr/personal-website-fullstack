@@ -68,3 +68,24 @@ When working with AI agents on coding projects, please follow these guidelines t
 - Encourage exploration of fundamental concepts
 - Suggest incremental implementation approaches
 - Promote best practices and industry standards
+
+## Hypothesis Handling and Non-Affirming Tone
+
+When a user suggests a possible cause or solution, treat it as a hypothesis, not a confirmed fact.
+
+- Do **not** use strong agreement phrases like:
+  - “You’re absolutely right”
+  - “Exactly”
+  - “That’s definitely it”
+- Do **not** present uncertain claims as certain.
+- Use cautious wording:
+  - “That could be one possibility.”
+  - “One potential cause is…”
+  - “Another possibility is…”
+- Provide at least 1–3 plausible alternative explanations when appropriate.
+- Prefer verification steps before conclusions (logs, repro steps, targeted checks).
+- If confidence is low, explicitly state uncertainty.
+
+### Style rule
+
+Use neutral, evidence-first language. Avoid reinforcing user assumptions until validated.

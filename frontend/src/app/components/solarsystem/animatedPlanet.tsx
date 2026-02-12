@@ -80,13 +80,14 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       planetData.rotationPeriodHrs,
     );
 
-    // Optimize texture on load
+    const axialTiltRad = ((planetData.axialTiltDeg ?? 0) * Math.PI) / 180;
+
     useEffect(() => {
       if (texture) {
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
         texture.generateMipmaps = false;
-        texture.anisotropy = 1; // Reduce anisotropic filtering
+        texture.anisotropy = 1;
       }
     }, [texture]);
 
@@ -197,24 +198,54 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
           }}
           position={[scaledDistance, 0, 0]}
         >
-          <Sphere
-            args={[scaledPlanetRadius, segments, segments]}
-            onClick={handleClick}
-          >
+          <group>
             {planetData.isStar ? (
-              <meshBasicMaterial map={texture} />
+              <Sphere
+                args={[scaledPlanetRadius, segments, segments]}
+                onClick={handleClick}
+              >
+                <meshBasicMaterial map={texture} />
+              </Sphere>
             ) : (
-              <meshStandardMaterial
-                color={texture ? undefined : color}
-                map={texture}
-              />
+              <Sphere
+                args={[scaledPlanetRadius, segments, segments]}
+                castShadow // Cast shadows for planets, not for stars
+                receiveShadow // Stars don't receive shadows
+                onClick={handleClick}
+              >
+                <meshStandardMaterial
+                  color={texture ? undefined : color}
+                  map={texture}
+                />
+              </Sphere>
             )}
+
+            {ringData && <PlanetRing ringData={ringData} />}
+
             {/* Emit light from stars */}
             {planetData.isStar && (
-              <pointLight intensity={600} castShadow={true} decay={0.9} />
+              <group>
+                <pointLight
+                  intensity={6}
+                  distance={0}
+                  position={[0, 0, 0]}
+                  decay={0}
+                  castShadow
+                  shadow-mapSize-width={4096}
+                  shadow-mapSize-height={4096}
+                  shadow-camera-near={scaledPlanetRadius * 2}
+                  shadow-camera-far={1000000}
+                  shadow-bias={-0.0001}
+                  shadow-normal-bias={0.1}
+                  shadow-radius={1}
+                />
+                {/* Add a small sphere to visualize the light source */}
+                <Sphere args={[0.1, 32, 32]} position={[0, 1, 0]}>
+                  <meshBasicMaterial color="white" />
+                </Sphere>
+              </group>
             )}
-          </Sphere>
-          {ringData && <PlanetRing ringData={ringData} />}
+          </group>
         </group>
         <OrbitCircle
           radius={scaledDistance}

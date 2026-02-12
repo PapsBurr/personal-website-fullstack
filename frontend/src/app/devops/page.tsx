@@ -187,18 +187,17 @@ export default function Page() {
             </p>
           </section>
 
-          {/* Kubernetes Section */}
+          {/* Kubernetes Section
           <section className="fade-trigger">
             <h2>Kubernetes</h2>
             <p>I will add my experience with Kubernetes here soon.</p>
-            <hr></hr>
           </section>
 
-          {/* AWS Section */}
+          {/* AWS Section }
           <section className="fade-trigger">
             <h2>AWS</h2>
             <p>I will add my experience with AWS here soon.</p>
-          </section>
+          </section> */}
         </main>
       </div>
     </>

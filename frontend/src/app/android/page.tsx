@@ -1,3 +1,4 @@
+import Link from "next/link";
 import RoundedImage from "../components/RoundedImage";
 import LightsOut from "../components/LightsOut";
 
@@ -116,9 +117,16 @@ export default function Page() {
               <h2>Plenty More!</h2>
               <p>
                 There are a ton more projects I've done on Android and I'm not
-                going to put them all here. The rest can be found on my GitHub
-                linked at the top of the page.
+                going to put them all here. The rest can be found on my GitHub.
               </p>
+              <Link
+                href="https://github.com/nathanpons"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="primary-button"
+              >
+                GitHub Page
+              </Link>
             </div>
           </section>
         </main>

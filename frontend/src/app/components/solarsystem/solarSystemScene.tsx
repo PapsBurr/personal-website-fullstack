@@ -98,7 +98,7 @@ export default function SolarSystemScene() {
             position: [-196, 64, 64],
             fov: 90,
             near: 0.0001,
-            far: 10000,
+            far: 100000,
           }}
           gl={{
             antialias: true,

@@ -43,6 +43,13 @@ export const planetsConfig: PlanetConfigItem[] = [
     texturePath: "/2k_moon.jpg",
   },
   {
+    id: "ceres",
+    parentId: "sun",
+    planetData: planetData.ceres,
+    parentPlanetData: planetData.sun,
+    texturePath: "/2k_ceres_fictional.jpg",
+  },
+  {
     id: "mars",
     parentId: "sun",
     planetData: planetData.mars,
@@ -78,4 +85,11 @@ export const planetsConfig: PlanetConfigItem[] = [
     parentPlanetData: planetData.sun,
     texturePath: "/2k_neptune.jpg",
   },
+  {
+    id: "pluto",
+    parentId: "sun",
+    planetData: planetData.pluto,
+    parentPlanetData: planetData.sun,
+    texturePath: "/2k_pluto_fictional.jpg",
+  }
 ];

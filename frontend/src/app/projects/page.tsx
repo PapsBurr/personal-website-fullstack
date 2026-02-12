@@ -29,7 +29,12 @@ export default function ProjectsPage() {
             If you would like to see more of my work, please visit my GitHub
             Page
           </p>
-          <Link href="https://github.com/nathanpons" className="primary-button">
+          <Link
+            href="https://github.com/nathanpons"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="primary-button"
+          >
             GitHub Page
           </Link>
 

@@ -85,19 +85,25 @@ export default function Home() {
           {/* Capabilities */}
           <section className="fade-trigger">
             <h2 className="">Capabilities</h2>
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <ul
+              className="mt-6 grid gap-4 md:grid-cols-3"
+              data-testid="skills-list"
+            >
               {skills.map((item) => (
-                <div key={item.key} className="list-card">
+                <li key={item.key} className="list-card">
                   {item.text}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
 
           {/* Languages */}
           <section className="fade-trigger border-t border-slate-700/60">
             <h2 className="">Programming Languages</h2>
-            <ul className="mt-6 grid gap-3 md:grid-cols-3 text-slate-300">
+            <ul
+              className="mt-6 grid gap-3 md:grid-cols-3 text-slate-300"
+              data-testid="programming-languages-list"
+            >
               {pgrmLanguages.map((item) => (
                 <li key={item.key} className="list-card">
                   {item.text}
@@ -155,7 +161,10 @@ export default function Home() {
               </div>
               <div className="card">
                 <h3 className="">Certifications</h3>
-                <ul className="mt-2 list-disc pl-6 text-slate-300">
+                <ul
+                  className="mt-2 list-disc pl-6 text-slate-300"
+                  data-testid="cert-list"
+                >
                   <li>AWS Certified Cloud Practitioner</li>
                   <li>CompTIA Project +</li>
                   <li>Axelos ITIL Foundations</li>

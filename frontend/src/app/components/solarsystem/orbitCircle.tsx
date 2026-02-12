@@ -8,8 +8,8 @@ import { SimulationContext } from "./solarSystemScene";
 
 function OrbitCircle({
   radius = 5,
-  segments = 64,
-  color = "#4b4b4b",
+  segments = 128,
+  color = "#2b2b2b",
   parentRef,
 }: {
   radius?: number;
@@ -25,7 +25,11 @@ function OrbitCircle({
     for (let i = 0; i <= segments; i++) {
       const theta = (i / segments) * 2 * Math.PI;
       pts.push(
-        new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius)
+        new THREE.Vector3(
+          Math.cos(theta) * radius,
+          0,
+          Math.sin(theta) * radius,
+        ),
       );
     }
     return pts;

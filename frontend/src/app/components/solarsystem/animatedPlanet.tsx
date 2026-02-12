@@ -35,16 +35,18 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       isPaused,
     } = useContext(SimulationContext);
 
-    const segments = 32;
+    const segments = 128;
 
     // Only load texture if path is provided
     const texture = texturePath ? useTexture(texturePath) : null;
 
+    // Calculate scaled values based on real data and scaling constants
     const calculateOrbitSpeed = (orbitalPeriodHrs: number) => {
       if (orbitalPeriodHrs <= 0) return 0;
       return ((2 * Math.PI) / orbitalPeriodHrs) * timeScale;
     };
 
+    // Calculate scaled distance from parent, adding the radii of the planet and its parent to prevent overlap
     const scaleDistance = (distanceInKm: number) => {
       if (parentPlanetData) {
         return (
@@ -56,6 +58,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       return distanceInKm * SCALING_CONSTANTS.SYSTEM_SCALE;
     };
 
+    // Calculate scaled planet radius, applying a boost for better visibility of smaller planets
     const scalePlanetRadius = (radiusInKm: number) => {
       if (planetData.isStar) return radiusInKm * SCALING_CONSTANTS.SYSTEM_SCALE;
       return (
@@ -87,6 +90,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       }
     }, [texture]);
 
+    // Animate orbit and rotation
     useFrame(() => {
       if (isPaused) return; // Don't animate if paused
 
@@ -118,6 +122,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       }
     });
 
+    // Handle camera following logic
     useFrame(() => {
       // Only follow if this planet is the followed one
       if (followedPlanetId.current === id && controls && planetRef.current) {
@@ -140,6 +145,7 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       }
     });
 
+    // Function to focus camera on this planet
     const focusPlanet = () => {
       if (!planetRef.current || !controls) return;
 
@@ -160,12 +166,14 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
       orbitControls.update();
     };
 
+    // If this planet is selected (e.g. from UI), focus on it
     useEffect(() => {
       if (selectedPlanetId === id) {
         focusPlanet();
       }
     }, [selectedPlanetId, id]);
 
+    // Handle direct click on planet to toggle follow
     const handleClick = () => {
       if (followedPlanetId.current !== id) {
         focusPlanet();
@@ -201,8 +209,9 @@ const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
                 map={texture}
               />
             )}
+            {/* Emit light from stars */}
             {planetData.isStar && (
-              <pointLight intensity={600} castShadow={false} decay={0.9} />
+              <pointLight intensity={600} castShadow={true} decay={0.9} />
             )}
           </Sphere>
           {ringData && <PlanetRing ringData={ringData} />}

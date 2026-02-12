@@ -62,6 +62,15 @@ export const planetData: Record<string, PlanetData> = {
     radiusKm: 3389.5,
     axialTiltDeg: 25.19,
   },
+  ceres: {
+    name: "Ceres",
+    distanceKm: 413690250,
+    orbitalPeriodHrs: 40320,
+    rotationPeriodHrs: 9.07,
+    rotationDirection: RotationDirection.COUNTERCLOCKWISE,
+    radiusKm: 473,
+    axialTiltDeg: 4,
+  },
   jupiter: {
     name: "Jupiter",
     distanceKm: 778479000,

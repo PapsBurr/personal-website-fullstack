@@ -29,6 +29,7 @@ export type PlanetData = {
   rotationPeriodHrs: number;
   rotationDirection: RotationDirection;
   radiusKm: number;
+  axialTiltDeg: number;
   isStar?: boolean;
   satellites?: Record<string, PlanetData>;
   ring?: RingData;

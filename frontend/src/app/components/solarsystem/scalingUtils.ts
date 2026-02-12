@@ -1,5 +1,5 @@
 const SYSTEM_SCALE = 0.000001;
-const PLANET_RADIUS_SCALE_BOOST = 100;
+const PLANET_RADIUS_SCALE_BOOST = 1;
 const ROTATION_SPEED_FACTOR = 1;
 
 export function calculateOrbitSpeed(

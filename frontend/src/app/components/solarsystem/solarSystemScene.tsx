@@ -94,7 +94,12 @@ export default function SolarSystemScene() {
       <div className="canvas-container">
         <Canvas
           style={{ background: "black" }}
-          camera={{ position: [-196, 64, 64], fov: 90, near: 0.01, far: 10000 }}
+          camera={{
+            position: [-196, 64, 64],
+            fov: 90,
+            near: 0.0001,
+            far: 10000,
+          }}
           gl={{
             antialias: true,
             powerPreference: "high-performance",

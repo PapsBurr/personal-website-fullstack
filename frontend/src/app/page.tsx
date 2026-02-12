@@ -29,10 +29,6 @@ const pgrmLanguages: SkillItem[] = [
   { key: 9, text: "UML" },
 ];
 
-function ListItems(props: SkillItem) {
-  return <li>{props.text}</li>;
-}
-
 export default function Home() {
   return (
     <>
@@ -51,10 +47,7 @@ export default function Home() {
                 Blending art, aerospace, curiosity, and full‑stack engineering.
               </p>
               <div className="m-8 flex flex-wrap gap-4">
-                <Link
-                  href="/projects"
-                  className="rounded-full bg-amber-500 px-6 py-3 font-semibold text-black hover:bg-amber-400"
-                >
+                <Link href="/projects" className="primary-button">
                   View Projects
                 </Link>
               </div>
@@ -69,7 +62,7 @@ export default function Home() {
                 I’m a software engineer focused on secure, scalable, and
                 maintainable systems with automation and security. This site is
                 a snapshot of my work, skills, and creative process. Welcome to
-                my never-ending learning journey.
+                my learning journey that never ends.
               </p>
             </div>
           </section>
@@ -102,7 +95,7 @@ export default function Home() {
           </section>
 
           {/* Languages */}
-          <section className="fade-trigger">
+          <section className="fade-trigger border-t border-slate-700/60">
             <h2 className="">Programming Languages</h2>
             <ul className="mt-6 grid gap-3 md:grid-cols-3 text-slate-300">
               {pgrmLanguages.map((item) => (
@@ -114,7 +107,7 @@ export default function Home() {
           </section>
 
           {/* Art */}
-          <section className="fade-trigger">
+          <section className="fade-trigger border-t border-slate-700/60">
             <h2 className="">Art</h2>
             <p className="text-slate-300">
               Art and programming both focus on creating great user experiences.

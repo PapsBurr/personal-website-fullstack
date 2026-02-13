@@ -131,23 +131,6 @@ export default function SolarSystemScene() {
               <OrbitControls enableRotate makeDefault zoomSpeed={5} />
               <ambientLight intensity={0.2} />
 
-              {/* Test ground plane */}
-              <Plane
-                args={[100, 100]}
-                receiveShadow
-                castShadow
-                rotation={[-Math.PI / 2, 0, 0]}
-                position={[0, -10, 0]}
-              >
-                <meshStandardMaterial color="gray" />
-              </Plane>
-
-              {/* Test sphere that should cast shadow */}
-              <mesh castShadow position={[10, 0, 0]}>
-                <sphereGeometry args={[2]} />
-                <meshStandardMaterial color="red" />
-              </mesh>
-
               <SolarSystemObjects />
               {/* </FollowContext.Provider> */}
             </SimulationContext.Provider>

@@ -137,5 +137,5 @@ The project uses GitHub Actions for CI/CD. Deployment is triggered on push to th
   <a href="https://nathanpons.com">
     <img src="https://img.shields.io/badge/Portfolio-nathanpons.com-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Shield icon to link to portfolio website" /></a>
   <a href="https://github.com/nathanpons">
-    <img src="https://img.shields.io/badge/github-nathanpons-4AC41F?style=for-the-badge&logo=github&logoColor=white" alt="Shield icon to link to github profile" /></a>
+    <img src="https://img.shields.io/badge/github-nathanpons-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="Shield icon to link to github profile" /></a>
 </p>

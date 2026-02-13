@@ -2,7 +2,7 @@
 
 A modern, responsive personal portfolio website showcasing projects, qualifications, and technical skills. Features a Next.js frontend deployed to AWS S3 + CloudFront and an Express.js backend running on AWS Lambda.
 
-**Live Site:** <https://nathanpons.com>
+[![Portfolio Website](https://img.shields.io/badge/Portfolio-nathanpons.com-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white)](https://nathanpons.com)
 
 ## Overview
 
@@ -133,6 +133,9 @@ The project uses GitHub Actions for CI/CD. Deployment is triggered on push to th
 ## Author
 
 ***Nathan Pons***
-
-- Website: [NathanPons.com](https://nathanpons.com)
-- GitHub: [@PapsBurr](https://github.com/PapsBurr)
+<p align="center">
+  <a href="https://nathanpons.com">
+    <img src="https://img.shields.io/badge/Portfolio-nathanpons.com-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Shield icon to link to portfolio website" /></a>
+  <a href="https://github.com/nathanpons">
+    <img src="https://img.shields.io/badge/github-nathanpons-4AC41F?style=for-the-badge&logo=github&logoColor=white" alt="Shield icon to link to github profile" /></a>
+</p>

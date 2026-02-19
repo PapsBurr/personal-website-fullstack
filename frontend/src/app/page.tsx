@@ -46,7 +46,7 @@ export default function Home() {
               <p className="mt-6 text-lg text-slate-100">
                 Blending art, aerospace, curiosity, and full‑stack engineering.
               </p>
-              <div className="m-8 flex flex-wrap gap-4">
+              <div className="my-8 flex flex-wrap gap-4">
                 <Link href="/projects" className="primary-button">
                   View Projects
                 </Link>

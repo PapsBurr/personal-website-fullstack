@@ -127,10 +127,10 @@ router.get("/apod", cacheMiddleware(3600), async (req, res) => {
       return res.status(200).json(fallbackResponse);
     } else if (error.code === "ENOTFOUND" || error.code === "EAI_AGAIN") {
       console.error("Network error fetching NASA APOD:", error);
-      return res.status(503).json(fallbackResponse);
+      return res.status(200).json(fallbackResponse);
     } else {
       console.error("Error fetching NASA APOD:", error);
-      return res.status(500).json(fallbackResponse);
+      return res.status(200).json(fallbackResponse);
     }
   }
 });

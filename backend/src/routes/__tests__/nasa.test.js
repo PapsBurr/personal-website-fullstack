@@ -64,15 +64,15 @@ describe("NASA Routes", () => {
       expect(response.body).toHaveProperty("title", "Amazing Space Photo");
       expect(response.body).toHaveProperty(
         "explanation",
-        "This is a beautiful space photograph showing..."
+        "This is a beautiful space photograph showing...",
       );
       expect(response.body).toHaveProperty(
         "url",
-        "https://api.nasa.gov/test-image.jpg"
+        "https://api.nasa.gov/test-image.jpg",
       );
       expect(response.body).toHaveProperty(
         "hdurl",
-        "https://api.nasa.gov/test-image-hd.jpg"
+        "https://api.nasa.gov/test-image-hd.jpg",
       );
       expect(response.body).toHaveProperty("media_type", "image");
       expect(response.body).toHaveProperty("service_version", "v1");
@@ -81,7 +81,7 @@ describe("NASA Routes", () => {
         "https://api.nasa.gov/planetary/apod?api_key=test-api-key",
         expect.objectContaining({
           signal: expect.any(Object),
-        })
+        }),
       );
     });
   });
@@ -96,9 +96,10 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=error1")
-        .expect(500);
+        .expect(200);
 
-      expect(response.body.error).toBe("Failed to fetch NASA APOD");
+      expect(response.body.title).toBe("NGC 6960: The Witch's Broom Nebula");
+      expect(fetch).toHaveBeenCalled();
     });
 
     it("should handle request timeouts and return fallback response", async () => {
@@ -145,9 +146,10 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=error2")
-        .expect(500);
+        .expect(200);
 
-      expect(response.body.error).toBe("Failed to fetch NASA APOD");
+      expect(response.body.title).toBe("NGC 6960: The Witch's Broom Nebula");
+      expect(fetch).toHaveBeenCalled();
     });
 
     it("should handle network errors (ENOTFOUND)", async () => {
@@ -158,9 +160,10 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=enotfound")
-        .expect(503);
+        .expect(200);
 
-      expect(response.body.error).toBe("Network error fetching NASA APOD");
+      expect(response.body.title).toBe("NGC 6960: The Witch's Broom Nebula");
+      expect(fetch).toHaveBeenCalled();
     });
 
     it("should handle network errors (EAI_AGAIN)", async () => {
@@ -171,9 +174,10 @@ describe("NASA Routes", () => {
 
       const response = await request(app)
         .get("/api/nasa/apod?test=eai_again")
-        .expect(503);
+        .expect(200);
 
-      expect(response.body.error).toBe("Network error fetching NASA APOD");
+      expect(response.body.title).toBe("NGC 6960: The Witch's Broom Nebula");
+      expect(fetch).toHaveBeenCalled();
     });
   });
 

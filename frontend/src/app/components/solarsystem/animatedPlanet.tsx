@@ -10,6 +10,8 @@ import { SCALING_CONSTANTS } from "./scalingUtils";
 import PlanetRing from "./planetRing";
 import OrbitCircle from "./orbitCircle";
 
+// Add tilt for planets
+
 const AnimatedPlanet = forwardRef<THREE.Mesh, PlanetProps>(
   (
     {

@@ -11,7 +11,7 @@ type Grid = boolean[][];
 
 const LightsOut = () => {
   const [board, setBoard] = useState<Grid | null>(null);
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(true);
   const [gridSize, setBoardSize] = useState<number>(3);
   const [tempGridSize, setTempGridSize] = useState<number>(3);
 

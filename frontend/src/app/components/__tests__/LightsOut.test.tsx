@@ -7,20 +7,12 @@ describe('LightsOut Component', () => {
   it('renders the game board', () => {
     render(<LightsOut />);
 
-    act(() => {
-      screen.getByRole('button', { name: /Show Game/i }).click();
-    });
-    
     const buttons = screen.getAllByRole('button', { name: /Toggle light at row \d, column \d/i });
     expect(buttons).toHaveLength(9); // 3x3 grid
   });
 
   it('toggles cell state on click', () => {
     render(<LightsOut />);
-
-    act(() => {
-      screen.getByRole('button', { name: /Show Game/i }).click();
-    });
 
     const firstCell = screen.getByLabelText('Toggle light at row 1, column 1');
     if (firstCell.className.includes('bg-[var(--square-color-off)]')) {
@@ -31,22 +23,18 @@ describe('LightsOut Component', () => {
     expect(firstCell).toHaveClass('bg-[var(--square-color-on)]');
 
     act(() => {
-        firstCell.click();
-      });
+      firstCell.click();
+    });
     expect(firstCell).toHaveClass('bg-[var(--square-color-off)]');
   });
 
   it('resets the game board when New Game button is clicked, checks five times to account for randomness', () => {
     render(<LightsOut />);
-    
-    act(() => {
-      screen.getByRole('button', { name: /Show Game/i }).click();
-    });
 
     const getBoardState = () =>
-    screen.getAllByLabelText(/Toggle light at row \d, column \d/i).map(
-      btn => btn.className
-    );
+      screen.getAllByLabelText(/Toggle light at row \d, column \d/i).map(
+        btn => btn.className
+      );
 
     const beforeReset = getBoardState();
 
@@ -71,10 +59,6 @@ describe('LightsOut Component', () => {
   it('renders each light button with the correct class', () => {
     render(<LightsOut />);
 
-    act(() => {
-      screen.getByRole('button', { name: /Show Game/i }).click();
-    });
-
     const buttons = screen.getAllByLabelText(/Toggle light at row \d, column \d/i);
     buttons.forEach(button => {
       expect(
@@ -88,15 +72,18 @@ describe('LightsOut Component', () => {
   it('renders the grid size slider', () => {
     render(<LightsOut />);
 
-    act(() => {
-      screen.getByRole('button', { name: /Show Game/i }).click();
-    });
-
     const slider = screen.getByLabelText(/Grid Size:/i);
     expect(slider).toBeInTheDocument();
     expect(slider).toHaveAttribute('type', 'range');
     expect(slider).toHaveAttribute('min', '3');
     expect(slider).toHaveAttribute('max', '9');
     expect(slider).toHaveClass('slider');
+  });
+
+  it('renders the Hide Game button by default', () => {
+    render(<LightsOut />);
+
+    const hideButton = screen.getByRole('button', { name: /Hide Game/i });
+    expect(hideButton).toBeInTheDocument();
   });
 });

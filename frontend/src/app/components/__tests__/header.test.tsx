@@ -104,7 +104,7 @@ describe("Mobile Header Component", () => {
     expect(mobileNav).toBeInTheDocument();
 
     const links = within(mobileNav).getAllByRole("link");
-    expect(links).toHaveLength(6);
+    expect(links).toHaveLength(7);
   });
 
   it("has the correct mobile nav styling", () => {

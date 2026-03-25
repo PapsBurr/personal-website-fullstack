@@ -54,9 +54,9 @@ export default function Page() {
               <p>
                 The homepage features a hero section with a clear call to
                 action, followed by sections that highlight the company's
-                services, showcase their work, and provide contact information.
-                The design is clean and modern, with a focus on usability and
-                accessibility.
+                services, a gallery of their work, and customer testimonials.
+                The design is clean and modern, with a focus on showcasing the
+                quality of their flooring services and their friendly nature.
               </p>
             </section>
 

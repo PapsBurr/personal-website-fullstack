@@ -14,7 +14,7 @@ export default function ProjectsPage() {
     <div className="page-shell">
       <main className="page-main">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-center text-4xl font-bold mb-16">Projects</h1>
+          <h1>Projects</h1>
           {/* Opening statement */}
           <p className="mt-6 text-lg text-slate-100">
             Explore some of the projects I've worked on, showcasing my skills

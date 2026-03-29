@@ -13,31 +13,35 @@ export default function ProjectsPage() {
   return (
     <div className="page-shell">
       <main className="page-main">
-        <div className="container mx-auto px-4 py-8">
-          <h1>Projects</h1>
-          {/* Opening statement */}
-          <p className="mt-6 text-lg text-slate-100">
-            Explore some of the projects I've worked on, showcasing my skills
-            and interests.
-          </p>
-          <p>
-            It needs to be said that these are not ALL of my projects that I
-            have worked on, but rather a selection of projects that I have
-            chosen to adapt/create on this websites architecture.
-          </p>
-          <p>
-            If you would like to see more of my work, please visit my GitHub
-            Page
-          </p>
-          <Link
-            href="https://github.com/nathanpons"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="primary-button"
-          >
-            GitHub Page
-          </Link>
+        <section className="fade-trigger">
+          <div className="container mx-auto px-4 py-8">
+            <h1>Projects</h1>
+            {/* Opening statement */}
+            <p className="mt-6 text-lg text-slate-100">
+              Explore some of the projects I've worked on, showcasing my skills
+              and interests.
+            </p>
+            <p>
+              It needs to be said that these are not ALL of my projects that I
+              have worked on, but rather a selection of projects that I have
+              chosen to adapt/create on this websites architecture.
+            </p>
+            <p>
+              If you would like to see more of my work, please visit my GitHub
+              Page
+            </p>
+            <Link
+              href="https://github.com/nathanpons"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="primary-button"
+            >
+              GitHub Page
+            </Link>
+          </div>
+        </section>
 
+        <section className="fade-trigger">
           {/* Project List */}
           <div className="pt-12 my-24 border-t border-slate-700/60">
             <h2 className="text-2xl font-semibold my-12">Project List</h2>
@@ -56,7 +60,7 @@ export default function ProjectsPage() {
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       </main>
     </div>
   );

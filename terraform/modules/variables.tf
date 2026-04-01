@@ -62,3 +62,15 @@ variable "environment" {
   description = "The deployment environment (e.g., dev, staging, prod)"
   type        = string
 }
+
+variable "db_username" {
+  description = "The username for the PostgreSQL database"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "The password for the PostgreSQL database"
+  type        = string
+  sensitive   = true
+}

@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
     
 jobs:
-    noop:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Workflow not set up yet
-              run: echo "This workflow is a placeholder for Terraform deployment.
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow not set up yet
+        run: echo "This workflow is a placeholder for Terraform deployment."

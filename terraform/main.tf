@@ -274,6 +274,7 @@ resource "aws_lambda_function" "backend_function" {
 
   function_name = "${local.prefix}-backend-function"
   package_type  = "image"
+  image_uri     = var.backend_function_image_uri
   timeout       = 30
   role          = aws_iam_role.lambda_execution_role.arn
 
@@ -288,21 +289,19 @@ resource "aws_lambda_function" "backend_function" {
       NEXT_PUBLIC_BASE_URL                = var.next_public_base_url
       NODE_ENV                            = local.environment
       AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"
-      STATIC_BUCKET_NAME                  = var.static_files_bucket_arn
+      STATIC_BUCKET_NAME                  = data.aws_s3_bucket.static_files_bucket.id
     }
   }
 
   tags = local.common_tags
 }
 
-### API Gateway
-resource "aws_api_gateway_rest_api" "api" {
-  name        = "${local.prefix}-api"
-  description = "API Gateway for the personal website backend"
+resource "aws_cloudwatch_log_group" "backend_function_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.backend_function.function_name}"
+  retention_in_days = 14
 
   tags = local.common_tags
 }
-
 
 ## Www Redirect Function
 data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
@@ -316,36 +315,29 @@ data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
   }
 }
 
+data "archive_file" "www_redirect_function_zip" {
+  type        = "zip"
+  source_dir  = "lambda_functions/www-redirect-function"
+  output_path = "lambda_functions/www-redirect-function.zip"
+}
+
 resource "aws_lambda_function" "www_redirect_function" {
   provider           = aws.us_east_1
   function_name      = "${local.prefix}-www-redirect-function"
+  role               = aws_iam_role.lambda_edge_role.arn
   runtime            = "nodejs24.x"
   handler            = "index.handler"
-  role               = aws_iam_role.lambda_edge_role.arn
   auto_publish_alias = "live"
   timeout            = 5
+  filename           = "lambda_functions/www-redirect-function.zip"
 
-  inline_code = <<EOT
-    exports.handler = async (event) => {
-      const request = event.Records[0].cf.request;
-      const host = request.headers.host[0].value;
-      
-      if (host === 'www.${var.domain_name}') {
-        return {
-          status: '301',
-          statusDescription: 'Moved Permanently',
-          headers: {
-            location: [{
-              key: 'Location',
-              value: 'https://${var.domain_name}' + request.uri
-            }]
-          }
-        };
-      }
-      
-      return request;
-    };
-  EOT
+  tags = local.common_tags
+}
+
+## API Gateway
+resource "aws_apigatewayv2_api" "api_gateway" {
+  name          = "${local.prefix}-api-gateway"
+  protocol_type = "HTTP"
 
   tags = local.common_tags
 }

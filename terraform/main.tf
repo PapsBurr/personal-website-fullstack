@@ -269,6 +269,39 @@ resource "aws_cloudfront_distribution" "cdn" {
 
 
 ## AWS Lambda Backend
+resource "aws_cloudwatch_log_group" "backend_function_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.backend_function.function_name}"
+  retention_in_days = 14
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_policy" "lambda_logging" {
+  name        = "${local.prefix}-lambda-logging-policy"
+  description = "IAM policy for Lambda function logging to CloudWatch"
+  policy = jsonencode(
+    {
+      Version : "2012-10-17",
+      Statement : [
+        {
+          Effect : "Allow",
+          Action : [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          Resource : "arn:aws:logs:*:*:*"
+        }
+      ]
+    }
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = aws_iam_policy.lambda_logging.arn
+}
+
 resource "aws_lambda_function" "backend_function" {
   provider = aws.us_east_1
 
@@ -282,6 +315,11 @@ resource "aws_lambda_function" "backend_function" {
     command = ["server.handler"]
   }
 
+  logging_config {
+    log_format            = "json"
+    application_log_level = "INFO"
+    system_log_level      = "WARN"
+  }
 
   environment {
     variables = {
@@ -293,12 +331,10 @@ resource "aws_lambda_function" "backend_function" {
     }
   }
 
-  tags = local.common_tags
-}
-
-resource "aws_cloudwatch_log_group" "backend_function_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.backend_function.function_name}"
-  retention_in_days = 14
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logs,
+    aws_cloudwatch_log_group.backend_function_log_group
+  ]
 
   tags = local.common_tags
 }

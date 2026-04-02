@@ -53,3 +53,8 @@ aws/
 
 # reports
 lighthouse-report.*
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup

@@ -216,8 +216,6 @@ resource "aws_iam_role" "lambda_edge_role" {
   tags = local.common_tags
 }
 
-## Www Redirect Function
-
 ## Origin Access Control
 resource "aws_cloudfront_origin_access_control" "oac" {
   origin_access_control_origin_type = aws_s3_bucket.frontend_bucket.arn
@@ -269,7 +267,35 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
-## Express API Function
+
+## AWS Lambda Backend
+resource "aws_lambda_function" "backend_function" {
+  provider = aws.us_east_1
+
+  function_name = "${local.prefix}-backend-function"
+  package_type  = "image"
+  timeout       = 30
+  role          = aws_iam_role.lambda_execution_role.arn
+
+  image_config {
+    command = ["server.handler"]
+  }
+
+
+  environment {
+    variables = {
+      NASA_API_KEY                        = var.nasa_api_key
+      NEXT_PUBLIC_BASE_URL                = var.next_public_base_url
+      NODE_ENV                            = local.environment
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"
+      STATIC_BUCKET_NAME                  = var.static_files_bucket_arn
+    }
+  }
+
+  tags = local.common_tags
+}
+
+### API Gateway
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${local.prefix}-api"
   description = "API Gateway for the personal website backend"
@@ -277,21 +303,49 @@ resource "aws_api_gateway_rest_api" "api" {
   tags = local.common_tags
 }
 
-## AWS Lambda Backend
-resource "aws_lambda_function" "backend_function" {
-  provider      = aws.us_east_1
-  function_name = "${local.prefix}-backend-function"
-  runtime       = "nodejs24.x"
-  handler       = "index.handler"
-  role          = aws_iam_role.lambda_execution_role.arn
-  filename      = "path/to/backend_function.zip"
 
-  environment {
-    variables = {
-      NASA_API_KEY         = var.nasa_api_key
-      NEXT_PUBLIC_BASE_URL = var.next_public_base_url
+## Www Redirect Function
+data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
+    actions = ["sts:AssumeRole"]
   }
+}
+
+resource "aws_lambda_function" "www_redirect_function" {
+  provider           = aws.us_east_1
+  function_name      = "${local.prefix}-www-redirect-function"
+  runtime            = "nodejs24.x"
+  handler            = "index.handler"
+  role               = aws_iam_role.lambda_edge_role.arn
+  auto_publish_alias = "live"
+  timeout            = 5
+
+  inline_code = <<EOT
+    exports.handler = async (event) => {
+      const request = event.Records[0].cf.request;
+      const host = request.headers.host[0].value;
+      
+      if (host === 'www.${var.domain_name}') {
+        return {
+          status: '301',
+          statusDescription: 'Moved Permanently',
+          headers: {
+            location: [{
+              key: 'Location',
+              value: 'https://${var.domain_name}' + request.uri
+            }]
+          }
+        };
+      }
+      
+      return request;
+    };
+  EOT
 
   tags = local.common_tags
 }

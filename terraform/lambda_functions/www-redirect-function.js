@@ -2,7 +2,7 @@ exports.handler = async (event) => {
   const request = event.Records[0].cf.request;
   const host = request.headers.host[0].value;
 
-  if (host === "www.${var.domain_name}") {
+  if (host === process.env.TARGET_DOMAIN) {
     return {
       status: "301",
       statusDescription: "Moved Permanently",
@@ -10,7 +10,7 @@ exports.handler = async (event) => {
         location: [
           {
             key: "Location",
-            value: "https://${var.domain_name}" + request.uri,
+            value: "https://" + process.env.TARGET_DOMAIN + request.uri,
           },
         ],
       },

@@ -4,15 +4,15 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.92"
     }
-    # Potentially have to run terraform apply before uncommenting this remote backend
-    backend = {
-      bucket         = var.state_bucket
-      key            = "terraform.tfstate"
-      region         = var.aws_region
-      dynamodb_table = var.state_lock_table
-      encrypt        = true
-    }
   }
+  # # Potentially have to run terraform apply before uncommenting this remote backend
+  # backend = {
+  #   bucket         = var.state_bucket
+  #   key            = "terraform.tfstate"
+  #   region         = var.aws_region
+  #   dynamodb_table = var.state_lock_table
+  #   encrypt        = true
+  # }
 
   required_version = ">= 1.2"
 }
@@ -20,35 +20,35 @@ terraform {
 # Resources
 # ---------------------------------------------------------------
 
-## State bucket
-resource "aws_s3_bucket" "terraform_state_bucket" {
-  bucket        = "${local.prefix}-terraform-state-bucket"
-  force_destroy = true
+# ## State bucket
+# resource "aws_s3_bucket" "terraform_state_bucket" {
+#   bucket        = "${local.prefix}-terraform-state-bucket"
+#   force_destroy = true
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 
-resource "aws_s3_bucket_versioning" "terraform_state_bucket_versioning" {
-  bucket = aws_s3_bucket.terraform_state_bucket.id
+# resource "aws_s3_bucket_versioning" "terraform_state_bucket_versioning" {
+#   bucket = aws_s3_bucket.terraform_state_bucket.id
 
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
 
-## DynamoDB Table for State Locking
-resource "aws_dynamodb_table" "terraform_state_lock_table" {
-  name         = "${local.prefix}-terraform-state-lock-table"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+# ## DynamoDB Table for State Locking
+# resource "aws_dynamodb_table" "terraform_state_lock_table" {
+#   name         = "${local.prefix}-terraform-state-lock-table"
+#   billing_mode = "PAY_PER_REQUEST"
+#   hash_key     = "LockID"
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
+#   attribute {
+#     name = "LockID"
+#     type = "S"
+#   }
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 
 ## Frontend S3 Bucket
 resource "aws_s3_bucket" "frontend_bucket" {
@@ -94,8 +94,8 @@ resource "aws_s3_bucket_ownership_controls" "frontend_bucket_ownership_controls"
 }
 
 ## Frontend S3 Bucket Policy
-resource "aws_s3control_bucket_policy" "frontend_bucket_policy" {
-  bucket = aws_s3control_bucket.frontend_bucket.arn
+resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
+  bucket = aws_s3_bucket.frontend_bucket.arn
   policy = jsonencode(
     {
       Version : "2012-10-17",
@@ -120,7 +120,7 @@ resource "aws_s3control_bucket_policy" "frontend_bucket_policy" {
 
 ## Static Files S3 Bucket (Already in place)
 data "aws_s3_bucket" "static_files_bucket" {
-  bucket = var.static_files_bucket_arn
+  bucket = var.static_files_bucket_name
 }
 
 resource "aws_s3_bucket_versioning" "static_files_bucket_versioning" {
@@ -160,7 +160,7 @@ resource "aws_s3_bucket_ownership_controls" "static_files_bucket_ownership_contr
 
 ## Static Files Bucket Policy
 ### TODO: AWS inside first principle needs LambdaEdgeRole.Arn
-resource "aws_s3control_bucket_policy" "static_files_bucket_policy" {
+resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
   bucket = var.static_files_bucket_arn
   policy = jsonencode(
     {
@@ -196,7 +196,7 @@ resource "aws_s3control_bucket_policy" "static_files_bucket_policy" {
 resource "aws_iam_role" "lambda_edge_role" {
   name = "${local.prefix}-lambda-edge-role"
 
-  assume_role_policy = jsondecode(
+  assume_role_policy = jsonencode(
     {
       Version : "2012-10-17",
       Statement : [
@@ -218,7 +218,7 @@ resource "aws_iam_role" "lambda_edge_role" {
 
 ## Origin Access Control
 resource "aws_cloudfront_origin_access_control" "oac" {
-  origin_access_control_origin_type = aws_s3_bucket.frontend_bucket.arn
+  origin_access_control_origin_type = "s3"
   name                              = "${local.prefix}-oac"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -236,7 +236,7 @@ resource "aws_ecr_repository" "lambda_edge_repository" {
   tags = local.common_tags
 }
 
-resource "aws_ecr_repository_policy" "lambda_edge_repository_policy" {
+resource "aws_ecr_lifecycle_policy" "lambda_edge_repository_lifecycle_policy" {
   repository = aws_ecr_repository.lambda_edge_repository.name
   policy = jsonencode(
     {
@@ -303,13 +303,11 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 }
 
 resource "aws_lambda_function" "backend_function" {
-  provider = aws.us_east_1
-
   function_name = "${local.prefix}-backend-function"
-  package_type  = "image"
+  package_type  = "Image"
   image_uri     = var.backend_function_image_uri
   timeout       = 30
-  role          = aws_iam_role.lambda_execution_role.arn
+  role          = aws_iam_role.lambda_edge_role.arn
 
   image_config {
     command = ["server.handler"]
@@ -325,7 +323,7 @@ resource "aws_lambda_function" "backend_function" {
     variables = {
       NASA_API_KEY                        = var.nasa_api_key
       NEXT_PUBLIC_BASE_URL                = var.next_public_base_url
-      NODE_ENV                            = local.environment
+      NODE_ENV                            = var.environment
       AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"
       STATIC_BUCKET_NAME                  = data.aws_s3_bucket.static_files_bucket.id
     }
@@ -353,21 +351,38 @@ data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
 
 data "archive_file" "www_redirect_function_zip" {
   type        = "zip"
-  source_dir  = "lambda_functions/www-redirect-function"
+  source_file = "lambda_functions/www-redirect-function.js"
   output_path = "lambda_functions/www-redirect-function.zip"
 }
 
 resource "aws_lambda_function" "www_redirect_function" {
-  provider           = aws.us_east_1
-  function_name      = "${local.prefix}-www-redirect-function"
-  role               = aws_iam_role.lambda_edge_role.arn
-  runtime            = "nodejs24.x"
-  handler            = "index.handler"
-  auto_publish_alias = "live"
-  timeout            = 5
-  filename           = "lambda_functions/www-redirect-function.zip"
+  provider      = aws.us_east_1
+  function_name = "${local.prefix}-www-redirect-function"
+  role          = aws_iam_role.lambda_edge_role.arn
+  runtime       = "nodejs24.x"
+  handler       = "index.handler"
+  timeout       = 5
+  filename      = "lambda_functions/www-redirect-function.zip"
+  publish       = true
+
+  environment {
+    variables = {
+      TARGET_DOMAIN = var.domain_name
+    }
+  }
+
+  depends_on = [
+    aws_iam_role.lambda_edge_role,
+    data.archive_file.www_redirect_function_zip
+  ]
 
   tags = local.common_tags
+}
+
+resource "aws_lambda_alias" "www_redirect_function_alias" {
+  name             = "live"
+  function_name    = aws_lambda_function.www_redirect_function.function_name
+  function_version = aws_lambda_function.www_redirect_function.version
 }
 
 ## API Gateway

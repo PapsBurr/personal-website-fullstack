@@ -394,6 +394,27 @@ resource "aws_db_instance" "postgres_db" {
 }
 
 ## VPC and Networking
+resource "aws_vpc" "personal_website_vpc" {
+  cidr_block = "10.0.0.0/24"
+
+  tags = local.common_tags
+}
+
+resource "aws_subnet" "main_subnet" {
+  vpc_id            = aws_vpc.personal_website_vpc.id
+  cidr_block        = "10.0.0.0/24"
+  availability_zone = "${var.aws_region}a"
+
+
+  tags = local.common_tags
+}
+
+resource "aws_internet_gateway" "main_igw" {
+  vpc_id = aws_vpc.personal_website_vpc.id
+
+  tags = local.common_tags
+}
+
 
 # Locals Values (!Sub)
 # ---------------------------------------------------------------

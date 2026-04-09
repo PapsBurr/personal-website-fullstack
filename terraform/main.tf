@@ -172,7 +172,7 @@ resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
             AWS : aws_iam_role.lambda_edge_role.arn
           },
           Action : "s3:GetObject",
-          Resource : "${var.static_files_bucket_arn}/*"
+          Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*"
         },
         {
           Effect : "Allow",
@@ -180,7 +180,7 @@ resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
             Service : "cloudfront.amazonaws.com"
           },
           Action : "s3:GetObject",
-          Resource : "${var.static_files_bucket_arn}/*",
+          Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*",
           Condition : {
             StringEquals : {
               "AWS:SourceArn" : "${aws_cloudfront_distribution.cdn.arn}"

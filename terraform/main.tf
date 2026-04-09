@@ -95,7 +95,7 @@ resource "aws_s3_bucket_ownership_controls" "frontend_bucket_ownership_controls"
 
 ## Frontend S3 Bucket Policy
 resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
-  bucket = aws_s3_bucket.frontend_bucket.arn
+  bucket = aws_s3_bucket.frontend_bucket.id
   policy = jsonencode(
     {
       Version : "2012-10-17",
@@ -161,7 +161,7 @@ resource "aws_s3_bucket_ownership_controls" "static_files_bucket_ownership_contr
 ## Static Files Bucket Policy
 ### TODO: AWS inside first principle needs LambdaEdgeRole.Arn
 resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
-  bucket = var.static_files_bucket_arn
+  bucket = data.aws_s3_bucket.static_files_bucket.id
   policy = jsonencode(
     {
       Version : "2012-10-17",

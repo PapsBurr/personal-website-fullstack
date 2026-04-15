@@ -4,7 +4,7 @@ from conftest import BASE_URL
 
 
 @pytest.mark.smoke
-def test_header_initialization(self, driver):
+def test_header_initialization(driver):
     driver.get(BASE_URL)
     header = driver.find_element(By.TAG_NAME, "header")
     assert header is not None, "Header element should be present on the page"

@@ -17,7 +17,7 @@ from conftest import BASE_URL
         "GitHub",
     ],
 )
-def test_header_navigation_links_exist(self, driver, link_text):
+def test_header_navigation_links_exist(driver, link_text):
     driver.get(BASE_URL)
     header = driver.find_element(By.TAG_NAME, "header")
     nav_links = header.find_elements(By.TAG_NAME, "a")
@@ -34,7 +34,7 @@ def test_header_navigation_links_exist(self, driver, link_text):
     ), f"Navigation link '{link_text}' should have a valid href attribute"
 
 
-def test_header_navigation_links_functionality(self, driver):
+def test_header_navigation_links_functionality(driver):
     driver.get(BASE_URL)
 
     header = driver.find_element(By.TAG_NAME, "header")

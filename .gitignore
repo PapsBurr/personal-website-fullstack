@@ -58,3 +58,6 @@ lighthouse-report.*
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+
+# Python
+__pycache__/

@@ -48,7 +48,7 @@ describe("Desktop Header Component", () => {
     render(<Header />);
     const githubLink = screen.getByRole("link", { name: /GitHub/i });
     expect(githubLink).toBeInTheDocument();
-    expect(githubLink).toHaveAttribute("href", "https://github.com/PapsBurr");
+    expect(githubLink).toHaveAttribute("href", "https://github.com/nathanpons");
     expect(githubLink).toHaveAttribute("target", "_blank");
   });
 });

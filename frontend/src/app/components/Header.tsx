@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/devops", label: "DevOps" },
   { href: "/android", label: "Android" },
   { href: "/projects", label: "Projects" },
-  { href: "https://github.com/PapsBurr", label: "GitHub", external: true },
+  { href: "https://github.com/nathanpons", label: "GitHub", external: true },
 ];
 
 export default function Header() {

@@ -4,6 +4,7 @@ from axe_selenium_python import Axe
 from conftest import BASE_URL
 
 
+@pytest.mark.accessibility
 @pytest.mark.skip(
     reason="Accessibility test is currently failing due to known issues that need to be addressed."
 )

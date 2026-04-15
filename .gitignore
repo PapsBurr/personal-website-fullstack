@@ -61,3 +61,6 @@ terraform.tfstate.backup
 
 # Python
 __pycache__/
+
+# Reports
+reports/

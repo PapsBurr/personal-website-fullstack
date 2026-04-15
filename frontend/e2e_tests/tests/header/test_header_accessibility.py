@@ -1,7 +1,7 @@
 import pytest
 from selenium.webdriver.common.by import By
 from axe_selenium_python import Axe
-from conftest import BASE_URL
+from frontend.e2e_tests.conftest import BASE_URL
 
 
 @pytest.mark.accessibility

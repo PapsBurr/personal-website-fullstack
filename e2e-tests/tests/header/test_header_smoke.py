@@ -1,7 +1,9 @@
 from selenium.webdriver.common.by import By
+import pytest
 from conftest import BASE_URL
 
 
+@pytest.mark.smoke
 def test_header_initialization(self, driver):
     driver.get(BASE_URL)
     header = driver.find_element(By.TAG_NAME, "header")

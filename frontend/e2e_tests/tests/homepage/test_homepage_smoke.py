@@ -34,3 +34,25 @@ def test_homepage_has_title(driver):
     assert (
         title is not None
     ), "The homepage should have my profession title element in the head section"
+
+
+def test_homepage_has_apod(driver):
+    driver.get(BASE_URL)
+    apod = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'APOD')]"))
+    )
+    assert (
+        apod is not None
+    ), "The homepage should have the APOD section since it's a key feature of the site"
+
+
+def test_homepage_has_capabilities(driver):
+    driver.get(BASE_URL)
+    capabilities = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[contains(text(), 'Capabilities')]")
+        )
+    )
+    assert (
+        capabilities is not None
+    ), "The homepage should have the Capabilities section since it's a key feature of the site"

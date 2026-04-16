@@ -56,3 +56,15 @@ def test_homepage_has_capabilities(driver):
     assert (
         capabilities is not None
     ), "The homepage should have the Capabilities section since it's a key feature of the site"
+
+
+def test_homepage_has_programming_languages(driver):
+    driver.get(BASE_URL)
+    programming_languages = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[contains(text(), 'Programming Languages')]")
+        )
+    )
+    assert (
+        programming_languages is not None
+    ), "The homepage should have the Programming Languages section since it's a key feature of the site"

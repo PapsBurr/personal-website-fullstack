@@ -10,3 +10,27 @@ def test_homepage_initialization(driver):
         EC.presence_of_element_located((By.TAG_NAME, "main"))
     )
     assert main is not None, "Main content area should be present on the homepage"
+
+
+def test_homepage_has_name(driver):
+    driver.get(BASE_URL)
+    name = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//h1[contains(text(), 'Nathan Pons')]")
+        )
+    )
+    assert (
+        name is not None
+    ), "The homepage should contain my name since it's my portfolio"
+
+
+def test_homepage_has_title(driver):
+    driver.get(BASE_URL)
+    title = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[contains(text(), 'Software Engineer')]")
+        )
+    )
+    assert (
+        title is not None
+    ), "The homepage should have my profession title element in the head section"

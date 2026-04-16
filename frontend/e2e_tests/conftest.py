@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 import os
 
-BASE_URL = os.environ.get("BASE_URL", "https://nathanpons.com/")
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000")
 
 
 @pytest.fixture(scope="session")

@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 import pytest
-from frontend.e2e_tests.conftest import BASE_URL
+from conftest import BASE_URL
 
 
 @pytest.mark.smoke

@@ -6,9 +6,7 @@ from conftest import BASE_URL
 
 def test_homepage_initialization(driver):
     driver.get(BASE_URL)
-    main_content = WebDriverWait(driver, 10).until(
+    main = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.TAG_NAME, "main"))
     )
-    assert (
-        main_content is not None
-    ), "Main content area should be present on the homepage"
+    assert main is not None, "Main content area should be present on the homepage"

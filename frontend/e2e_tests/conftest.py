@@ -17,3 +17,7 @@ def driver():
     driver.implicitly_wait(10)
     yield driver
     driver.quit()
+
+
+def to_lower(text: str) -> str:
+    return text.lower() if text else ""

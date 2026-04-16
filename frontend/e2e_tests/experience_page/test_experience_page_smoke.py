@@ -7,7 +7,7 @@ from conftest import BASE_URL
 
 @pytest.mark.smoke
 def test_experience_page_initialization(driver):
-    driver.get(f"{BASE_URL}experience")
+    driver.get(f"{BASE_URL}/experience")
     main = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.TAG_NAME, "main"))
     )

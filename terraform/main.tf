@@ -308,7 +308,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     lambda_function_association {
       event_type   = "viewer-request"
       include_body = false
-      lambda_arn   = aws_lambda_alias.www_redirect_function_alias.arn
+      lambda_arn   = aws_lambda_alias.www_redirect_function_alias.qualified_arn
     }
   }
 

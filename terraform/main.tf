@@ -274,13 +274,13 @@ resource "aws_cloudfront_distribution" "cdn" {
   origin {
     origin_id   = "backend-origin"
     domain_name = local.host_name
-    origin_path = aws_apigatewayv2_stage.default_stage.
+    origin_path = var.environment
 
     custom_origin_config {
-      http_port = 443
-      https_port = 443
+      http_port              = 443
+      https_port             = 443
       origin_protocol_policy = "https-only"
-      origin_ssl_protocols = "TLSv1.2"
+      origin_ssl_protocols   = "TLSv1.2"
     }
   }
 
@@ -303,6 +303,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     cached_methods         = ["GET, HEAD"]
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     viewer_protocol_policy = "redirect-to-https"
+    compress               = true
 
     lambda_function_association {
       event_type   = "viewer-request"

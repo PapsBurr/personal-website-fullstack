@@ -284,12 +284,9 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-  aliases = [var.domain_name, "www.${var.domain_name}"]
-
+  aliases             = [var.domain_name, "www.${var.domain_name}"]
   default_root_object = "index.html"
-
-  depends_on = [aws_cloudfront_origin_access_control.oac]
-  enabled    = true
+  enabled             = true
 
   viewer_certificate {
     acm_certificate_arn      = var.certificate_arn

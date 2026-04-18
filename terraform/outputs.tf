@@ -17,3 +17,13 @@ output "cloudfront_distribution_id" {
   description = "The ID of the CloudFront distribution"
   value       = aws_cloudfront_distribution.cdn.id
 }
+
+output "api_gateway_url" {
+  description = "The URL of the API Gateway"
+  value       = aws_apigatewayv2_stage.default_stage.invoke_url
+}
+
+output "host_name" {
+  description = "The host name for the API Gateway"
+  value       = local.host_name
+}

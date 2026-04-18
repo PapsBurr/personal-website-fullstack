@@ -312,6 +312,16 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
+  ordered_cache_behavior {
+    path_pattern             = "/api/*"
+    target_origin_id         = "backend-origin"
+    viewer_protocol_policy   = "redirect-to-https"
+    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods           = ["GET", "HEAD"]
+  }
+
   restrictions {
     geo_restriction {
       restriction_type = "none"

@@ -52,7 +52,7 @@ terraform {
 
 ## Frontend S3 Bucket
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket        = var.s3_bucket_name
+  bucket        = "${local.prefix}-frontend-bucket"
   force_destroy = true
 
   tags = local.common_tags
@@ -261,12 +261,77 @@ resource "aws_ecr_lifecycle_policy" "lambda_edge_repository_lifecycle_policy" {
 ## Cloudfront Distribution
 ### TODO: Add dependencies to LambdaEdgeRole and WwwRedirectFunction
 resource "aws_cloudfront_distribution" "cdn" {
-  depends_on = [aws_cloudfront_origin_access_control.oac]
   origin {
-    domain_name = var.domain_name
+    origin_id                = "frontend-origin"
+    domain_name              = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+
+    s3_origin_config {
+      origin_access_identity = ""
+    }
+  }
+
+  origin {
+    origin_id   = "backend-origin"
+    domain_name = local.host_name
+    origin_path = aws_apigatewayv2_stage.default_stage.
+
+    custom_origin_config {
+      http_port = 443
+      https_port = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = "TLSv1.2"
+    }
+  }
+
+  aliases = [var.domain_name, "www.${var.domain_name}"]
+
+  default_root_object = "index.html"
+
+  depends_on = [aws_cloudfront_origin_access_control.oac]
+  enabled    = true
+
+  viewer_certificate {
+    acm_certificate_arn      = var.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+
+  default_cache_behavior {
+    allowed_methods        = ["GET, HEAD, OPTIONS"]
+    target_origin_id       = "frontend-origin"
+    cached_methods         = ["GET, HEAD"]
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    viewer_protocol_policy = "redirect-to-https"
+
+    lambda_function_association {
+      event_type   = "viewer-request"
+      include_body = false
+      lambda_arn   = aws_lambda_alias.www_redirect_function_alias.arn
+    }
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
   }
 }
 
+# Unclear if I want this custom error response or not
+# resource "customer_error_response" "cdn_404_response" {
+#   distribution_id = aws_cloudfront_distribution.cdn.id
+#   error_code      = 404
+#   response_code   = 200
+#   response_page_path = "/index.html"
+# }
+
+resource "custom_error_response" "cdn_403_response" {
+  distribution_id    = aws_cloudfront_distribution.cdn.id
+  error_code         = 403
+  response_code      = 200
+  response_page_path = "/index.html"
+}
 
 ## AWS Lambda Backend
 resource "aws_cloudwatch_log_group" "backend_function_log_group" {
@@ -337,6 +402,13 @@ resource "aws_lambda_function" "backend_function" {
   tags = local.common_tags
 }
 
+resource "aws_lambda_permission" "apigateway_lambda_permission" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.backend_function.function_name
+  principal     = "apigateway.amazonaws.com"
+}
+
 ## Www Redirect Function
 data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
   statement {
@@ -393,6 +465,26 @@ resource "aws_apigatewayv2_api" "api_gateway" {
   tags = local.common_tags
 }
 
+resource "aws_apigatewayv2_integration" "lambda_integration" {
+  api_id           = aws_apigatewayv2_api.api_gateway.id
+  integration_type = "AWS_PROXY"
+
+  integration_method = "GET" # I may want to change this to ANY later, but I will keep it as GET for security until I need more.
+  integration_uri    = aws_lambda_function.backend_function.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "default_route" {
+  api_id    = aws_apigatewayv2_api.api_gateway.id
+  route_key = "ANY /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+resource "aws_apigatewayv2_stage" "default_stage" {
+  api_id      = aws_apigatewayv2_api.api_gateway.id
+  name        = "$default"
+  auto_deploy = true
+}
+
 ## Postgres Database
 resource "aws_db_instance" "postgres_db" {
   allocated_storage   = 20
@@ -440,4 +532,7 @@ locals {
     managed_by  = "Terraform"
   }
   prefix = "${var.stack_name}-${var.environment}"
+
+  raw_url   = aws_apigatewayv2_stage.default_stage.invoke_url
+  host_name = replace(raw_url, "https://", "")
 }

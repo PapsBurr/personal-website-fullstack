@@ -274,7 +274,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   origin {
     origin_id   = "backend-origin"
     domain_name = local.host_name
-    origin_path = var.environment
+    # origin_path = var.environment
 
     custom_origin_config {
       http_port              = 443

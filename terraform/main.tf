@@ -502,14 +502,14 @@ resource "aws_db_instance" "postgres_db" {
 
 ## VPC and Networking
 resource "aws_vpc" "personal_website_vpc" {
-  cidr_block = "10.0.0.0/24"
+  cidr_block = "10.0.0.0/16"
 
   tags = local.common_tags
 }
 
 resource "aws_subnet" "main_subnet" {
   vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.0.0/24"
+  cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.aws_region}a"
 
 

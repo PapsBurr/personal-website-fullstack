@@ -280,7 +280,7 @@ resource "aws_cloudfront_distribution" "cdn" {
       http_port              = 443
       https_port             = 443
       origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = "TLSv1.2"
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
@@ -295,9 +295,9 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   default_cache_behavior {
-    allowed_methods        = ["GET, HEAD, OPTIONS"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     target_origin_id       = "frontend-origin"
-    cached_methods         = ["GET, HEAD"]
+    cached_methods         = ["GET", "HEAD"]
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
@@ -305,7 +305,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     lambda_function_association {
       event_type   = "viewer-request"
       include_body = false
-      lambda_arn   = aws_lambda_alias.www_redirect_function_alias.qualified_arn
+      lambda_arn   = aws_lambda_alias.www_redirect_function_alias.arn
     }
   }
 

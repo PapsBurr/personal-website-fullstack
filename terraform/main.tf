@@ -192,7 +192,27 @@ resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
   )
 }
 
-## Lambda Edge Role
+## Lambda Roles
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "${local.prefix}-lambda-execution-role"
+
+  assume_role_policy = jsonencode(
+    {
+      Version : "2012-10-17",
+      Statement : [
+        {
+          Effect : "Allow",
+          Principal : {
+            Service : "lambda.amazonaws.com"
+          },
+          Action : "sts:AssumeRole"
+        }
+      ]
+  })
+
+  tags = local.common_tags
+}
+
 resource "aws_iam_role" "lambda_edge_role" {
   name = "${local.prefix}-lambda-edge-role"
 
@@ -413,6 +433,7 @@ resource "aws_lambda_permission" "apigateway_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.backend_function.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api_gateway.execution_arn}/*/*"
 }
 
 ## Www Redirect Function

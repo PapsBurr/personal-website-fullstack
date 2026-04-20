@@ -438,16 +438,10 @@ resource "aws_lambda_function" "www_redirect_function" {
   function_name = "${local.prefix}-www-redirect-function"
   role          = aws_iam_role.lambda_edge_role.arn
   runtime       = "nodejs24.x"
-  handler       = "index.handler"
+  handler       = "www-redirect-function.handler"
   timeout       = 5
   filename      = "lambda_functions/www-redirect-function.zip"
   publish       = true
-
-  environment {
-    variables = {
-      TARGET_DOMAIN = var.domain_name
-    }
-  }
 
   depends_on = [
     aws_iam_role.lambda_edge_role,

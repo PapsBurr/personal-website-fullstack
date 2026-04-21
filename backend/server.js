@@ -13,6 +13,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust the first proxy (e.g., API Gateway/CloudFront) to get correct client IP for rate limiting
+app.set("trust proxy", 1);
+
 // test github actions 22
 
 const s3 = new S3Client({ region: "us-east-1" });

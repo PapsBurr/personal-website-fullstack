@@ -461,7 +461,7 @@ resource "aws_lambda_function" "www_redirect_function" {
   runtime       = "nodejs24.x"
   handler       = "www-redirect-function.handler"
   timeout       = 5
-  filename      = "lambda_functions/www-redirect-function.zip"
+  filename      = templatefile("lambda_functions/www-redirect-function.zip", { target_domain = var.domain_name })
   publish       = true
 
   depends_on = [

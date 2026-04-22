@@ -17,6 +17,20 @@ terraform {
   required_version = ">= 1.2"
 }
 
+# Locals Values (!Sub)
+# ---------------------------------------------------------------
+locals {
+  common_tags = {
+    Project     = var.stack_name
+    Environment = var.environment
+    managed_by  = "Terraform"
+  }
+  prefix = "${var.stack_name}-${var.environment}"
+
+  raw_url   = aws_apigatewayv2_stage.default_stage.invoke_url
+  host_name = replace(raw_url, "https://", "")
+}
+
 # Resources
 # ---------------------------------------------------------------
 
@@ -490,7 +504,7 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   api_id           = aws_apigatewayv2_api.api_gateway.id
   integration_type = "AWS_PROXY"
 
-  integration_method = "GET" # I may want to change this to ANY later, but I will keep it as GET for security until I need more.
+  integration_method = "POST"
   integration_uri    = aws_lambda_function.backend_function.invoke_arn
 }
 
@@ -544,16 +558,3 @@ resource "aws_internet_gateway" "main_igw" {
 }
 
 
-# Locals Values (!Sub)
-# ---------------------------------------------------------------
-locals {
-  common_tags = {
-    Project     = var.stack_name
-    Environment = var.environment
-    managed_by  = "Terraform"
-  }
-  prefix = "${var.stack_name}-${var.environment}"
-
-  raw_url   = aws_apigatewayv2_stage.default_stage.invoke_url
-  host_name = replace(raw_url, "https://", "")
-}

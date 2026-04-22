@@ -45,6 +45,9 @@ This full-stack application serves as a personal portfolio website featuring:
 - **CI/CD:** GitHub Actions
 - **Containerization:** Docker
 - **Version Control:** GitHub
+- **IDE's Used:**
+  - VS Code
+  - NeoVim
 
 ### Additional Tools
 

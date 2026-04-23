@@ -84,7 +84,7 @@ resource "aws_s3_bucket_versioning" "frontend_bucket_versioning" {
   }
 }
 
-resource "aws_s3_server_side_encryption_configuration" "frontend_bucket_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "frontend_bucket_encryption" {
   bucket = aws_s3_bucket.frontend_bucket.id
 
   rule {
@@ -149,7 +149,7 @@ resource "aws_s3_bucket_versioning" "static_files_bucket_versioning" {
   }
 }
 
-resource "aws_s3_server_side_encryption_configuration" "static_files_bucket_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "static_files_bucket_encryption" {
   bucket = data.aws_s3_bucket.static_files_bucket.id
 
   rule {
@@ -467,14 +467,14 @@ resource "aws_lambda_permission" "apigateway_lambda_permission" {
 }
 
 ## Www Redirect Function
-resource "local_file" "www_redirect_function_zip_file" {
-  filename = templatefile("lambda_functions/www-redirect-function.js.tftpl", { target_domain = var.domain_name })
-
+resource "local_file" "www_redirect_function_template_file" {
+  content  = templatefile("lambda_functions/www-redirect-function.js.tftpl", { target_domain = var.domain_name })
+  filename = "lambda_functions/www-redirect-function.js"
 }
 
 data "archive_file" "www_redirect_function_zip" {
   type        = "zip"
-  source_file = local_file.www_redirect_function_zip_file.filename
+  source_file = local_file.www_redirect_function_template_file.filename
   output_path = "lambda_functions/www-redirect-function.zip"
 }
 

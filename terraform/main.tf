@@ -478,11 +478,6 @@ resource "aws_lambda_function" "www_redirect_function" {
   filename      = templatefile("lambda_functions/www-redirect-function.zip", { target_domain = var.domain_name })
   publish       = true
 
-  depends_on = [
-    aws_iam_role.lambda_edge_role,
-    data.archive_file.www_redirect_function_zip
-  ]
-
   tags = local.common_tags
 }
 

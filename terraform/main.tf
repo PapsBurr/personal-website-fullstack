@@ -479,14 +479,15 @@ data "archive_file" "www_redirect_function_zip" {
 }
 
 resource "aws_lambda_function" "www_redirect_function" {
-  provider      = aws.us_east_1
-  function_name = "${local.prefix}-www-redirect-function"
-  role          = aws_iam_role.lambda_edge_role.arn
-  runtime       = "nodejs24.x"
-  handler       = "www-redirect-function.handler"
-  timeout       = 5
-  filename      = data.archive_file.www_redirect_function_zip.output_path
-  publish       = true
+  provider         = aws.us_east_1
+  function_name    = "${local.prefix}-www-redirect-function"
+  role             = aws_iam_role.lambda_edge_role.arn
+  runtime          = "nodejs24.x"
+  handler          = "www-redirect-function.handler"
+  timeout          = 5
+  filename         = data.archive_file.www_redirect_function_zip.output_path
+  source_code_hash = data.archive_file.www_redirect_function_zip.output_base64sha256
+  publish          = true
 
   tags = local.common_tags
 }

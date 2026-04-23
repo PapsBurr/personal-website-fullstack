@@ -59,6 +59,10 @@ lighthouse-report.*
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+.terraformrc
+terraform.rc
+crash.log
+crash.*.log
 
 # Python
 .venv/

@@ -538,12 +538,42 @@ resource "aws_db_instance" "postgres_db" {
   password            = var.db_password
   skip_final_snapshot = true
 
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
+
   tags = local.common_tags
 }
 
 ## VPC and Networking
 resource "aws_vpc" "personal_website_vpc" {
   cidr_block = "10.0.0.0/16"
+
+  tags = local.common_tags
+}
+
+resource "aws_security_group" "rds_security_group" {
+  name        = "${local.prefix}-rds-security-group"
+  description = "Security group for postgres instance"
+  vpc_id      = aws_vpc.personal_website_vpc.id
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "${local.prefix}-db-subnet-group"
+  subnet_ids = [aws_subnet.main_subnet.id, aws_subnet.secondary_subnet.id]
 
   tags = local.common_tags
 }

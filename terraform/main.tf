@@ -523,6 +523,11 @@ resource "aws_apigatewayv2_api" "api_gateway" {
   name          = "${local.prefix}-api-gateway"
   protocol_type = "HTTP"
 
+  cors_configuration {
+    allow_origins = [var.domain_name, "www.${var.domain_name}"]
+    allow_headers = ["content-type", "authorization", "x-amz-date", "x-api-key"]
+  }
+
   tags = local.common_tags
 }
 

@@ -32,7 +32,7 @@ locals {
   prefix = "${var.stack_name}-${var.environment}"
 
   raw_url   = aws_apigatewayv2_stage.default_stage.invoke_url
-  host_name = replace(raw_url, "https://", "")
+  host_name = replace(local.raw_url, "https://", "")
 }
 
 # Resources
@@ -435,7 +435,7 @@ resource "aws_lambda_function" "backend_function" {
   }
 
   logging_config {
-    log_format            = "json"
+    log_format            = "JSON"
     application_log_level = "INFO"
     system_log_level      = "WARN"
   }

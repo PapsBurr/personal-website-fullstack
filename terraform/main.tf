@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.92"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.4"
+    }
   }
   # # Potentially have to run terraform apply before uncommenting this remote backend
   # backend = {
@@ -412,7 +416,7 @@ resource "aws_lambda_function" "backend_function" {
   package_type  = "Image"
   image_uri     = var.backend_function_image_uri
   timeout       = 30
-  role          = aws_iam_role.lambda_edge_role.arn
+  role          = aws_iam_role.lambda_execution_role.arn
 
   image_config {
     command = ["server.handler"]
@@ -462,9 +466,14 @@ data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
   }
 }
 
+resource "local_file" "www_redirect_function_zip_file" {
+  filename = templatefile("lambda_functions/www-redirect-function.js.tftpl", { target_domain = var.domain_name })
+
+}
+
 data "archive_file" "www_redirect_function_zip" {
   type        = "zip"
-  source_file = "lambda_functions/www-redirect-function.js"
+  source_file = local_file.www_redirect_function_zip_file.filename
   output_path = "lambda_functions/www-redirect-function.zip"
 }
 
@@ -475,7 +484,7 @@ resource "aws_lambda_function" "www_redirect_function" {
   runtime       = "nodejs24.x"
   handler       = "www-redirect-function.handler"
   timeout       = 5
-  filename      = templatefile("lambda_functions/www-redirect-function.zip", { target_domain = var.domain_name })
+  filename      = data.archive_file.www_redirect_function_zip.output_path
   publish       = true
 
   tags = local.common_tags
@@ -483,6 +492,7 @@ resource "aws_lambda_function" "www_redirect_function" {
 
 resource "aws_lambda_alias" "www_redirect_function_alias" {
   name             = "live"
+  provider         = aws.us_east_1
   function_name    = aws_lambda_function.www_redirect_function.function_name
   function_version = aws_lambda_function.www_redirect_function.version
 }

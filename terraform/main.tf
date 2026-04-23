@@ -554,7 +554,7 @@ resource "aws_apigatewayv2_stage" "default_stage" {
 ## Postgres Database
 resource "aws_db_instance" "postgres_db" {
   allocated_storage   = 20
-  storage_type        = "standard"
+  storage_type        = "gp3"
   engine              = "postgres"
   engine_version      = "15"
   instance_class      = "db.t3.micro"

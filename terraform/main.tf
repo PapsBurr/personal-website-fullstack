@@ -557,7 +557,7 @@ resource "aws_subnet" "main_subnet" {
   tags = local.common_tags
 }
 
-resource "aws_subnet" "second_subnet" {
+resource "aws_subnet" "secondary_subnet" {
   vpc_id            = aws_vpc.personal_website_vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "${var.aws_region}b"

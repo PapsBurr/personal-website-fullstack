@@ -419,6 +419,11 @@ resource "aws_iam_role_policy_attachment" "backend_lambda_logs" {
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_lambda_function" "backend_function" {
   function_name = "${local.prefix}-backend-function"
   package_type  = "Image"
@@ -434,6 +439,12 @@ resource "aws_lambda_function" "backend_function" {
     log_format            = "JSON"
     application_log_level = "INFO"
     system_log_level      = "WARN"
+  }
+
+  vpc_config {
+    subnet_ids         = [aws_subnet.main_subnet.id, aws_subnet.secondary_subnet.id]
+    security_group_ids = [aws_security_group.rds_security_group.id]
+
   }
 
   environment {

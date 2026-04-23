@@ -224,20 +224,20 @@ resource "aws_iam_role" "lambda_execution_role" {
             Service : "lambda.amazonaws.com"
           },
           Action : "sts:AssumeRole"
+        },
+        {
+          Effect : "Allow",
+          Principal : {
+            Service : "lambda.amazonaws.com"
+          },
+          Action : "s3:GetObject",
+          Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*"
         }
       ]
   })
 
   tags = local.common_tags
 }
-
-resource "aws_cloudwatch_log_group" "redirect_function_log_group" {
-  name              = "/aws/lambda/${local.prefix}-redirect-function"
-  retention_in_days = 14
-
-  tags = local.common_tags
-}
-
 
 resource "aws_iam_role" "lambda_edge_role" {
   name = "${local.prefix}-lambda-edge-role"
@@ -258,10 +258,6 @@ resource "aws_iam_role" "lambda_edge_role" {
         }
       ]
   })
-
-  depends_on = [
-    aws_cloudwatch_log_group.redirect_function_log_group
-  ]
 
   tags = local.common_tags
 }
@@ -470,6 +466,18 @@ resource "aws_lambda_permission" "apigateway_lambda_permission" {
 resource "local_file" "www_redirect_function_template_file" {
   content  = templatefile("lambda_functions/www-redirect-function.js.tftpl", { target_domain = var.domain_name })
   filename = "lambda_functions/www-redirect-function.js"
+}
+
+resource "aws_cloudwatch_log_group" "www_redirect_function_log_group" {
+  name              = "/aws/lambda/${local.prefix}-www-redirect-function"
+  retention_in_days = 14
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role_policy_attachment" "www_redirect_lambda_logs" {
+  role       = aws_iam_role.lambda_edge_role.name
+  policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
 data "archive_file" "www_redirect_function_zip" {

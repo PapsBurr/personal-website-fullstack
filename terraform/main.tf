@@ -467,17 +467,6 @@ resource "aws_lambda_permission" "apigateway_lambda_permission" {
 }
 
 ## Www Redirect Function
-data "aws_iam_policy_document" "lambda_execution_assume_role_policy" {
-  statement {
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-    actions = ["sts:AssumeRole"]
-  }
-}
-
 resource "local_file" "www_redirect_function_zip_file" {
   filename = templatefile("lambda_functions/www-redirect-function.js.tftpl", { target_domain = var.domain_name })
 
@@ -563,6 +552,15 @@ resource "aws_subnet" "main_subnet" {
   vpc_id            = aws_vpc.personal_website_vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.aws_region}a"
+
+
+  tags = local.common_tags
+}
+
+resource "aws_subnet" "second_subnet" {
+  vpc_id            = aws_vpc.personal_website_vpc.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "${var.aws_region}b"
 
 
   tags = local.common_tags

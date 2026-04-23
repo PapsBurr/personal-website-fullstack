@@ -231,6 +231,14 @@ resource "aws_iam_role" "lambda_execution_role" {
   tags = local.common_tags
 }
 
+resource "aws_cloudwatch_log_group" "redirect_function_log_group" {
+  name              = "/aws/lambda/${local.prefix}-redirect-function"
+  retention_in_days = 14
+
+  tags = local.common_tags
+}
+
+
 resource "aws_iam_role" "lambda_edge_role" {
   name = "${local.prefix}-lambda-edge-role"
 
@@ -250,6 +258,10 @@ resource "aws_iam_role" "lambda_edge_role" {
         }
       ]
   })
+
+  depends_on = [
+    aws_cloudwatch_log_group.redirect_function_log_group
+  ]
 
   tags = local.common_tags
 }

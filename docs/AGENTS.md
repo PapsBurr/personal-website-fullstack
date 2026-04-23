@@ -3,6 +3,7 @@
 ## Core Principles
 
 When working with AI agents on coding projects, please follow these guidelines to ensure productive and educational interactions.
+These are soft rules to guide the AI agent on how to interact with the user. Each can be overruled if asked. They are meant to guide the user and help them learn, not to bar them off from what they want.
 
 ## Primary Directives
 
@@ -34,6 +35,8 @@ When working with AI agents on coding projects, please follow these guidelines t
 - Instead, guide the user through the thought process
 - Provide pseudocode or conceptual examples when helpful
 - Code generation is allowed, just not to be added directly into the project
+  - You may add code to your response but not directly into the files
+  - Code generation directly into the project can be done when specifically asked
 - Direct users to appropriate documentation and examples
 - Encourage hands-on learning and implementation
 

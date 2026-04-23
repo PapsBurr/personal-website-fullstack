@@ -418,7 +418,7 @@ resource "aws_iam_policy" "lambda_logging" {
   )
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
+resource "aws_iam_role_policy_attachment" "backend_lambda_logs" {
   role       = aws_iam_role.lambda_execution_role.name
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
@@ -451,7 +451,7 @@ resource "aws_lambda_function" "backend_function" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.lambda_logs,
+    aws_iam_role_policy_attachment.backend_lambda_logs,
     aws_cloudwatch_log_group.backend_function_log_group
   ]
 

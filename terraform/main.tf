@@ -272,8 +272,8 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 
 # ECR Repository for Lambda Edge Function
 ## TODO: Research IMMUTABLE and see if it is worth doing
-resource "aws_ecr_repository" "lambda_edge_repository" {
-  name                 = "${local.prefix}-lambda-edge-repository"
+resource "aws_ecr_repository" "backend_repository" {
+  name                 = "${local.prefix}-backend-repository"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = true
@@ -282,8 +282,8 @@ resource "aws_ecr_repository" "lambda_edge_repository" {
   tags = local.common_tags
 }
 
-resource "aws_ecr_lifecycle_policy" "lambda_edge_repository_lifecycle_policy" {
-  repository = aws_ecr_repository.lambda_edge_repository.name
+resource "aws_ecr_lifecycle_policy" "backend_repository_lifecycle_policy" {
+  repository = aws_ecr_repository.backend_repository.name
   policy = jsonencode(
     {
       rules : [
@@ -557,6 +557,7 @@ resource "aws_db_instance" "postgres_db" {
   username            = var.db_username
   password            = var.db_password
   skip_final_snapshot = true
+  deletion_protection = true
 
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_security_group.id]

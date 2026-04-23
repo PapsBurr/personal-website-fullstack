@@ -11,10 +11,10 @@ terraform {
   }
   # # Potentially have to run terraform apply before uncommenting this remote backend
   # backend = {
-  #   bucket         = var.state_bucket
+  #   bucket         = aws_s3_bucket.terraform_state_bucket.bucket
   #   key            = "terraform.tfstate"
   #   region         = var.aws_region
-  #   dynamodb_table = var.state_lock_table
+  #   dynamodb_table = aws_dynamodb_table.terraform_state_lock_table.name
   #   encrypt        = true
   # }
 

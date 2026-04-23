@@ -379,7 +379,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 
 ## AWS Lambda Backend
 resource "aws_cloudwatch_log_group" "backend_function_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.backend_function.function_name}"
+  name              = "/aws/lambda/${local.prefix}-backend-function"
   retention_in_days = 14
 
   tags = local.common_tags

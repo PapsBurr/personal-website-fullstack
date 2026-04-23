@@ -305,7 +305,6 @@ resource "aws_ecr_lifecycle_policy" "backend_repository_lifecycle_policy" {
 }
 
 ## Cloudfront Distribution
-### TODO: Add dependencies to LambdaEdgeRole and WwwRedirectFunction
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
     origin_id                = "frontend-origin"

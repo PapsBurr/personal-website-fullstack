@@ -544,7 +544,7 @@ resource "aws_db_instance" "postgres_db" {
   engine              = "postgres"
   engine_version      = "15.3"
   instance_class      = "db.t2.micro"
-  db_name             = "${local.prefix}-db"
+  db_name             = replace("${local.prefix}-db", "-", "_")
   username            = var.db_username
   password            = var.db_password
   skip_final_snapshot = true

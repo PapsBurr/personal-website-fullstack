@@ -551,7 +551,7 @@ resource "aws_db_instance" "postgres_db" {
   allocated_storage   = 20
   storage_type        = "standard"
   engine              = "postgres"
-  engine_version      = "15.3"
+  engine_version      = "15"
   instance_class      = "db.t3.micro"
   db_name             = replace("${local.prefix}-db", "-", "_")
   username            = var.db_username

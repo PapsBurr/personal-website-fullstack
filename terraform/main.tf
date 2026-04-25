@@ -619,6 +619,15 @@ resource "aws_subnet" "main_subnet" {
   tags = local.common_tags
 }
 
+resource "aws_route_table" "main_route_table" {
+  vpc_id = aws_vpc.personal_website_vpc.id
+
+  route {
+    cidr_block = "10.0.1.0/24"
+    gateway_id = aws_internet_gateway.main_igw.id
+  }
+}
+
 resource "aws_subnet" "secondary_subnet" {
   vpc_id            = aws_vpc.personal_website_vpc.id
   cidr_block        = "10.0.2.0/24"
@@ -626,6 +635,15 @@ resource "aws_subnet" "secondary_subnet" {
 
 
   tags = local.common_tags
+}
+
+resource "aws_route_table" "secondary_route_table" {
+  vpc_id = aws_vpc.personal_website_vpc.id
+
+  route {
+    cidr_block = "10.0.2.0/24"
+    gateway_id = aws_internet_gateway.main_igw.id
+  }
 }
 
 resource "aws_internet_gateway" "main_igw" {

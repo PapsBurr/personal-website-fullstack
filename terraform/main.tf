@@ -623,7 +623,7 @@ resource "aws_route_table" "main_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
 
   route {
-    cidr_block = "10.0.1.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main_igw.id
   }
 }
@@ -647,7 +647,7 @@ resource "aws_route_table" "secondary_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
 
   route {
-    cidr_block = "10.0.2.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main_igw.id
   }
 }

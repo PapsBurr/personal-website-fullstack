@@ -628,6 +628,12 @@ resource "aws_route_table" "main_route_table" {
   }
 }
 
+resource "aws_route_table_association" "main_route_table_association" {
+  subnet_id      = aws_subnet.main_subnet.id
+  route_table_id = aws_route_table.main_route_table.id
+}
+
+
 resource "aws_subnet" "secondary_subnet" {
   vpc_id            = aws_vpc.personal_website_vpc.id
   cidr_block        = "10.0.2.0/24"
@@ -644,6 +650,11 @@ resource "aws_route_table" "secondary_route_table" {
     cidr_block = "10.0.2.0/24"
     gateway_id = aws_internet_gateway.main_igw.id
   }
+}
+
+resource "aws_route_table_association" "secondary_route_table_association" {
+  subnet_id      = aws_subnet.secondary_subnet.id
+  route_table_id = aws_route_table.secondary_route_table.id
 }
 
 resource "aws_internet_gateway" "main_igw" {

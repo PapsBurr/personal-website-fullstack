@@ -444,7 +444,7 @@ resource "aws_lambda_function" "backend_function" {
 
   vpc_config {
     subnet_ids         = [for subnet in aws_subnet.private_subnets : subnet.id]
-    security_group_ids = [aws_security_group.rds_security_group.id]
+    security_group_ids = [aws_security_group.lambda_security_group.id]
 
   }
 
@@ -581,6 +581,33 @@ resource "aws_vpc" "personal_website_vpc" {
 resource "aws_security_group" "rds_security_group" {
   name        = "${local.prefix}-rds-security-group"
   description = "Security group for postgres instance"
+  vpc_id      = aws_vpc.personal_website_vpc.id
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+  }
+
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+  }
+}
+
+resource "aws_security_group" "lambda_security_group" {
+  name        = "${local.prefix}-lambda-security-group"
+  description = "Security group for lambda functions"
   vpc_id      = aws_vpc.personal_website_vpc.id
 
   ingress {

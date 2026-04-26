@@ -605,6 +605,14 @@ resource "aws_security_group" "rds_security_group" {
   }
 }
 
+resource "aws_vpc_security_group_egress_rule" "allow_https_outbound" {
+  security_group_id = aws_security_group.lambda_security_group.id
+  cidr_ipv4         = ["0.0.0.0/0"]
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
+}
+
 resource "aws_security_group" "lambda_security_group" {
   name        = "${local.prefix}-lambda-security-group"
   description = "Security group for lambda functions"

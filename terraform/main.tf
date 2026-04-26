@@ -584,24 +584,24 @@ resource "aws_security_group" "rds_security_group" {
   vpc_id      = aws_vpc.personal_website_vpc.id
 
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lambda_security_group.id]
   }
 
   egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "udp"
-    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+    from_port       = 53
+    to_port         = 53
+    protocol        = "udp"
+    security_groups = [aws_security_group.lambda_security_group.id]
   }
 
   egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+    from_port       = 53
+    to_port         = 53
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lambda_security_group.id]
   }
 }
 
@@ -610,25 +610,18 @@ resource "aws_security_group" "lambda_security_group" {
   description = "Security group for lambda functions"
   vpc_id      = aws_vpc.personal_website_vpc.id
 
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
   egress {
     from_port   = 53
     to_port     = 53
     protocol    = "udp"
-    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+    cidr_blocks = ["0.0.0.0/0"] # Route 53 Resolver
   }
 
   egress {
     from_port   = 53
     to_port     = 53
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.2/32"] # Route 53 Resolver
+    cidr_blocks = ["0.0.0.0/0"] # Route 53 Resolver
   }
 }
 

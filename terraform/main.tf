@@ -654,14 +654,6 @@ resource "aws_subnet" "private_subnets" {
   })
 }
 
-# resource "aws_subnet" "main_subnet" {
-#   vpc_id            = aws_vpc.personal_website_vpc.id
-#   cidr_block        = "10.0.1.0/24"
-#   availability_zone = "${var.aws_region}a"
-
-#   tags = local.common_tags
-# }
-
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
 
@@ -675,16 +667,6 @@ resource "aws_route_table_association" "public_route_table_association" {
   subnet_id      = [for subnet in aws_subnet.public_subnets : subnet.id]
   route_table_id = aws_route_table.public_route_table.id
 }
-
-
-# resource "aws_subnet" "secondary_subnet" {
-#   vpc_id            = aws_vpc.personal_website_vpc.id
-#   cidr_block        = "10.0.2.0/24"
-#   availability_zone = "${var.aws_region}b"
-
-
-#   tags = local.common_tags
-# }
 
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
@@ -700,9 +682,17 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
+resource "aws_eip" "nat_gateway_eips" {
+  count  = length(aws_subnet.public_subnets)
+  domain = "vpc"
+
+  tags = local.common_tags
+}
+
 resource "aws_nat_gateway" "nat_gateways" {
-  count     = length(aws_subnet.public_subnets)
-  subnet_id = aws_subnet.public_subnets[count.index].id
+  count         = length(aws_subnet.public_subnets)
+  subnet_id     = aws_subnet.public_subnets[count.index].id
+  allocation_id = aws_eip.nat_gateway_eips[count.index].id
 
   tags = local.common_tags
 

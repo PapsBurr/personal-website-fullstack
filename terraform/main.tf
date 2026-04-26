@@ -11,7 +11,7 @@ terraform {
   }
   # # Potentially have to run terraform apply before uncommenting this remote backend
   # backend = {
-  #   bucket         = aws_s3_bucket.terraform_state_bucket.bucket
+  #   bucket         = "personal-website-terraform-state-bucket"
   #   key            = "terraform.tfstate"
   #   region         = var.aws_region
   #   dynamodb_table = aws_dynamodb_table.terraform_state_lock_table.name

@@ -226,19 +226,33 @@ resource "aws_iam_role" "lambda_execution_role" {
             Service : "lambda.amazonaws.com"
           },
           Action : "sts:AssumeRole"
-        },
-        {
-          Effect : "Allow",
-          Principal : {
-            Service : "lambda.amazonaws.com"
-          },
-          Action : "s3:GetObject",
-          Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*"
         }
       ]
   })
 
   tags = local.common_tags
+}
+
+resource "aws_iam_policy" "lambda_s3_read_access" {
+  name        = "${local.prefix}-lambda-get-s3-policy"
+  description = "IAM policy for Lambda function to get objects from S3 bucket"
+  policy = jsonencode(
+    {
+      Version : "2012-10-17",
+      Statement : [
+        {
+          Effect : "Allow",
+          Action : "s3:GetObject",
+          Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*"
+        }
+      ]
+    }
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_s3_read_access_attachment" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = aws_iam_policy.lambda_s3_read_access.arn
 }
 
 resource "aws_iam_role" "lambda_edge_role" {

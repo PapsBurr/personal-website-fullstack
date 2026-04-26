@@ -626,7 +626,7 @@ resource "aws_subnet" "public_subnets" {
 resource "aws_subnet" "private_subnets" {
   count             = 2
   vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.${count.index + aws_subnet.public_subnets.count + 1}.0/24"
+  cidr_block        = "10.0.${count.index + length(aws_subnet.public_subnets)}.0/24"
   availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
 
   tags = merge(local.common_tags, {

@@ -189,7 +189,7 @@ resource "aws_s3_bucket_policy" "static_files_bucket_policy" {
         {
           Effect : "Allow",
           Principal : {
-            AWS : aws_iam_role.lambda_edge_role.arn
+            AWS : aws_iam_role.lambda_execution_role.arn
           },
           Action : "s3:GetObject",
           Resource : "${data.aws_s3_bucket.static_files_bucket.arn}/*"

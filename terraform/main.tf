@@ -633,7 +633,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count             = 2
+  count             = 1
   vpc_id            = aws_vpc.personal_website_vpc.id
   cidr_block        = "10.0.${count.index + 1}.0/24"
   availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
@@ -644,9 +644,9 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  count             = 2
+  count             = 2 # Need at least 2 private subnets for RDS Multi-AZ deployment, even if we aren't using Multi-AZ right now. This allows for easier future scaling and better availability.
   vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.${count.index + length(aws_subnet.public_subnets)}.0/24"
+  cidr_block        = "10.0.${length(aws_subnet.public_subnets) + count.index}.0/24"
   availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
 
   tags = merge(local.common_tags, {

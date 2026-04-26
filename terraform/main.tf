@@ -576,7 +576,6 @@ resource "aws_db_instance" "postgres_db" {
   db_name             = replace("${local.prefix}-db", "-", "_")
   username            = var.db_username
   password            = var.db_password
-  skip_final_snapshot = true
   deletion_protection = true
 
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name

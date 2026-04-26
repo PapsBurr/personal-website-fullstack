@@ -29,6 +29,8 @@ locals {
     Environment = var.environment
     managed_by  = "Terraform"
   }
+  availability_zone_letters = ["a", "b", "c", "d"]
+
   prefix = "${var.stack_name}-${var.environment}"
 
   raw_url   = aws_apigatewayv2_stage.default_stage.invoke_url
@@ -605,21 +607,42 @@ resource "aws_security_group" "rds_security_group" {
 
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "${local.prefix}-db-subnet-group"
-  subnet_ids = [aws_subnet.main_subnet.id, aws_subnet.secondary_subnet.id]
+  subnet_ids = [for subnet in aws_subnet.private_subnets : subnet.id]
 
   tags = local.common_tags
 }
 
-resource "aws_subnet" "main_subnet" {
+resource "aws_subnet" "public_subnets" {
+  count             = 2
   vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "${var.aws_region}a"
+  cidr_block        = "10.0.${count.index + 1}.0/24"
+  availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
 
-
-  tags = local.common_tags
+  tags = merge(local.common_tags, {
+    Name = "${local.prefix}-public-subnet-${count.index + 1}"
+  })
 }
 
-resource "aws_route_table" "main_route_table" {
+resource "aws_subnet" "private_subnets" {
+  count             = 2
+  vpc_id            = aws_vpc.personal_website_vpc.id
+  cidr_block        = "10.0.${count.index + aws_subnet.public_subnets.count + 1}.0/24"
+  availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.prefix}-private-subnet-${count.index + 1}"
+  })
+}
+
+# resource "aws_subnet" "main_subnet" {
+#   vpc_id            = aws_vpc.personal_website_vpc.id
+#   cidr_block        = "10.0.1.0/24"
+#   availability_zone = "${var.aws_region}a"
+
+#   tags = local.common_tags
+# }
+
+resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
 
   route {
@@ -628,22 +651,22 @@ resource "aws_route_table" "main_route_table" {
   }
 }
 
-resource "aws_route_table_association" "main_route_table_association" {
+resource "aws_route_table_association" "public_route_table_association" {
   subnet_id      = aws_subnet.main_subnet.id
-  route_table_id = aws_route_table.main_route_table.id
+  route_table_id = aws_route_table.public_route_table.id
 }
 
 
-resource "aws_subnet" "secondary_subnet" {
-  vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "${var.aws_region}b"
+# resource "aws_subnet" "secondary_subnet" {
+#   vpc_id            = aws_vpc.personal_website_vpc.id
+#   cidr_block        = "10.0.2.0/24"
+#   availability_zone = "${var.aws_region}b"
 
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 
-resource "aws_route_table" "secondary_route_table" {
+resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.personal_website_vpc.id
 
   route {
@@ -652,9 +675,17 @@ resource "aws_route_table" "secondary_route_table" {
   }
 }
 
-resource "aws_route_table_association" "secondary_route_table_association" {
+resource "aws_route_table_association" "private_route_table_association" {
   subnet_id      = aws_subnet.secondary_subnet.id
-  route_table_id = aws_route_table.secondary_route_table.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
+resource "aws_nat_gateway" "public_nat_gateways" {
+  count         = aws_subnet.public_subnets.count
+  allocation_id = aws_eip.main_public_nat_gateway_eip.id
+  subnet_id     = aws_subnet.public_subnets[count.index].id
+
+  tags = local.common_tags
 }
 
 resource "aws_internet_gateway" "main_igw" {

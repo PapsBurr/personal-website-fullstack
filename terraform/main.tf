@@ -652,7 +652,7 @@ resource "aws_route_table" "public_route_table" {
 }
 
 resource "aws_route_table_association" "public_route_table_association" {
-  subnet_id      = aws_subnet.main_subnet.id
+  subnet_id      = [for subnet in aws_subnet.public_subnets : subnet.id]
   route_table_id = aws_route_table.public_route_table.id
 }
 
@@ -680,10 +680,9 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_nat_gateway" "public_nat_gateways" {
-  count         = aws_subnet.public_subnets.count
-  allocation_id = aws_eip.main_public_nat_gateway_eip.id
-  subnet_id     = aws_subnet.public_subnets[count.index].id
+resource "aws_nat_gateway" "nat_gateways" {
+  count     = length(aws_subnet.public_subnets)
+  subnet_id = aws_subnet.public_subnets[count.index].id
 
   tags = local.common_tags
 }

@@ -682,23 +682,6 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_eip" "nat_gateway_eips" {
-  count  = length(aws_subnet.public_subnets)
-  domain = "vpc"
-
-  tags = local.common_tags
-}
-
-resource "aws_nat_gateway" "nat_gateways" {
-  count         = length(aws_subnet.public_subnets)
-  subnet_id     = aws_subnet.public_subnets[count.index].id
-  allocation_id = aws_eip.nat_gateway_eips[count.index].id
-
-  tags = local.common_tags
-
-  depends_on = [aws_internet_gateway.main_igw]
-}
-
 resource "aws_internet_gateway" "main_igw" {
   vpc_id = aws_vpc.personal_website_vpc.id
 

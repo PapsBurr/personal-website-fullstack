@@ -685,6 +685,8 @@ resource "aws_nat_gateway" "nat_gateways" {
   subnet_id = aws_subnet.public_subnets[count.index].id
 
   tags = local.common_tags
+
+  depends_on = [aws_internet_gateway.main_igw]
 }
 
 resource "aws_internet_gateway" "main_igw" {

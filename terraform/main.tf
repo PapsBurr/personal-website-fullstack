@@ -633,10 +633,11 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count             = 1
-  vpc_id            = aws_vpc.personal_website_vpc.id
-  cidr_block        = "10.0.${count.index + 1}.0/24"
-  availability_zone = "${var.aws_region}${local.availability_zone_letters[count.index]}"
+  count                   = 1
+  vpc_id                  = aws_vpc.personal_website_vpc.id
+  cidr_block              = "10.0.${count.index + 1}.0/24"
+  availability_zone       = "${var.aws_region}${local.availability_zone_letters[count.index]}"
+  map_public_ip_on_launch = true
 
   tags = merge(local.common_tags, {
     Name = "${local.prefix}-public-subnet-${count.index + 1}"

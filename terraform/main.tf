@@ -443,7 +443,7 @@ resource "aws_lambda_function" "backend_function" {
   }
 
   vpc_config {
-    subnet_ids         = [aws_subnet.main_subnet.id, aws_subnet.secondary_subnet.id]
+    subnet_ids         = [for subnet in aws_subnet.private_subnets : subnet.id]
     security_group_ids = [aws_security_group.rds_security_group.id]
 
   }

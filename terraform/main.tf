@@ -676,7 +676,7 @@ resource "aws_route_table" "private_route_table" {
 }
 
 resource "aws_route_table_association" "private_route_table_association" {
-  subnet_id      = aws_subnet.secondary_subnet.id
+  subnet_id      = [for subnet in aws_subnet.private_subnets : subnet.id]
   route_table_id = aws_route_table.private_route_table.id
 }
 

@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "The AWS region containing the stack"
   type        = string
-  default     = "us-west-1"
+  default     = "us-east-1"
 }
 
 variable "stack_name" {

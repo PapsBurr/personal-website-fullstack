@@ -4,6 +4,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.41.0"
     }
+    neon = {
+      source = "kislerdm/neon"
+    }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.4"
@@ -566,21 +569,45 @@ resource "aws_apigatewayv2_stage" "default_stage" {
 }
 
 ## Postgres Database
-resource "aws_db_instance" "postgres_db" {
-  allocated_storage   = 20
-  storage_type        = "gp3"
-  engine              = "postgres"
-  engine_version      = "15"
-  instance_class      = "db.t3.micro"
-  db_name             = replace("${local.prefix}-db", "-", "_")
-  username            = var.db_username
-  password            = var.db_password
-  deletion_protection = true
+# resource "aws_db_instance" "postgres_db" {
+#   allocated_storage   = 20
+#   storage_type        = "gp3"
+#   engine              = "postgres"
+#   engine_version      = "15"
+#   instance_class      = "db.t3.micro"
+#   db_name             = replace("${local.prefix}-db", "-", "_")
+#   username            = var.db_username
+#   password            = var.db_password
+#   deletion_protection = true
 
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
-  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
+#   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+#   vpc_security_group_ids = [aws_security_group.rds_security_group.id]
 
-  tags = local.common_tags
+#   tags = local.common_tags
+# }
+
+## Neon Postgres Database to replace Postgres Database (using free tier)
+resource "neon_project" "main" {
+  name       = "${local.prefix}-neon-db"
+  pg_version = "17"
+}
+
+resource "neon_branch" "main_branch" {
+  project_id = neon_project.main.id
+  name       = "${local.prefix}-branch"
+}
+
+resource "neon_role" "db_role" {
+  project_id = neon_project.main.id
+  branch_id  = neon_branch.main_branch.id
+  name       = "${local.prefix}-db-role"
+}
+
+resource "neon_database" "neon_db" {
+  project_id = neon_project.main.id
+  branch_id  = neon_branch.main_branch.id
+  owner_name = neon_role.db_role.name
+  name       = "${local.prefix}-db"
 }
 
 ## VPC and Networking

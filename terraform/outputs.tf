@@ -40,9 +40,9 @@ output "neon_project_connection_uri" {
 }
 
 output "neon_project_main_branch_id" {
-  value = neon_project.main.branch.id
+  value = neon_branch.main_branch.id
 }
 
 output "neon_project_db_user" {
-  value = neon_project.main.db.user
+  value = neon_role.neon_db_admin_role.name
 }

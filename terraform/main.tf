@@ -588,26 +588,16 @@ resource "aws_apigatewayv2_stage" "default_stage" {
 
 ## Neon Postgres Database to replace Postgres Database (using free tier)
 resource "neon_project" "main" {
-  name       = "${local.prefix}-neon-db"
-  pg_version = "17"
-}
+  name                      = "${local.prefix}-neon-db-project"
+  pg_version                = "17"
+  region_id                 = var.aws_region
+  history_retention_seconds = 21600 # 6 hours, max for free tier
 
-resource "neon_branch" "main_branch" {
-  project_id = neon_project.main.id
-  name       = "${local.prefix}-branch"
-}
-
-resource "neon_role" "db_role" {
-  project_id = neon_project.main.id
-  branch_id  = neon_branch.main_branch.id
-  name       = "${local.prefix}-db-role"
-}
-
-resource "neon_database" "neon_db" {
-  project_id = neon_project.main.id
-  branch_id  = neon_branch.main_branch.id
-  owner_name = neon_role.db_role.name
-  name       = "${local.prefix}-db"
+  branch {
+    name          = "${local.prefix}-main-branch"
+    database_name = "${local.prefix}-neon-db"
+    role_name     = "${local.prefix}-db-admin-role"
+  }
 }
 
 ## VPC and Networking

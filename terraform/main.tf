@@ -593,12 +593,24 @@ resource "neon_project" "main" {
   region_id                 = var.aws_region
   org_id                    = "${local.prefix}-neon-org"
   history_retention_seconds = 21600 # 6 hours, max for free tier
+}
 
-  branch {
-    name          = "${local.prefix}-main-branch"
-    database_name = "${local.prefix}-neon-db"
-    role_name     = "${local.prefix}-db-admin-role"
-  }
+resource "neon_branch" "main_branch" {
+  project_id = neon_project.main.id
+  name       = "${local.prefix}-main-branch"
+}
+
+resource "neon_database" "main_db" {
+  project_id = neon_project.main.id
+  branch_id  = neon_branch.main_branch.id
+  name       = "${local.prefix}-neon-db"
+  owner_name = neon_role.neon_db_admin_role
+}
+
+resource "neon_role" "neon_db_admin_role" {
+  project_id = neon_project.main.id
+  branch_id  = neon_branch.main_branch.id
+  name       = "${local.prefix}-neon-db-admin-role"
 }
 
 ## VPC and Networking

@@ -27,3 +27,22 @@ output "host_name" {
   description = "The host name for the API Gateway"
   value       = local.host_name
 }
+
+# Outputs from Neon
+output "neon_project_id" {
+  value = neon_project.main.id
+}
+
+output "neon_project_connection_uri" {
+  description = "Default connection URI for db primary branch (SENSITIVE)"
+  value       = neon_project.main.connection_uri
+  sensitive   = true
+}
+
+output "neon_project_main_branch_id" {
+  value = neon_project.main.branch.id
+}
+
+output "neon_project_db_user" {
+  value = neon_project.main.db.user
+}

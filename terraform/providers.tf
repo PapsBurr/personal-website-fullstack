@@ -6,3 +6,7 @@ provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 }
+
+provider "neon" {
+  api_key = var.neon_api_key
+}

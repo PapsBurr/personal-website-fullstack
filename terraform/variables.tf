@@ -46,6 +46,12 @@ variable "environment" {
   type        = string
 }
 
+variable "neon_api_key" {
+  description = "API key for Neon database access"
+  type        = string
+  sensitive   = true
+}
+
 variable "db_username" {
   description = "The username for the PostgreSQL database"
   type        = string

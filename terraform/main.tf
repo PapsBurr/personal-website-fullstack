@@ -591,6 +591,7 @@ resource "neon_project" "main" {
   name                      = "${local.prefix}-neon-db-project"
   pg_version                = "17"
   region_id                 = var.aws_region
+  org_id                    = "${local.prefix}-neon-org"
   history_retention_seconds = 21600 # 6 hours, max for free tier
 
   branch {

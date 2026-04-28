@@ -52,14 +52,15 @@ variable "neon_api_key" {
   sensitive   = true
 }
 
-variable "db_username" {
-  description = "The username for the PostgreSQL database"
-  type        = string
-  sensitive   = true
-}
+# Variables for AWS RDS
+# variable "db_username" {
+#   description = "The username for the PostgreSQL database"
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "db_password" {
-  description = "The password for the PostgreSQL database"
-  type        = string
-  sensitive   = true
-}
+# variable "db_password" {
+#   description = "The password for the PostgreSQL database"
+#   type        = string
+#   sensitive   = true
+# }

@@ -4,7 +4,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    
+    inputs:
+      deploy-frontend:
+        description: "Deploy Frontend"
+        type: boolean
+        default: true
+      deploy-backend:
+        description: "Deploy Backend"
+        type: boolean
+        default: true
+
 env:
   NODE_VERSION: "24"
   AWS_REGION: "us-east-1"
@@ -103,3 +112,11 @@ jobs:
 
       - name: Run frontend tests
         run: npm test -- --coverage --watchAll=false
+
+  # Job 4: Deploy Backend in Staging Environment (runs if backend changed)
+  deploy-backend-staging-env:
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.backend-changed == 'true' ||
+      github.event.inputs.deploy-backend == 'true'
+    runs-on: ubuntu-latest

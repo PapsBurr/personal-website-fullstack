@@ -1,12 +1,25 @@
 import Link from "next/link";
 
 export default function ProjectsPage() {
-  const projectLinks = [
+  type ProjectData = {
+    href: string;
+    icon: string;
+    alt: string;
+    label: string;
+  };
+
+  const projectLinks: ProjectData[] = [
     {
       href: "/projects/solarsystem",
       icon: "/saturn-icon-white.svg",
       alt: "Saturn Icon",
       label: "Solar System",
+    },
+    {
+      href: "/projects/orbit-simulation",
+      icon: "/orbit-icon-white.svg",
+      alt: "Orbit Icon",
+      label: "Orbit Simulation",
     },
   ];
 

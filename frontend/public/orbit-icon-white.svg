@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <ellipse id="orbit-line" cx="50%" cy="50%" rx="160" ry="100" />
+    <circle id="orbit-body" cx="86%" cy="40%" r="20" />
+    <circle id="orbit-body-atmo" cx="86%" cy="40%" r="30" />
+    <circle id="main-body" cx="50%" cy="50%" r="80" />
+    <rect id="background" width="100%" height="100%" />
+
+    <mask id="cut-atmo-mask">
+      <use href="#background" fill="white" />
+      <use href="#orbit-body-atmo" fill="black" />
+    </mask>
+
+    <mask id="main-body-shadow">
+      <use href="#background" fill="white" />
+      <circle cx="56%" cy="40%" r="90" fill="black" />
+    </mask>
+
+    <mask id="orbit-body-shadow">
+      <use href="#background" fill="white" />
+      <circle cx="88%" cy="38%" r="20" fill="black" />
+    </mask>
+
+  </defs>
+
+  <use href="#orbit-line" stroke="white" fill="none" stroke-width="3" mask="url(#cut-atmo-mask)" />
+
+  <g fill="none" stroke-width="3">
+    <use href="#main-body" fill="white" stroke="none" />
+    <use href="#main-body" fill="#bdbdbd" stroke="none" mask="url(#main-body-shadow)" />
+    <use href="#orbit-body" fill="white" />
+    <use href="#orbit-body" fill="#bdbdbd" mask="url(#orbit-body-shadow)" />
+  </g>
+
+</svg>

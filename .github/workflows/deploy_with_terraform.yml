@@ -41,8 +41,8 @@ jobs:
             backend:
               - 'backend/**'
 
-  # Job 2: Test Backend (runs if backend changed)
-  test-backend:
+  # Job 2: Test Backend in Dev Environment (runs if backend changed)
+  test-backend-dev:
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.backend-changed == 'true' ||
@@ -75,8 +75,8 @@ jobs:
           NODE_ENV: test
           CI: true
 
-  # Job 3: Test Frontend (runs if frontend changed)
-  test-frontend:
+  # Job 3: Test Frontend in Dev Environment (runs if frontend changed)
+  test-frontend-dev:
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.frontend-changed == 'true' ||
@@ -115,8 +115,9 @@ jobs:
 
   # Job 4: Deploy Backend in Staging Environment (runs if backend changed)
   deploy-backend-staging-env:
-    needs: detect-changes
+    needs: [detect-changes, test-backend-dev]
     if: |
       needs.detect-changes.outputs.backend-changed == 'true' ||
       github.event.inputs.deploy-backend == 'true'
     runs-on: ubuntu-latest
+

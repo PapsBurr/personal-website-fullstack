@@ -55,6 +55,9 @@ aws/
 # reports
 lighthouse-report.*
 
+# MCP
+mcp-servers.config.json
+
 # Terraform
 .terraform/
 terraform.tfstate
